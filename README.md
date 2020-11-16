@@ -200,7 +200,7 @@
 
 38、[弄懂这 6 个问题，拿下 Python 生成器！](http://mp.weixin.qq.com/s?__biz=MzIzMzMzOTI3Nw==&mid=2247493273&idx=2&sn=89bd3d18e7837f59c41d2f021047a1f9&chksm=e885867bdff20f6d0d72d463a255d2a51225321f8bc6115523411e540305e669a24580e58d78&scene=27#wechat_redirect)
 
-39、[\[\\] 与 list() 哪个快？为什么快？快多少呢？](http://mp.weixin.qq.com/s?__biz=MzIzMzMzOTI3Nw==&mid=2247493457&idx=2&sn=67d576d2aeab16d4ad9c1b491e10deaf&chksm=e88587b3dff20ea501789da4c67560e21708f89032732eaca544e22c65780ea249e98e6ab50e#rd)
+39、[`[]` 与 list() 哪个快？为什么快？快多少呢？](http://mp.weixin.qq.com/s?__biz=MzIzMzMzOTI3Nw==&mid=2247493457&idx=2&sn=67d576d2aeab16d4ad9c1b491e10deaf&chksm=e88587b3dff20ea501789da4c67560e21708f89032732eaca544e22c65780ea249e98e6ab50e#rd)
 
 40、[连 Python 生成器的原理都解释不了，还敢说 Python 用了 5 年？](http://mp.weixin.qq.com/s?__biz=MzIzMzMzOTI3Nw==&mid=2247493530&idx=1&sn=5096c680a63a57b1f55d1a9d372ec302&chksm=e8858778dff20e6e257fcacfb644bc4736afac692ab19f41717f4cdc084eb43951aba0912187#rd)
 
