@@ -1,0 +1,54 @@
+8.16 打包辅助神器 PBR 是什么？
+==============================
+
+``pbr`` 是 setuptools 的辅助工具，最初是为 OpenStack
+开发(https://launchpad.net/pbr)，基于\ ``d2to1``\ 。
+
+``pbr`` 会读取和过滤setup.cfg中的数据，然后将解析后的数据提供给
+``setup.py`` 作为参数。包含如下功能：
+
+1. 从git中获取Version、AUTHORS and ChangeLog信息
+2. Sphinx Autodoc。pbr 会扫描project，找到所有模块，生成stub files
+3. Requirements。pbr会读取requirements.txt，生成setup函数需要的\ ``install_requires/tests_require/dependency_links``
+
+这里需要注意，在 ``requirements.txt``
+文件的头部可以使用：\ ``--index https://pypi.python.org/simple/``\ ，这一行把一个抽象的依赖声明如
+requests==1.2.0 转变为一个具体的依赖声明 requests 1.2.0 from
+pypi.python.org/simple/
+
+4. long_description。从README.rst, README.txt or README
+   file中生成\ ``long_description``\ 参数
+
+使用pbr很简单：
+
+::
+
+   from setuptools import setup
+
+   setup(
+       setup_requires=['pbr'],
+       pbr=True,
+   )
+
+使用pbr时，setup.cfg中有一些配置。在[files]中，有三个key：
+``packages``:指定需要包含的包，行为类似于setuptools.find_packages
+``namespace_packages``:指定namespace packages ``data_files``:
+指定目的目录和源文件路径，一个示例：
+
+::
+
+   [files]
+   data_files =
+       etc/pbr = etc/pbr/*
+       etc/neutron =
+           etc/api-paste.ini
+           etc/dhcp-agent.ini
+       etc/init.d = neutron.init
+
+``[entry_points]`` 段跟 setuptools 的方式相同。
+
+到此，我讲了三种编写使用 setup.py 的方法
+
+-  使用命令行参数指定，一个一个将参数传递进去（极不推荐）
+-  在 setup.py 中的setup函数中指定（推荐使用）
+-  使用 pbr ，在 setup.cfg 中指定（易于管理，更推荐）

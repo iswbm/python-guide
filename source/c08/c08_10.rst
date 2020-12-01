@@ -1,0 +1,215 @@
+8.10 理解查找器与加载器
+=======================
+
+如果指定名称的模块在 ``sys.modules`` 找不到，则将发起调用 Python
+的导入协议以查找和加载该模块。
+
+此协议由两个概念性模块构成，即 ``查找器`` 和 ``加载器``\ 。
+
+一个 Python 的模块的导入，其实可以再细分为两个过程：
+
+1. 由查找器实现的模块查找
+2. 由加载器实现的模块加载
+
+4.1 查找器是什么？
+~~~~~~~~~~~~~~~~~~
+
+查找器（finder），简单点说，查找器定义了一个模块查找机制，让程序知道该如何找到对应的模块。
+
+其实 Python 内置了多个默认查找器，其存在于 sys.meta_path 中。
+
+但这些查找器对应使用者来说，并不是那么重要，因此在 Python 3.3 之前，
+Python 解释将其隐藏了，我们称之为隐式查找器。
+
+.. code:: python
+
+   # Python 2.7
+   >>> import sys
+   >>> sys.meta_path
+   []
+   >>> 
+
+由于这点不利于开发者深入理解 import 机制，在 Python 3.3
+后，所有的模块导入机制都会通过 sys.meta_path
+暴露，不会在有任何隐式导入机制。
+
+.. code:: python
+
+   # Python 3.6
+   >>> import sys
+   >>> from pprint import pprint
+   >>> pprint(sys.meta_path)
+   [<class '_frozen_importlib.BuiltinImporter'>,
+    <class '_frozen_importlib.FrozenImporter'>,
+    <class '_frozen_importlib_external.PathFinder'>]
+
+观察一下 Python 默认的这几种查找器 （finder），可以分为三种：
+
+-  一种知道如何导入内置模块
+-  一种知道如何导入冻结模块
+-  一种知道如何导入来自 `import
+   path <https://docs.python.org/zh-cn/3/glossary.html#term-import-path>`__
+   的模块 (即 `path based
+   finder <https://docs.python.org/zh-cn/3/glossary.html#term-path-based-finder>`__)。
+
+那我们能不能自已定义一个查找器呢？当然可以，你只要
+
+-  定义一个实现了 find_module 方法的类（py2和py3均可），或者实现
+   find_loader 类方法（仅 py3 有效），如果找到模块需要返回一个 loader
+   对象或者 ModuleSpec 对象（后面会讲），没找到需要返回 None
+-  定义完后，要使用这个查找器，必须注册它，将其插入在 sys.meta_path
+   的首位，这样就能优先使用。
+
+.. code:: python
+
+   import sys
+
+   class MyFinder(object):
+       @classmethod
+       def find_module(cls, name, path, target=None):
+           print("Importing", name, path, target)
+           # 将在后面定义
+           return MyLoader()
+
+   # 由于 finder 是按顺序读取的，所以必须插入在首位
+   sys.meta_path.insert(0, MyFinder)
+
+查找器可以分为两种：
+
+.. code:: shell
+
+   object
+    +-- Finder (deprecated)
+         +-- MetaPathFinder
+         +-- PathEntryFinder
+
+这里需要注意的是，在 3.4 版前，查找器会直接返回
+加载器（Loader）对象，而在 3.4
+版后，查找器则会返回模块规格说明（ModuleSpec），其中 包含加载器。
+
+而关于什么是 加载器 和 模块规格说明， 请继续往后看。
+
+4.2 加载器是什么？
+~~~~~~~~~~~~~~~~~~
+
+查找器只负责查找定位找模，而真正负责加载模块的，是加载器（loader）。
+
+一般的 loader 必须定义名为 ``load_module()`` 的方法。
+
+为什么这里说一般，因为 loader 还分多种：
+
+.. code:: shell
+
+   object
+    +-- Finder (deprecated)
+    |    +-- MetaPathFinder
+    |    +-- PathEntryFinder
+    +-- Loader
+         +-- ResourceLoader --------+
+         +-- InspectLoader          |
+              +-- ExecutionLoader --+
+                                    +-- FileLoader
+                                    +-- SourceLoader
+
+通过查看源码可知，不同的加载器的抽象方法各有不同。
+
+加载器通常由一个 finder 返回。详情参见 PEP 302，对于 abstract base class
+可参见 importlib.abc.Loader。
+
+那如何自定义我们自己的加载器呢？
+
+你只要
+
+-  定义一个实现了 load_module 方法的类
+-  对与导入有关的属性（\ `点击查看详情 <https://docs.python.org/zh-cn/3/reference/import.html#import-related-module-attributes>`__\ ）进行校验
+-  创建模块对象并绑定所有与导入相关的属性变量到该模块上
+-  将此模块保存到 sys.modules 中（顺序很重要，避免递归导入）
+-  然后加载模块（这是核心）
+-  若加载出错，需要能够处理抛出异常（ ImportError）
+-  若加载成功，则返回 module 对象
+
+若你想看具体的例子，可以接着往后看。
+
+4.3 模块规格说明
+~~~~~~~~~~~~~~~~
+
+导入机制在导入期间会使用有关每个模块的多种信息，特别是加载之前。
+大多数信息都是所有模块通用的。
+模块规格说明的目的是基于每个模块来封装这些导入相关信息。
+
+模块的规格说明会作为模块对象的 ``__spec__`` 属性对外公开。
+有关模块规格的详细内容请参阅
+```ModuleSpec`` <https://docs.python.org/zh-cn/3/library/importlib.html#importlib.machinery.ModuleSpec>`__\ 。
+
+在 Python 3.4 后，查找器不再返回加载器，而是返回 ModuleSpec
+对象，它储存着更多的信息
+
+-  模块名
+-  加载器
+-  模块绝对路径
+
+那如何查看一个模块的 ModuleSpec ？
+
+这边举个例子
+
+.. code:: shell
+
+   $ cat my_mod02.py
+   import my_mod01
+   print(my_mod01.__spec__)
+
+   $ python3 my_mod02.py
+   in mod01
+   ModuleSpec(name='my_mod01', loader=<_frozen_importlib_external.SourceFileLoader object at 0x000000000392DBE0>, origin='/home/MING/my_mod01.py')
+
+从 ModuleSpec
+中可以看到，加载器是包含在内的，那我们如果要重新加载一个模块，是不是又有了另一种思路了？
+
+来一起验证一下。
+
+现在有两个文件：
+
+一个是 my_info.py
+
+.. code:: python
+
+   # my_info.py
+   name='wangbm'
+
+另一个是：main.py
+
+.. code:: python
+
+   # main.py
+   import my_info
+
+   print(my_info.name)
+
+   # 加一个断点
+   import pdb;pdb.set_trace()
+
+   # 再加载一次
+   my_info.__spec__.loader.load_module()
+
+   print(my_info.name)
+
+在 ``main.py`` 处，我加了一个断点，目的是当运行到断点处时，我修改
+my_info.py 里的 name 为 ``ming`` ，以便验证重载是否有效？
+
+.. code:: shell
+
+   $ python3 main.py
+   wangbm
+   > /home/MING/main.py(9)<module>()
+   -> my_info.__spec__.loader.load_module()
+   (Pdb) c
+   ming
+
+从结果来看，重载是有效的。
+
+4.4 导入器是什么？
+~~~~~~~~~~~~~~~~~~
+
+导入器（importer），也许你在其他文章里会见到它，但其实它并不是个新鲜的东西。
+
+它只是同时实现了查找器和加载器两种接口的对象，所以你可以说导入器（importer）是查找器（finder），也可以说它是加载器（loader）。

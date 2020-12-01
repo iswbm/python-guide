@@ -1,0 +1,155 @@
+12.6 线程池创建的几种方法
+=========================
+
+|image0|
+
+1. 线程池的创建
+---------------
+
+使用内置模块
+~~~~~~~~~~~~
+
+在使用多线程处理任务时也不是线程越多越好，由于在切换线程的时候，需要切换上下文环境，依然会造成cpu的大量开销。为解决这个问题，线程池的概念被提出来了。预先创建好一个合理数量的线程池，让过来的任务立刻能够使用，就形成了线程池。
+
+在Python3中，创建线程池是通过\ ``concurrent.futures``\ 函数库中的\ ``ThreadPoolExecutor``\ 类来实现的。
+
+.. code:: python
+
+   import time
+   import threading
+   from concurrent.futures import ThreadPoolExecutor
+
+   def target():
+       for i in range(5):
+           print('running thread-{}:{}'.format(threading.get_ident(), i))
+           time.sleep(1)
+           
+   # 创建一个最大容纳数量为5的线程池
+   pool = ThreadPoolExecutor(5) 
+
+   for i in range(10):
+       # 往线程池上塞任务
+       pool.submit(target)
+
+创建线程池还可以使用更优雅的方式，就是使用上下文管理器
+
+.. code:: python
+
+   with ThreadPoolExecutor(5) as pool:
+       for i in range(100):
+           pool.submit(target) 
+
+直接运行代码，从输出可以看出，前面我们设置线程池最大线程数，会保证“同时”仅有五个线程在工作。
+
+.. code:: python
+
+   running thread-123145483767808:0
+   running thread-123145489022976:0
+   running thread-123145494278144:0
+   running thread-123145499533312:0
+   running thread-123145504788480:0
+   running thread-123145483767808:1
+   running thread-123145489022976:1
+   running thread-123145499533312:1
+   running thread-123145494278144:1
+   running thread-123145504788480:1
+   running thread-123145489022976:2
+   running thread-123145499533312:2
+   running thread-123145483767808:2
+   running thread-123145504788480:2
+   running thread-123145494278144:2
+   ....
+
+示例完毕，来说明一下：
+
+1. 使用 with 语句 ，通过 ThreadPoolExecutor 构造实例，同时传入
+   max_workers 参数来设置线程池中最多能同时运行的线程数目。
+
+2. 使用 submit
+   函数来提交线程需要执行的任务到线程池中，并返回该任务的句柄（类似于文件、画图），注意
+   submit() 不是阻塞的，而是立即返回。
+
+3. 通过使用 done()
+   方法判断该任务是否结束。上面的例子可以看出，提交任务后立即判断任务状态，显示四个任务都未完成。在延时2.5后，task1
+   和 task2 执行完毕，task3 仍在执行中。
+
+4. 使用 result() 方法可以获取任务的返回值。
+
+自定义线程池
+~~~~~~~~~~~~
+
+除了使用上述第三方模块的方法之外，我们还可以自己结合前面所学的消息队列来自定义线程池。
+
+这里我们就使用queue来实现一个上面同样效果的例子，大家感受一下。
+
+.. code:: python
+
+   import time
+   import threading
+   from queue import Queue
+
+   def target(queue):
+       while True:
+           task = queue.get()
+           if task == "stop":
+               queue.task_done()
+               break
+
+           task()
+           queue.task_done()
+
+   def do_task():
+       for i in range(5):
+           print('running thread-{}:{}'.format(threading.get_ident(), i))
+           time.sleep(1)
+
+
+   class MyQueue(Queue):
+       def close(self):
+           for i in range(self.maxsize):
+               self.put("stop")
+
+   def custome_pool(task_func, max_workers):
+       queue = MyQueue(max_workers)
+       for n in range(max_workers):
+           t = threading.Thread(target=task_func, args=(queue,))
+           t.daemon = True
+           t.start()
+
+       return queue
+
+
+
+   pool = custome_pool(task_func=target, max_workers=5)
+
+   for i in range(10):
+       pool.put(do_task)
+
+   pool.close()
+   pool.join()
+
+输出是和上面是完全一样的效果
+
+.. code:: python
+
+   running thread-123145469886464:0
+   running thread-123145475141632:0
+   running thread-123145485651968:0
+   running thread-123145490907136:0
+   running thread-123145480396800:0
+   running thread-123145469886464:1
+   running thread-123145480396800:1
+   running thread-123145475141632:1
+   running thread-123145490907136:1
+   running thread-123145485651968:1
+   ...
+
+构建线程池的方法，是可以很灵活的，大家有空可以自己多研究。但是建议只要掌握一种自己熟悉的，能快速上手的就好了。
+
+--------------
+
+|image1|
+
+.. |image0| image:: http://image.iswbm.com/20200602135014.png
+.. |image1| image:: http://image.iswbm.com/20200607174235.png
+

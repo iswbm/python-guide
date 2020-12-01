@@ -1,286 +1,240 @@
-10.2 pretty_errors 解决bug 洁癖
-===============================
+10.2 方案一：virtualenv
+=======================
+
+1. 安装virtualenv
+-----------------
+
+由于 virtualenvwrapper 是 virtualenv 的一组扩展，所以如果要使用
+virtualenvwrapper，就必须先安装 virtualenv。
+
+**基本使用**
+
+由于virtualenv创建虚拟环境是在当前环境下创建的。所以我们要准备一个专门存放虚拟环境的目录。（以下操作在Linux在完成，windows相对简单，请自行完成，有不明白的请微信与我联系。）
+
+**创建**
+
+.. code:: bash
+
+   # 准备目录并进入
+   $ mkdir -p /home/wangbm/Envs
+   $ cd !$
+
+   # 创建虚拟环境（按默认的Python版本）
+   # 执行完，当前目录下会有一个my_env01的目录
+   $ virtualenv my_env01
+
+   # 你也可以指定版本
+   $ virtualenv -p /usr/bin/python2.7 my_env01
+   $ virtualenv -p /usr/bin/python3.6 my_env02
+
+   # 你肯定觉得每次都要指定版本，相当麻烦吧？
+   # 在Linux下，你可以把这个选项写进入环境变量中
+   $ echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python2.7" >> ~/.bashrc
+
+**进入/退出**
+
+.. code:: bash
+
+   $ cd /home/wangbm/Envs
+
+   # 进入
+   $ source my_env01/bin/activate
+
+   # 退出
+   $ deactivate
+
+**删除**
+删除虚拟环境，只需删除对应的文件夹就行了。并不会影响全局的Python和其他环境。
+
+.. code:: bash
+
+   $ cd /home/wangbm/Envs
+   $ rm -rf my_env01
+
+..
+
+   注意：
+   创建的虚拟环境，不会包含原生全局环境的第三方包，其会保证新建虚拟环境的干净。
+
+如果你需要和全局环境使用相同的第三方包。可以使用如下方法：
+
+.. code:: bash
+
+   # 导出依赖包
+   $ pip freeze > requirements.txt
+
+   # 安装依赖包
+   $ pip install -r requirements.txt 
+
+2. 使用 virtualenvwrapper
+-------------------------
+
+virtualenv 虽然已经相当好用了，可是功能还是不够完善。
+
+你可能也发现了，要进入虚拟环境，必须得牢记之前设置的虚拟环境目录，如果你每次按规矩来，都将环境安装在固定目录下也没啥事。但是很多情况下，人是会懒惰的，到时可能会有很多个虚拟环境散落在系统各处，你将有可能忘记它们的名字或者位置。
+
+还有一点，virtualenv 切换环境需要两步，退出 -> 进入。不够简便。
+
+为了解决这两个问题，virtualenvwrapper就诞生了。
+
+**安装**
+
+.. code:: python
+
+   # 安装 - Linux
+   pip install virtualenvwrapper
+
+   # 安装 - Windows
+   pip install virtualenvwrapper-win
+
+**配置** 先find一下\ ``virtualenvwrapper.sh``\ 文件的位置
+
+.. code:: powershell
+
+   find / -name virtualenvwrapper.sh
+   # /usr/bin/virtualenvwrapper.sh
+
+若是 windows 则使用everything 查找 virtualenvwrapper.bat 脚本
+
+::
+
+   D:\Program Files (x86)\Python38-32\Scripts\virtualenvwrapper.bat
+
+在~/.bashrc 文件新增配置
+
+::
+
+   export WORKON_HOME=$HOME/.virtualenvs
+   export PROJECT_HOME=$HOME/workspace
+   export VIRTUALENVWRAPPER_SCRIPT=/usr/bin/virtualenvwrapper.sh
+   source /usr/bin/virtualenvwrapper.sh
+
+若是 windows 则新增环境变量：\ ``WORKON_HOME``
 
 |image0|
 
-当我们写的一个脚本或程序发生各种不可预知的异常时，如果我们没有进行捕获处理的时候，通常都会致使程序崩溃退出，并且会在终端打印出一堆
-**密密麻麻** 的 traceback 堆栈信息来告诉我们，是哪个地方出了问题。
+**基本语法**\ ：
 
-就像这样子，天呐，密集恐惧症要犯了都
+mkvirtualenv [-a project_path] [-i package] [-r requirements_file]
+[virtualenv options] ENVNAME
 
-|image1|
+**常用方法**
 
-上面这段 traceback
+.. code:: bash
 
--  只有黑白两个颜色，无法像代码高亮那样，对肉眼实现太不友好了
--  无法直接显示报错的代码，排查问题慢人一步，效率太低
+   # 创建
+   $ mkvirtualenv my_env01
 
-那有没有一种办法，可以解决这些问题呢？
+   # 进入
+   $ workon my_env01
 
-当然有了，在 Python
-中，没有什么问题是一个库解决不了的，如果有，那就等你去开发这个库。
+   # 退出
+   $ deactivate
 
-今天要介绍的这个库呢，叫做 ``pretty-errors``
-，从名字上就可以知道它的用途，是用来美化错误信息的。
+   # 列出所有的虚拟环境，两种方法
+   $ workon
+   $ lsvirtualenv
 
-通过这条命令你可以安装它
+   # 在虚拟环境内直接切换到其他环境
+   $ workon my_env02
 
-.. code:: shell
+   # 删除虚拟环境
+   $ rmvirtualenv my_env01
 
-   $ python3 -m pip install pretty-errors
+**其他命令**
 
-1. 环境要求
+.. code:: bash
+
+   # 列出帮助文档
+   $ virtualenvwrapper
+
+   # 拷贝虚拟环境
+   $ cpvirtualenv ENVNAME [TARGETENVNAME]
+
+   # 在所有的虚拟环境上执行命令
+   $ allvirtualenv pip install -U pip
+
+   # 删除当前环境的所有第三方包
+   $ wipeenv
+
+   # 进入到当前虚拟环境的目录
+   $ cdsitepackages
+
+   # 进入到当前虚拟环境的site-packages目录
+   $ cdvirtualenv
+
+   # 显示 site-packages 目录中的内容
+   $ lssitepackages
+
+更多内容，可查看 官方文档
+https://virtualenvwrapper.readthedocs.io/en/latest/command_ref.html
+
+3. 实战演示
 -----------
 
-由于使用了 ``pretty-errors`` 后，你的 traceback
-信息输出，会有代码高亮那样的效果，因此当你在使用测试使用
-``pretty-error`` 时，请确保你使用的终端可以输出带有颜色的字体。
+以上内容，是一份使用指南。接下来，一起来看看，如何在项目中使用虚拟环境。
 
-在 windows 上你可以使用 Powershell，cmder 等
+如何使用在我们的开发中使用我们的虚拟环境呢
 
-在 Mac 上你可以使用自带的终端，或者安装一个更好用的 iTerm2
+通常我们使用的场景有如下几种
 
-2. 效果对比
------------
+-  交互式中
+-  PyCharm中
+-  工程中
 
---------------
+接下来，我将一一展示。
 
-随便写一个没有使用 pretty-errors ，并且报错了的程序，是这样子的。
-
-|image2|
-
-而使用了 pretty_errors 后，报错信息被美化成这样了。
-
-|image3|
-
-是不是感觉清楚了不少，那种密密麻麻带来的焦虑感是不是都消失了呢？
-
-当然这段代码少，你可能还没感受到，那就来看下 该项目在
-Github上的一张效果对比图吧
-
-|image4|
-
-3. 配置全局可用
----------------
-
-可以看到使用了 pretty_errors
-后，无非就是把过滤掉了一些干扰我们视线的无用信息，然后把有用的关键信息给我们高亮显示。
-
-既然既然这样，那 pretty_errors
-应该也能支持我们如何自定义我们选用什么样的颜色，怎么排版吧？
-
-答案是显而易见的。
-
-pretty_errors
-和其他库不太一样，在一定程度上（如果你使用全局配置的话），它并不是开箱即用的，你在使用它之前可能需要做一下配置。
-
-使用这一条命令，会让你进行配置，可以让你在该环境中运行其他脚本时的
-traceback 输出都自动美化。
-
-.. code:: shell
-
-   $ python3 -m pretty_errors
-
-|image5|
-
-配置完成后，你再运行任何脚本，traceback 都会自动美化了。
-
-不仅是在我的 iTerm 终端下
-
-|image6|
-
-在 PyCharm 中也会
-
-|image7|
-
-唯一的缺点就是，原先在 PyCharm 中的 traceback 可以直接点击 ``文件路径``
-直接跳转到对应错误文件代码行，而你如果是在 VSCode 可以使用
-下面自定义配置的方案解决这个问题（下面会讲到，参数是：\ ``display_link``\ ）。
-
-|image8|
-
-因此，有些情况下，你并不想设置 ``pretty_errors`` 全局可用。
-
-那怎么取消之前的配置呢？
-
-只需要再次输出 ``python -m pretty_errors``\ ，输出入 ``C`` 即可清除。
-
-|image9|
-
-4. 单文件中使用
----------------
-
-取消全局可用后，你可以根据自己需要，在你需要使用 ``pretty-errors``
-的脚本文件中导入\ ``pretty_errors``\ ，即可使用
-
-.. code:: python
-
-   import pretty_errors
-
-就像这样
-
-.. code:: python
-
-   import pretty_errors
-
-   def foo():
-       1/0
-
-   if __name__ == "__main__":
-       foo()
-
-值得一提的是，使用这种方式，若是你的脚本中，出现语法错误，则输出的异常信息还是按照之前的方式展示，并不会被美化。
-
-因此，为了让美化更彻底，官方推荐你使用 ``python -m pretty_errors``
-
-5. 自定义设置
--------------
-
-上面的例子里，我们使用的都是 ``pretty_errors``
-的默认美化格式，展示的信息并没有那么全。
-
-比如
-
--  它并没有展示报错文件的绝对路径，这将使我们很难定位到是哪个文件里的代码出现错误。
--  如果能把具体报错的代码，给我们展示在终端屏幕上，就不需要我们再到源码文件中排查原因了。
-
-如果使用了 ``pretty_errors`` 导致异常信息有丢失，那还不如不使用
-``pretty_errors`` 呢。
-
-不过，可以告诉你的是，\ ``pretty_errors`` 并没有你想象的那么简单。
-
-它足够开放，支持自定义配置，可以由你选择你需要展示哪些信息，怎么展示？
-
-这里举一个例子
-
-.. code:: python
-
-   import pretty_errors
-
-   # 【重点】进行配置
-   pretty_errors.configure(
-       separator_character = '*',
-       filename_display    = pretty_errors.FILENAME_EXTENDED,
-       line_number_first   = True,
-       display_link        = True,
-       lines_before        = 5,
-       lines_after         = 2,
-       line_color          = pretty_errors.RED + '> ' + pretty_errors.default_config.line_color,
-       code_color          = '  ' + pretty_errors.default_config.line_color,
-   )
-
-   # 原来的代码
-   def foo():
-       1/0
-
-   if __name__ == "__main__":
-       foo()
-
-在你像上面这样使用 ``pretty_errrs.configure``
-进行配置时，抛出的的异常信息就变成这样了。
-
-|image10|
-
-当然了，\ ``pretty_errors.configure()``
-还可以接收很多的参数，你可以根据你自己的需要进行配置。
-
-5.1 设置颜色
+3.1 交互式中
 ~~~~~~~~~~~~
 
--  ``header_color``\ ：设置标题行的颜色。
--  ``timestamp_color``\ ：设置时间戳颜色
--  ``default_color``\ ：设置默认的颜色
--  ``filename_color``\ ：设置文件名颜色
--  ``line_number_color``\ ：设置行号颜色。
--  ``function_color``\ ：设置函数颜色。
--  ``link_color``\ ：设置链接的颜色。
+先对比下，全局环境和虚拟环境的区别，全局环境中有requests包，而虚拟环境中并未安装。
+当我们敲入
+``workon my_env01``\ ，前面有\ ``my_env01``\ 的标识，说明我们已经处在虚拟环境中。后面所有的操作，都将在虚拟环境下执行。
+|image1|
 
-在设置颜色的时候，\ ``pretty_errors`` 提供了一些常用的
-颜色常量供你直接调取。
+3.2 工程项目中
+~~~~~~~~~~~~~~
 
--  ``BLACK``\ ：黑色
--  ``GREY``\ ：灰色
--  ``RED``\ ：红色
--  ``GREEN``\ ：绿色
--  ``YELLOW``\ ：黄色
--  ``BLUE``\ ：蓝色
--  ``MAGENTA``\ ：品红色
--  ``CYAN``\ ：蓝绿色
--  ``WHITE``\ ：白色
+我们的工程项目，都有一个入口文件，仔细观察，其首行可以指定Python解释器。
 
-而每一种颜色，都相应的匹配的 ``BRIGHT_`` 变体 和 ``_BACKGROUND`` 变体，
+倘若我们要在虚拟环境中运行这个项目，只要更改这个文件头部即可。
 
-其中，\ ``_BACKGROUND`` 用于设置背景色，举个例子如下。
+现在我还是以，\ ``import requests``
+为例，来说明，是否是在虚拟环境下运行的，如果是，则和上面一样，会报错。
 
-|image11|
+文件内容：
 
-5.2 设置显示内容
-~~~~~~~~~~~~~~~~
+.. code:: python
 
--  ``line_number_first`` 启用后，将首先显示行号，而不是文件名。
--  ``lines_before`` ： 显示发生异常处的前几行代码
--  ``lines_after``\ ： 显示发生异常处的后几行代码
--  ``display_link``\ ：启用后，将在错误位置下方写入链接，VScode将允许您单击该链接。
--  ``separator_character``\ ：用于创建标题行的字符。默认情况下使用连字符。如果设置为
-   ``''`` 或者 ``None`` ，标题将被禁用。
--  ``display_timestamp``\ ：启用时，时间戳将写入回溯头中。
--  ``display_locals``
-   启用后，将显示在顶部堆栈框架代码中的局部变量及其值。
+   #!/root/.virtualenvs/my_env01/bin/python
 
--  ``display_trace_locals``
-   启用后，其他堆栈框架代码中出现的局部变量将与它们的值一起显示。
+   import requests
+   print "ok"
 
-5.3 设置怎么显示
-~~~~~~~~~~~~~~~~
+运行前，注意添加执行权限。
 
--  ``line_length``\ ：设置每行的长度，默认为0，表示每行的输出将与控制台尺寸相匹配，如果你设置的长度将好与控制台宽度匹配，则可能需要禁用\ ``full_line_newline``\ ，以防止出现明显的双换行符。
+.. code:: bash
 
--  ``full_line_newline``\ ：当输出的字符满行时，是否要插入换行符。
+   $ chmod +x ming.py
 
--  ``timestamp_function``
-   调用该函数以生成时间戳。默认值为\ ``time.perf_counter``\ 。
+好了。来执行一下
 
--  ``top_first`` 启用后，堆栈跟踪将反转，首先显示堆栈顶部。
+.. code:: bash
 
--  ``display_arrow``
-   启用后，将针对语法错误显示一个箭头，指向有问题的令牌。
+   $ ./ming.py
 
--  ``truncate_code`` 启用后，每行代码将被截断以适合行长。
+发现和预期一样，真的报错了。说明我们指定的虚拟环境有效果。 |image2|
 
--  ``stack_depth``
-   要显示的堆栈跟踪的最大条目数。什么时候\ ``0``\ 将显示整个堆栈，这是默认值。
+3.3 PyCharm中
+~~~~~~~~~~~~~
 
--  ``exception_above`` 启用后，异常将显示在堆栈跟踪上方。
+点击 File - Settings - Project - Interpreter |image3|
+点击小齿轮。如图点击添加，按提示添加一个虚拟环境。然后点 OK
+就可以使用这个虚拟环境，之后的项目都会在这个虚拟环境下运行。 |image4|
 
--  ``exception_below``\ ： 启用后，异常显示在堆栈跟踪下方。
-
--  ``reset_stdout``
-   启用后，重置转义序列将写入stdout和stderr；如果您的控制台留下错误的颜色，请启用此选项。
-
--  ``filename_display``
-
-   设置文件名的展示方式，有三个选项： ``pretty_errors.FILENAME_COMPACT``
-   、\ ``pretty_errors.FILENAME_EXTENDED``\ ，或者\ ``pretty_errors.FILENAME_FULL``
-
-以上，就是我对 ``pretty_errors``
-的使用体验，总的来说，这个库功能非常强大，使用效果也特别酷炫，它就跟
-PEP8
-规范一样，没有它是可以，但是有了它会更好一样。对于某些想自定义错误输出场景的人，\ ``pretty_errors``
-会是一个不错的解决方案，明哥把它推荐给你。
-
-|image12|
-
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/image-20200307210853246.png
-.. |image2| image:: http://image.iswbm.com/image-20200307212823345.png
-.. |image3| image:: http://image.iswbm.com/image-20200307213534278.png
-.. |image4| image:: https://warehouse-camo.cmh1.psfhosted.org/31399c5a034c3989b9e99b35249e8f2f0d40e102/68747470733a2f2f692e696d6775722e636f6d2f306a7045716f622e706e67
-.. |image5| image:: http://image.iswbm.com/image-20200307214742135.png
-.. |image6| image:: http://image.iswbm.com/image-20200307213534278.png
-.. |image7| image:: http://image.iswbm.com/image-20200307215530270.png
-.. |image8| image:: http://image.iswbm.com/image-20200307215834623.png
-.. |image9| image:: http://image.iswbm.com/image-20200307214600749.png
-.. |image10| image:: http://image.iswbm.com/image-20200308121949011.png
-.. |image11| image:: http://image.iswbm.com/image-20200308125431779.png
-.. |image12| image:: http://image.iswbm.com/20200607174235.png
+.. |image0| image:: http://image.iswbm.com/20200209161935.png
+.. |image1| image:: https://i.loli.net/2018/06/11/5b1e7d36ce8ad.png
+.. |image2| image:: https://i.loli.net/2018/06/11/5b1e7f140be6a.png
+.. |image3| image:: https://i.loli.net/2018/06/11/5b1e805c996c8.png
+.. |image4| image:: https://i.loli.net/2018/06/11/5b1e812db603f.png
 

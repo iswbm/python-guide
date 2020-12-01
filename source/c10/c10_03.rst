@@ -1,190 +1,177 @@
-10.3 少有人知的 Python “重试机制”：tenacity
-===========================================
+10.3 方案二：pipenv
+===================
 
 |image0|
 
-为了避免由于一些网络或等其他不可控因素，而引起的功能性问题。比如在发送请求时，会因为网络不稳定，往往会有请求超时的问题。
+以前一直使用pip+virtualenv+virtualwrapper管理模块和环境，
+但是virtualwrapper在windows上使用不太方便，而且包和环境分开管理确实经常不记得哪个是哪个了。
 
-这种情况下，我们通常会在代码中加入重试的代码。重试的代码本身不难实现，但如何写得优雅、易用，是我们要考虑的问题。
+为什么 会推荐 pipenv 呢？
 
-这里要给大家介绍的是一个第三方库 - ``Tenacity``
-，它实现了几乎我们可以使用到的所有重试场景，比如：
+-  它是 ``virtualenv`` 和 ``pip`` 的合体，可以合起来使用；
+-  使用\ ``Pipfile`` 和 ``Pipfile.lock``\ 替代\ ``requirements.txt``
+-  可以使用 ``pipenv graph``\ 很方便的看出包的依赖关系。
+-  通过加载\ ``.env``\ 文件简化开发工作流程
 
-1. 在什么情况下才进行重试？
-2. 重试几次呢?
-3. 重试多久后结束？
-4. 每次重试的间隔多长呢？
-5. 重试失败后的回调？
+1. 安装pipenv
+-------------
 
-在使用它之前 ，先要安装它
-
-.. code:: shell
-
-   $ pip install tenacity
-
-**最基本的重试**
-~~~~~~~~~~~~~~~~
-
-无条件重试，重试之间无间隔
-
-.. code:: python
-
-   from tenacity import retry
-
-   @retry
-   def test_retry():
-       print("等待重试，重试无间隔执行...")
-       raise Exception
-
-   test_retry()
-
-无条件重试，但是在重试之前要等待 2 秒
-
-.. code:: python
-
-   from tenacity import retry, wait_fixed
-
-   @retry(wait=wait_fixed(2))
-   def test_retry():
-       print("等待重试...")
-       raise Exception
-
-   test_retry()
-
-设置停止基本条件
-~~~~~~~~~~~~~~~~
-
-只重试7 次
-
-.. code:: python
-
-   from tenacity import retry, stop_after_attempt
-
-   @retry(stop=stop_after_attempt(7))
-   def test_retry():
-       print("等待重试...")
-       raise Exception
-
-   test_retry()
-
-重试 10 秒后不再重试
-
-.. code:: python
-
-   from tenacity import retry, stop_after_delay
-
-   @retry(stop=stop_after_delay(10))
-   def test_retry():
-       print("等待重试...")
-       raise Exception
-
-   test_retry()
-
-或者上面两个条件满足一个就结束重试
-
-.. code:: python
-
-   from tenacity import retry, stop_after_delay, stop_after_attempt
-
-   @retry(stop=(stop_after_delay(10) | stop_after_attempt(7)))
-   def test_retry():
-       print("等待重试...")
-       raise Exception
-
-   test_retry()
-
-设置何时进行重试
-~~~~~~~~~~~~~~~~
-
-在出现特定错误/异常（比如请求超时）的情况下，再进行重试
-
-.. code:: python
-
-   from requests import exceptions
-   from tenacity import retry, retry_if_exception_type
-
-   @retry(retry=retry_if_exception_type(exceptions.Timeout))
-   def test_retry():
-       print("等待重试...")
-       raise exceptions.Timeout
-
-   test_retry()
-
-在满足自定义条件时，再进行重试。
-
-如下示例，当 ``test_retry`` 函数返回值为 False 时，再进行重试
-
-.. code:: python
-
-   from tenacity import retry, stop_after_attempt, retry_if_result
-
-   def is_false(value):
-       return value is False
-
-   @retry(stop=stop_after_attempt(3),
-          retry=retry_if_result(is_false))
-   def test_retry():
-       return False
-
-   test_retry()
-
-重试后错误重新抛出
-~~~~~~~~~~~~~~~~~~
-
-当出现异常后，tenacity
-会进行重试，若重试后还是失败，默认情况下，往上抛出的异常会变成
-RetryError，而不是最根本的原因。
-
-因此可以加一个参数（\ ``reraise=True``\ ），使得当重试失败后，往外抛出的异常还是原来的那个。
-
-.. code:: python
-
-   from tenacity import retry, stop_after_attempt
-
-   @retry(stop=stop_after_attempt(7), reraise=True)
-   def test_retry():
-       print("等待重试...")
-       raise Exception
-
-   test_retry()
-
-设置回调函数
-~~~~~~~~~~~~
-
-当最后一次重试失败后，可以执行一个回调函数
-
-.. code:: python
-
-   from tenacity import *
-
-   def return_last_value(retry_state):
-       print("执行回调函数")
-       return retry_state.outcome.result()  # 表示返回原函数的返回值
-
-   def is_false(value):
-       return value is False
-
-   @retry(stop=stop_after_attempt(3),
-          retry_error_callback=return_last_value,
-          retry=retry_if_result(is_false))
-   def test_retry():
-       print("等待重试中...")
-       return False
-
-   print(test_retry())
-
-输出如下
+如果你的电脑上没有安装 pipenv，可以使用如下方法安装
 
 .. code:: shell
 
-   等待重试中...
-   等待重试中...
-   等待重试中...
-   执行回调函数
-   False
+   # mac
+   $ brew install pipenv
+
+   # windows
+   pip install [--user] pipenv
+
+如果你的电脑是 windows 的。
 
 |image1|
 
+需要将如标示路径，加入到 环境变量 PATH 中。
+
+|image2|
+
+然后需要重启一下，CMD 终端才能够刷新环境变量。
+
+2. 创建虚拟环境
+---------------
+
+DjangoWebBlog 是我们的项目目录，进入这个目录下创建虚拟环境
+
+.. code:: shell
+
+   $ mkdir DjangoWebBlog && cd DjangoWebBlog
+
+   # 在当前目录下创建一个虚拟环境（默认的Python版本）
+   $ pipenv install
+
+你也可以指定版本创建
+
+.. code:: shell
+
+   $ pipenv --two      # 相当于 pipenv --python /usr/bin/python2
+   $ pipenv --three    # 相当于 pipenv --python /usr/bin/python3
+
+   $ pipenv --python 3.7 # 也可以指定具体的版本
+   pipenv install --python 2
+
+这边以安装 python2 版本的虚拟环境为例说明。
+
+|image3|
+
+如果你原项目使用的是 requirements.txt 这个管理包的方式，这时候执行
+``pipenv --tow`` 创建一个虚拟环境后，会找到 requirements.txt
+，并根据这里面的依赖包生成 Pipfile文件。
+
+|image4|
+
+3. 查询虚拟环境
+---------------
+
+.. code:: shell
+
+   # 返回项目的路径
+   $ pipenv --where
+
+   # 返回虚拟环境路径
+   $ pipenv --venv
+
+   # 返回该虚拟环境的解释器
+   $ pipenv --py
+
+演示如下：
+
+|image5|
+
+4. 操作虚拟环境
+---------------
+
+.. code:: shell
+
+   # 进入这个虚拟环境
+   $ pipenv shell
+
+   # 退出这个虚拟环境
+   $ exit
+   $ deactivate
+
+   # 移除当前目录的虚拟环境
+   $ pipenv --rm
+
+执行 ``pipenv shell``
+就可以进入这个虚拟环境，在头部会有虚拟环境的标识名称。有这个标识，说明已经进入虚拟环境。
+
+|image6|
+
+.. code:: python
+
+   # 在当前虚拟环境中运行
+   $ pipenv run python  # 进入交互式,跟直接执行 python 一样
+   $ pipenv run python 文件名 # 运行文件
+   $ pipenv run pip ...  # 运行pip
+
+5. 虚拟环境包管理
+-----------------
+
+.. code:: shell
+
+   # 安装一个本地包（setup.py）到虚拟环境（Pipfile）
+   $ pipenv install -e .
+
+   # 安装、卸载模块
+   $ pipenv install requests
+   $ pipenv uninstall requests
+   $ pipenv uninstall --all   # 卸载全部包
+   $ pipenv install -r path/to/requirements.txt 
+
+
+   # 安装所有依赖
+   $ pipenv install --dev
+
+   # 更新包
+   $ pipenv update # 更新所有包
+   $ pipenv update --outdated # 打印所有要更新的包
+   $ pipenv update <包名> # 更新指定的包
+
+   # 将Pipfile和Pipfile.lock文件里面的包导出为requirements.txt文件
+   $ pipenv run pip freeze  # 相当于pipenv run pip freeze >requirements.txt
+
+   $ pipenv lock -r > requirements.txt 
+   $ pipenv lock -r --dev # 若只想导出开发用的包
+
+6. 其他命令
+-----------
+
+.. code:: shell
+
+   # 创建一个包含预发布的锁文件:
+   $ pipenv lock --pre
+
+   # 打印所有包的依赖关系图
+   $ pipenv graph
+
+   # 检查安全漏洞
+   $ pipenv check
+
+打印该虚拟环境下所有包的依赖关系图
+
+|image7|
+
+有的python第三方包旧版本会有安全漏洞，使用 pipenv check
+可以检查安全漏洞。
+
+|image8|
+
 .. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/20200607174235.png
+.. |image1| image:: http://image.iswbm.com/Fk6WZ2xbqg2DM3AvnYCpsiKQ4xOn
+.. |image2| image:: http://image.iswbm.com/FjuJ8yZsgjkzVuBRZHxK1ZnnzaEX
+.. |image3| image:: http://image.iswbm.com/20190612211330.png
+.. |image4| image:: http://image.iswbm.com/20190612213015.png
+.. |image5| image:: http://image.iswbm.com/20190612213950.png
+.. |image6| image:: http://image.iswbm.com/20190612211925.png
+.. |image7| image:: http://image.iswbm.com/20190614000336.png
+.. |image8| image:: http://image.iswbm.com/20190612215924.png
 

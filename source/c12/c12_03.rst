@@ -1,0 +1,361 @@
+12.3 谈谈线程中的“锁机制”
+=========================
+
+|image0|
+
+--------------
+
+1. 什么是锁？
+-------------
+
+在开发中，\ **锁** 可以理解为通行证。
+
+当你对一段逻辑代码加锁时，意味着在同一时间有且仅能有一个线程在执行这段代码。
+
+在 Python 中的锁可以分为两种：
+
+1. 互斥锁
+2. 可重入锁
+
+2. 互斥锁的使用
+---------------
+
+来简单看下代码，学习如何加锁，获取钥匙，释放锁。
+
+.. code:: python
+
+   import threading
+
+   # 生成锁对象，全局唯一
+   lock = threading.Lock()
+
+   # 获取锁。未获取到会阻塞程序，直到获取到锁才会往下执行
+   lock.acquire()
+
+   # 释放锁，归还锁，其他人可以拿去用了
+   lock.release()
+
+需要注意的是，lock.acquire() 和
+lock.release()必须成对出现。否则就有可能造成死锁。
+
+很多时候，我们虽然知道，他们必须成对出现，但是还是难免会有忘记的时候。
+为了，规避这个问题。我推荐使用使用上下文管理器来加锁。
+
+.. code:: python
+
+   import threading
+
+   lock = threading.Lock()
+   with lock:
+       # 这里写自己的代码
+       pass
+
+``with`` 语句会在这个代码块执行前自动获取锁，在执行结束后自动释放锁。
+
+3. 为何要使用锁？
+-----------------
+
+你现在肯定还是一脸懵逼，这么麻烦，我不用锁不行吗？有的时候还真不行。
+
+那么为了说明锁存在的意义。我们分别来看下，不用锁的情形有怎样的问题。
+
+定义两个函数，分别在两个线程中执行。这两个函数 ``共用`` 一个变量 ``n``
+。
+
+.. code:: python
+
+   def job1():
+       global n
+       for i in range(10):
+           n+=1
+           print('job1',n)
+
+   def job2():
+       global n
+       for i in range(10):
+           n+=10
+           print('job2',n)
+
+   n=0
+   t1=threading.Thread(target=job1)
+   t2=threading.Thread(target=job2)
+   t1.start()
+   t2.start()
+
+看代码貌似没什么问题，执行下看看输出
+
+.. code:: python
+
+   job1 1
+   job1 2
+   job1 job2 13
+   job2 23
+   job2 333
+   job1 34
+   job1 35
+   job2
+   job1 45 46
+   job2 56
+   job1 57
+   job2
+   job1 67
+   job2 68 78
+   job1 79
+   job2
+   job1 89
+   job2 90 100
+   job2 110
+
+是不是很乱？完全不是我们预想的那样。
+
+解释下这是为什么？因为两个线程共用一个全局变量，又由于两线程是交替执行的，当\ ``job1``
+执行三次 ``+1`` 操作时，\ ``job2``\ 就不管三七二十一
+给n做了\ ``+10``\ 操作。两个线程之间，执行完全没有规矩，没有约束。所以会看到输出当然也很乱。
+
+加了锁后，这个问题也就解决，来看看
+
+.. code:: python
+
+   def job1():
+       global n, lock
+       # 获取锁
+       lock.acquire()
+       for i in range(10):
+           n += 1
+           print('job1', n)
+       lock.release()
+
+
+   def job2():
+       global n, lock
+       # 获取锁
+       lock.acquire()
+       for i in range(10):
+           n += 10
+           print('job2', n)
+       lock.release()
+
+   n = 0
+   # 生成锁对象
+   lock = threading.Lock()
+
+   t1 = threading.Thread(target=job1)
+   t2 = threading.Thread(target=job2)
+   t1.start()
+   t2.start()
+
+由于\ ``job1``\ 的线程，率先拿到了锁，所以在for循环中，没有人有权限对n进行操作。当\ ``job1``\ 执行完毕释放锁后，\ ``job2``\ 这才拿到了锁，开始自己的for循环。
+
+看看执行结果，真如我们预想的那样。
+
+.. code:: python
+
+   job1 1
+   job1 2
+   job1 3
+   job1 4
+   job1 5
+   job1 6
+   job1 7
+   job1 8
+   job1 9
+   job1 10
+   job2 20
+   job2 30
+   job2 40
+   job2 50
+   job2 60
+   job2 70
+   job2 80
+   job2 90
+   job2 100
+   job2 110
+
+这里，你应该也知道了，加锁是为了对锁内资源（变量）进行锁定，避免其他线程篡改已被锁定的资源，以达到我们预期的效果。
+
+为了避免大家忘记释放锁，后面的例子，我将都使用with上下文管理器来加锁。大家注意一下。
+
+4. 可重入锁（RLock）
+--------------------
+
+有时候在同一个线程中，我们可能会多次请求同一资源，俗称锁嵌套。
+
+如果还是按照常规的做法，会造成死锁的。比如，下面这段代码，你可以试着运行一下。会发现并没有输出结果。
+
+.. code:: python
+
+   import threading
+
+   def main():
+       n = 0
+       lock = threading.Lock()
+       with lock:
+           for i in range(10):
+               n += 1
+               with lock:
+                   print(n)
+
+   t1 = threading.Thread(target=main)
+   t1.start()
+
+是因为第二次获取锁(通行证)时，发现锁(通行证)已经被同一线程的人拿走了，拿东西总有个先来后到，别人拿走了，你要想用，你就得干等着，直到有人归还锁（通行证），假如别人一直不归还，那程序就会在这里一直阻塞。
+
+上面的代码中，使用了嵌套锁，在锁还没有释放的时候，又再一次请求锁，这就当然会造成死锁了。
+
+那么如何解决这个问题呢？
+
+``threading``\ 模块除了提供\ ``Lock``\ 锁之外，还提供了一种可重入锁\ ``RLock``\ ，专门来处理这个问题。
+
+.. code:: python
+
+   import threading
+
+   def main():
+       n = 0
+       # 生成可重入锁对象
+       lock = threading.RLock()
+       with lock:
+           for i in range(10):
+               n += 1
+               with lock:
+                   print(n)
+
+   t1 = threading.Thread(target=main)
+   t1.start()
+
+执行一下，发现已经有输出了。
+
+.. code:: python
+
+   1
+   2
+   3
+   4
+   5
+   6
+   7
+   8
+   9
+   10
+
+需要注意的是，可重入锁（RLock），只在同一线程里放松对锁(通行证)的获取，意思是，只要在同一线程里，程序就当你是同一个人，这个锁就可以复用，其他的话与\ ``Lock``\ 并无区别。
+
+5. 防止死锁的加锁机制
+---------------------
+
+在编写多线程程序时，可能无意中就会写了一个死锁。可以说，死锁的形式有多种多样，但是本质都是相同的，都是对资源不合理竞争的结果。
+
+以本人的经验总结，死锁通常以下几种 -
+同一线程，嵌套获取同把互斥锁，造成死锁。 -
+多个线程，不按顺序同时获取多个锁。造成死锁
+
+对于第一种，上面已经说过了，使用可重入锁。
+
+主要是第二种。可能你还没明白，是如何死锁的。
+
+举个例子。
+
+   线程1，嵌套获取A,B两个锁，线程2，嵌套获取B,A两个锁。
+   由于两个线程是交替执行的，是有机会遇到线程1获取到锁A，而未获取到锁B，在同一时刻，线程2获取到锁B，而未获取到锁A。由于锁B已经被线程2获取了，所以线程1就卡在了获取锁B处，由于是嵌套锁，线程1未获取并释放B，是不能释放锁A的，这是导致线程2也获取不到锁A，也卡住了。两个线程，各执一锁，各不让步。造成死锁。
+
+经过数学证明，只要两个（或多个）线程获取嵌套锁时，按照固定顺序就能保证程序不会进入死锁状态。
+
+那么问题就转化成如何保证这些锁是按顺序的？
+
+有两个办法 - 人工自觉，人工识别。 - 写一个辅助函数来对锁进行排序。
+
+第一种，就不说了。
+
+第二种，可以参考如下代码
+
+.. code:: python
+
+   import threading
+   from contextlib import contextmanager
+
+   # Thread-local state to stored information on locks already acquired
+   _local = threading.local()
+
+   @contextmanager
+   def acquire(*locks):
+       # Sort locks by object identifier
+       locks = sorted(locks, key=lambda x: id(x))
+
+       # Make sure lock order of previously acquired locks is not violated
+       acquired = getattr(_local,'acquired',[])
+       if acquired and max(id(lock) for lock in acquired) >= id(locks[0]):
+           raise RuntimeError('Lock Order Violation')
+
+       # Acquire all of the locks
+       acquired.extend(locks)
+       _local.acquired = acquired
+
+       try:
+           for lock in locks:
+               lock.acquire()
+           yield
+       finally:
+           # Release locks in reverse order of acquisition
+           for lock in reversed(locks):
+               lock.release()
+           del acquired[-len(locks):]
+
+如何使用呢？
+
+.. code:: python
+
+   import threading
+   x_lock = threading.Lock()
+   y_lock = threading.Lock()
+
+   def thread_1():
+
+       while True:
+           with acquire(x_lock):
+               with acquire(y_lock):
+                   print('Thread-1')
+
+   def thread_2():
+       while True:
+           with acquire(y_lock):
+               with acquire(x_lock):
+                   print('Thread-2')
+
+   t1 = threading.Thread(target=thread_1)
+   t1.daemon = True
+   t1.start()
+
+   t2 = threading.Thread(target=thread_2)
+   t2.daemon = True
+   t2.start()
+
+看到没有，表面上\ ``thread_1``\ 的先获取锁x，再获取锁\ ``y``\ ，而\ ``thread_2``\ 是先获取锁\ ``y``\ ，再获取\ ``x``\ 。
+但是实际上，\ ``acquire``\ 函数，已经对\ ``x``\ ，\ ``y``\ 两个锁进行了排序。所以\ ``thread_1``\ ，\ ``hread_2``\ 都是以同一顺序来获取锁的，是不是造成死锁的。
+
+6. 饱受争议的GIL（全局锁）
+--------------------------
+
+在第一节的时候，我就和大家介绍到，多线程和多进程是不一样的。
+
+多进程是真正的并行，而多线程是伪并行，实际上他只是交替执行。
+
+是什么导致多线程，只能交替执行呢？是一个叫\ ``GIL``\ （\ ``Global Interpreter Lock``\ ，全局解释器锁）的东西。
+
+什么是GIL呢？
+>任何Python线程执行前，必须先获得GIL锁，然后，每执行100条字节码，解释器就自动释放GIL锁，让别的线程有机会执行。这个GIL全局锁实际上把所有线程的执行代码都给上了锁，所以，多线程在Python中只能交替执行，即使100个线程跑在100核CPU上，也只能用到1个核。
+
+需要注意的是，GIL并不是Python的特性，它是在实现Python解析器(CPython)时所引入的一个概念。而Python解释器，并不是只有CPython，除它之外，还有\ ``PyPy``\ ，\ ``Psyco``\ ，\ ``JPython``\ ，\ ``IronPython``\ 等。
+
+在绝大多数情况下，我们通常都认为 Python ``==``
+CPython，所以也就默许了Python具有GIL锁这个事。
+
+都知道GIL影响性能，那么如何避免受到GIL的影响？ - 使用多进程代替多线程。
+- 更换Python解释器，不使用CPython
+
+--------------
+
+|image1|
+
+.. |image0| image:: http://image.iswbm.com/20200602135014.png
+.. |image1| image:: http://image.iswbm.com/20200607174235.png
+

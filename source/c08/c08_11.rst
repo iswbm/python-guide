@@ -1,0 +1,275 @@
+8.11 实现远程导入模块
+=====================
+
+由于 Python 默认的 查找器和加载器
+仅支持本地的模块的导入，并不支持实现远程模块的导入。
+
+为了让你更好的理解 Python Import Hook
+机制，我下面会通过实例演示，如何自己实现远程导入模块的导入器。
+
+1. 动手实现导入器
+-----------------
+
+当导入一个包的时候，Python 解释器首先会从 sys.meta_path
+中拿到查找器列表。
+
+默认顺序是：内建模块查找器 -> 冻结模块查找器 -> 第三方模块路径（本地的
+sys.path）查找器
+
+若经过这三个查找器，仍然无法查找到所需的模块，则会抛出ImportError异常。
+
+因此要实现远程导入模块，有两种思路。
+
+-  一种是实现自己的元路径导入器；
+-  另一种是编写一个钩子，添加到sys.path_hooks里，识别特定的目录命名模式。
+
+我这里选择第一种方法来做为示例。
+
+实现导入器，我们需要分别查找器和加载器。
+
+**首先是查找器**
+
+由源码得知，路径查找器分为两种
+
+-  MetaPathFinder
+-  PathEntryFinder
+
+这里使用 MetaPathFinder 来进行查找器的编写。
+
+在 Python 3.4 版本之前，查找器必须实现 ``find_module()`` 方法，而 Python
+3.4+ 版，则推荐使用 ``find_spec()`` 方法，但这并不意味着你不能使用
+``find_module()``\ ，但是在没有 ``find_spec()``
+方法时，导入协议还是会尝试 ``find_module()`` 方法。
+
+我先举例下使用 ``find_module()`` 该如何写。
+
+.. code:: python
+
+   from importlib import abc
+
+   class UrlMetaFinder(abc.MetaPathFinder):
+       def __init__(self, baseurl):
+           self._baseurl = baseurl
+
+       def find_module(self, fullname, path=None):
+           if path is None:
+               baseurl = self._baseurl
+           else:
+               # 不是原定义的url就直接返回不存在
+               if not path.startswith(self._baseurl):
+                   return None
+               baseurl = path
+
+           try:
+               loader = UrlMetaLoader(baseurl)
+               loader.load_module(fullname)
+               return loader
+           except Exception:
+               return None
+
+若使用 ``find_spec()`` ，要注意此方法的调用需要带有两到三个参数。
+
+第一个是被导入模块的完整限定名称，例如 ``foo.bar.baz``\ 。
+第二个参数是供模块搜索使用的路径条目。 对于最高层级模块，第二个参数为
+``None``\ ，但对于子模块或子包，第二个参数为父包 ``__path__`` 属性的值。
+如果相应的 ``__path__`` 属性无法访问，将引发
+```ModuleNotFoundError`` <https://docs.python.org/zh-cn/3/library/exceptions.html#ModuleNotFoundError>`__\ 。
+第三个参数是一个将被作为稍后加载目标的现有模块对象。
+导入系统仅会在重加载期间传入一个目标模块。
+
+.. code:: python
+
+   from importlib import abc
+   from importlib.machinery import ModuleSpec
+
+   class UrlMetaFinder(abc.MetaPathFinder):
+       def __init__(self, baseurl):
+           self._baseurl = baseurl
+       def find_spec(self, fullname, path=None, target=None):
+           if path is None:
+               baseurl = self._baseurl
+           else:
+               # 不是原定义的url就直接返回不存在
+               if not path.startswith(self._baseurl):
+                   return None
+               baseurl = path
+
+           try:
+               loader = UrlMetaLoader(baseurl)
+               return ModuleSpec(fullname, loader, is_package=loader.is_package(fullname))
+           except Exception:
+               return None
+
+**接下来是加载器**
+
+由源码得知，路径查找器分为三种
+
+-  FileLoader
+-  SourceLoader
+
+按理说，两种加载器都可以实现我们想要的功能，我这里选用 SourceLoader
+来示范。
+
+在 SourceLoader
+这个抽象类里，有几个很重要的方法，在你写实现加载器的时候需要注意
+
+-  get_code：获取源代码，可以根据自己场景实现实现。
+-  exec_module：执行源代码，并将变量赋值给 ``module.__dict__``
+-  get_data：抽象方法，必须实现，返回指定路径的字节码。
+-  get_filename：抽象方法，必须实现，返回文件名
+
+在一些老的博客文章中，你会经常看到 加载器 要实现 ``load_module()``
+，而这个方法早已在 Python 3.4
+的时候就被废弃了，当然为了兼容考虑，你若使用 ``load_module()``
+也是可以的。
+
+.. code:: python
+
+   from importlib import abc
+
+   class UrlMetaLoader(abc.SourceLoader):
+       def __init__(self, baseurl):
+           self.baseurl = baseurl
+
+       def get_code(self, fullname):
+           f = urllib2.urlopen(self.get_filename(fullname))
+           return f.read()
+
+       def load_module(self, fullname):
+           code = self.get_code(fullname)
+           mod = sys.modules.setdefault(fullname, imp.new_module(fullname))
+           mod.__file__ = self.get_filename(fullname)
+           mod.__loader__ = self
+           mod.__package__ = fullname
+           exec(code, mod.__dict__)
+           return None
+
+       def get_data(self):
+           pass
+
+       def execute_module(self, module):
+           pass
+
+       def get_filename(self, fullname):
+           return self.baseurl + fullname + '.py'
+
+当你使用这种旧模式实现自己的加载时，你需要注意两点，很重要：
+
+-  execute_module 必须重载，而且不应该有任何逻辑，即使它并不是抽象方法。
+-  load_module，需要你在查找器里手动执行，才能实现模块的加载。。
+
+做为替换，你应该使用 ``execute_module()`` 和 ``create_module()``
+。由于基类里已经实现了 ``execute_module`` 和
+``create_module()``\ ，并且满足我们的使用场景。我这边可以不用重复实现。和旧模式相比，这里也不需要在设查找器里手动执行
+``execute_module()``\ 。
+
+.. code:: python
+
+   import urllib.request as urllib2
+
+   class UrlMetaLoader(importlib.abc.SourceLoader):
+       def __init__(self, baseurl):
+           self.baseurl = baseurl
+
+       def get_code(self, fullname):
+           f = urllib2.urlopen(self.get_filename(fullname))
+           return f.read()
+
+       def get_data(self):
+           pass
+
+       def get_filename(self, fullname):
+           return self.baseurl + fullname + '.py'
+
+查找器和加载器都有了，别忘了往sys.meta_path
+注册我们自定义的查找器（UrlMetaFinder）。
+
+.. code:: python
+
+   def install_meta(address):
+       finder = UrlMetaFinder(address)
+       sys.meta_path.append(finder)
+
+所有的代码都解析完毕后，我们将其整理在一个模块（my_importer.py）中
+
+.. code:: python
+
+   # my_importer.py
+   import sys
+   import importlib
+   import urllib.request as urllib2
+
+   class UrlMetaFinder(importlib.abc.MetaPathFinder):
+       def __init__(self, baseurl):
+           self._baseurl = baseurl
+
+
+       def find_module(self, fullname, path=None):
+           if path is None:
+               baseurl = self._baseurl
+           else:
+               # 不是原定义的url就直接返回不存在
+               if not path.startswith(self._baseurl):
+                   return None
+               baseurl = path
+
+           try:
+               loader = UrlMetaLoader(baseurl)
+               return loader
+           except Exception:
+               return None
+
+   class UrlMetaLoader(importlib.abc.SourceLoader):
+       def __init__(self, baseurl):
+           self.baseurl = baseurl
+
+       def get_code(self, fullname):
+           f = urllib2.urlopen(self.get_filename(fullname))
+           return f.read()
+
+       def get_data(self):
+           pass
+
+       def get_filename(self, fullname):
+           return self.baseurl + fullname + '.py'
+
+   def install_meta(address):
+       finder = UrlMetaFinder(address)
+       sys.meta_path.append(finder)
+
+2. 搭建远程服务端
+-----------------
+
+最开始我说了，要实现一个远程导入模块的方法。
+
+我还缺一个在远端的服务器，来存放我的模块，为了方便，我使用python自带的
+``http.server`` 模块用一条命令即可实现。
+
+.. code:: shell
+
+   $ mkdir httpserver && cd httpserver
+   $ cat>my_info.py<EOF
+   name='wangbm'
+   print('ok')
+   EOF
+   5sM!ebM5sM!ebMt0fNkt0fNk
+   $ cat my_info.py
+   name='wangbm'
+   print('ok')
+   $ 
+   $ python3 -m http.server 12800
+   Serving HTTP on 0.0.0.0 port 12800 (http://0.0.0.0:12800/) ...
+   ...
+
+一切准备好，我们就可以验证了。
+
+.. code:: python
+
+   >>> from my_importer import install_meta
+   >>> install_meta('http://localhost:12800/') # 往 sys.meta_path 注册 finder 
+   >>> import my_info  # 打印ok，说明导入成功
+   ok
+   >>> my_info.name  # 验证可以取得到变量
+   'wangbm'
+
+至此，我实现了一个简易的可以导入远程服务器上的模块的导入器。

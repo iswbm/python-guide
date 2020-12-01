@@ -1,0 +1,71 @@
+8.9 理解模块的缓存
+==================
+
+在一个模块内部重复引用另一个相同模块，实际并不会导入两次，原因是在使用关键字
+``import`` 导入模块时，它会先检索 ``sys.modules``
+里是否已经载入这个模块了，如果已经载入，则不会再次导入，如果不存在，才会去检索导入这个模块。
+
+来实验一下，在 ``my_mod02`` 这个模块里，我 import 两次 ``my_mod01``
+这个模块，按逻辑每一次 import 会一次 ``my_mod01`` 里的代码（即打印
+``in mod01``\ ），但是验证结果是，只打印了一次。
+
+.. code:: shell
+
+   $ cat my_mod01.py                 
+   print('in mod01')                    
+
+   $ cat my_mod02.py                 
+   import my_mod01                                        
+   import my_mod01     
+
+   $ python my_mod02.py              
+   in mod01                          
+
+该现象的解释是：因为有 ``sys.modules`` 的存在。
+
+``sys.modules``
+是一个字典（key：模块名，value：模块对象），它存放着在当前 namespace
+所有已经导入的模块对象。
+
+.. code:: python
+
+   # test_module.py
+
+   import sys
+   print(sys.modules.get('json', 'NotFound'))
+
+   import json
+   print(sys.modules.get('json', 'NotFound'))
+
+运行结果如下，可见在 导入后 json 模块后，\ ``sys.modules`` 才有了 json
+模块的对象。
+
+.. code:: shell
+
+   $ python test_module.py
+   NotFound
+   <module 'json' from 'C:\Python27\lib\json\__init__.pyc'>
+
+由于有缓存的存在，使得我们无法重新载入一个模块。
+
+但若你想反其道行之，可以借助 importlib
+这个神奇的库来实现。事实也确实有此场景，比如在代码调试中，在发现代码有异常并修改后，我们通常要重启服务再次载入程序。这时候，若有了模块重载，就无比方便了，修改完代码后也无需服务的重启，就能继续调试。
+
+还是以上面的例子来理解，\ ``my_mod02.py`` 改写成如下
+
+.. code:: python
+
+   # my_mod02.py
+
+   import importlib
+   import my_mod01
+   importlib.reload(my_mod01)
+
+使用 python3 来执行这个模块，与上面不同的是，这边执行了两次
+``my_mod01.py``
+
+.. code:: shell
+
+   $ python3 my_mod02.py
+   in mod01
+   in mod01

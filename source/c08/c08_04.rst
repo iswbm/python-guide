@@ -1,0 +1,57 @@
+8.4 导入包的标准写法
+====================
+
+当我们 import 导入模块或包时，Python 提供两种导入方式：
+
+-  相对导入（relative import ）：from . import B 或 from ..A import
+   B，其中.表示当前模块，..表示上层模块
+-  绝对导入（absolute import）：import foo.bar 或者 from foo import bar
+
+你可以根据实际需要进行选择，但有必要说明的是，在早期的版本（ Python2.6
+之前），Python 默认使用的相对导入。而后来的版本中（ Python2.6
+之后），都以绝对导入为默认使用的导入方式。
+
+使用绝对路径和相对路径各有利弊：
+
+-  当你在开发维护自己的项目时，应当使用相对路径导入，这样可以避免硬编码带来的麻烦。
+-  而使用绝对路径，会让你模块导入结构更加清晰，而且也避免了重名的包冲突而导入错误。
+
+在 PEP8 中对模块的导入提出了要求，遵守
+PEP8规范能让你的代码更具有可读性，我这边也列一下：
+
+-  import 语句应当分行书写
+
+.. code:: python
+
+   # bad
+   import os,sys
+
+   # good
+   import os
+   import sys
+
+-  import语句应当使用absolute import
+
+.. code:: python
+
+   # bad
+   from ..bar import  Bar
+
+   # good
+   from foo.bar import test
+
+-  import语句应当放在文件头部，置于模块说明及docstring之后，全局变量之前
+
+-  import语句应该按照顺序排列，每组之间用一个空格分隔，按照内置模块，第三方模块，自己所写的模块调用顺序，同时每组内部按照字母表顺序排列
+
+.. code:: python
+
+   # 内置模块
+   import os
+   import sys
+
+   # 第三方模块
+   import flask
+
+   # 本地模块
+   from foo import bar

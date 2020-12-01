@@ -1,98 +1,250 @@
-10.4 Linux 上最优雅的命令调用方式：sh
-=====================================
+10.4 方案三：使用 pipx
+======================
 
 |image0|
 
-在编写 Python
-脚本的时候，很经常需要我们去调用系统的命令，方法有很多种，比如
-os.popen，os.system，commands，还有 subprocess。
+什么是 pipx
+-----------
 
-今天明哥要介绍一种更加优雅的方法，就是 ``sh``
-这个第三方库，它能让你像调用方法那样去调用系统中的命令。
+pipx 是一款用于帮助你安装和运行那些用 python 编写的终端程序，它类似于
+macOS 上的 brew，Ubuntu 上的 apt，CentOS 上的 yum。
 
-使用前，当然是安装它，\ ``sh`` 支持 Python 2 也支持 Python3，这里以
-Python 3 为例。
+pipx 依赖 pip 和 venv，它只能在 python 3.6+ 的 Python 版本中才能使用。
+
+默认情况下，pipx 和 pip 一样会从 pypi 上安装包，同时 pipx 也能像 pip
+一样从本地、git仓库、wheel 文件中安装包。
+
+为了避免你在安装 python app时，由于多版本而导致冲突，通常我们会使用 venv
+或者 virtualenv 新建一个虚拟环境，然后将 app 安装到虚拟环境中。
+
+后续你对这个 app 的管理操作，都得先进入这个虚拟环境。
+
+发现没有？好像有点麻烦。
+
+pipx 的存在使这个流程变得更加舒畅，使用 pipx
+你可以无需关注虚拟环境的存在，并在你的机器上安装多个版本的 python app。
+
+安装使用
+--------
+
+安装 pipx
 
 .. code:: shell
 
-   $ python3 -m pip install sh
+   $ python3 -m pip install --user pipx
+   $ python3 -m userpath append ~/.local/bin
+   Success!
 
-这里要注意一点，虽然在 Windows
-上也可以安装成功，但是并不能使用，如果你尝试在 Windows 导入
-它，会友好地提示你，该库只适用于 Linux 及 OSX 系统，假如你也想要在
-Windows 使用，它推荐你使用它的 兄弟库 - ``pbs``
-(https://pypi.org/project/pbs/)。
+使用 Pipx 需要注意两个路径
+
+1. 二进制文件的保存位置：默认是 ``~/.local/bin``\ ，可使用环境变量
+   ``PIPX_BIN_DIR``
+   进行更改，或者执行如下命令(\ ``python3 -m userpath append ${you_path}``)
+2. 虚拟环境的保存位置：默认是 ``~/.local/pipx``\ ，可使用环境变量
+   ``PIPX_HOME`` 进行更改
 
 |image1|
 
-安装完成后，就可以直接使用它了，以下几个示例，非常简单，简单到我感觉只要
-demo ，而不需要任何的中文解释就可以让你知道他是如何使用的。
+使用全路径执行命令，不，怎么都觉得不太对劲。。
 
-1. 列出目录文件
-~~~~~~~~~~~~~~~
+想要解决这个问题，其实很简单，添加个软链接指向刚刚那个全路径就好啦
 
-使用 ``ls``
+.. code:: shell
 
-.. code:: python
+   $ ln -s /Users/MING//Library/Python/3.9/bin/pipx /usr/local/bin/pipx
 
-   >>> import sh
-   >>> sh.ls("/home", "-l", color="never")
-   total 4
-   drwx------ 3 centos centos 4096 Mar  8  2019 centos
-
-使用 ``glob``
-
-.. code:: python
-
-   >>> sh.glob("/etc/*.conf")
-   ['/etc/mke2fs.conf', '/etc/dnsmasq.conf', '/etc/asound.conf']
-
-调用程序
-~~~~~~~~
-
-.. code:: python
-
-   >>> import sh
-   >>> r=sh.Command('/root/test.py')
-   >>> r()
-   hello,world
-
-上面我们的 ls ，也可以通过这种方式执行，只是不能再加参数了。
-
-.. code:: python
-
-   sh.Command("ls")()
-
-管道
-~~~~
-
-.. code:: python
-
-   >>> print(sh.sort(sh.du(sh.glob('*'),'-shc'),'-rn'))
-   712K    distribute-0.6.49.tar.gz
-   672K    setuptools-1.1.5.tar.gz
-   548K    get-pip.py
-
-管道是有序的，默认由内而外，但如果需要并行呢？加个_piped=True
-
-.. code:: python
-
-   >>> for line in sh.tr(sh.tail("-f", "/home/mysql/mysql/log/alert.log", _piped=True), "[:upper:]", "[:lower:]", _iter=True):
-   ...   print line
-   ... 
-   innodb: doublewrite buffer not found: creating new
-    
-   innodb: doublewrite buffer created
-    
-   innodb: 127 rollback segment(s) active.
-    
-   innodb: creating foreign key constraint system tables
-    
-   innodb: foreign key constraint system tables created
+软链接建好后，就可以直接使用 ``pipx`` 的命令啦。
 
 |image2|
 
+刚刚我使用 pipx 安装了 youtube-dl 后，其实并没有将这个 youtube-dl
+安装到系统全局的 Python 环境中。
+
+还记得最开始，我强调过两个非常重要的路径吗？
+
+现在来看一下，这个路径下面都有哪些东西？
+
+|image3|
+
+从截图上可以看出
+
+-  pipx 在 ``~/.local/pipx/venvs`` 目录下新建了个名叫 ``youtube-dl``
+   的虚拟机环境
+-  并将 ``youtube-dl`` 安装到这个虚拟机环境中
+-  然后在 ``~/.local/bin`` 的目录下新建一个软链接，指向这个虚拟环境中
+-  这样 ``youtube-dl`` 就变成全局的工具啦。
+
+|image4|
+
+为了避免你新安装的 youtube-dl 与全局的冲突，你也可以指定 pipx
+的命令来运行 youtube-dl
+
+.. code:: shell
+
+   $ pipx run youtube-dl --no-check-certificate https://www.bilibili.com/video/BV1jK4y1h7uA
+
+运行效果如下：
+
+|image5|
+
+pip run 也可以直接执行在线的 python 脚本
+
+.. code:: shell
+
+   $ pipx run https://gist.githubusercontent.com/cs01/fa721a17a326e551ede048c5088f9e0f/raw/6bdfbb6e9c1132b1c38fdd2f195d4a24c540c324/pipx-demo.py
+   pipx is working!
+
+查看
+----
+
+查看已安装过的包
+
+.. code:: shell
+
+   $ pipx list
+
+安装
+----
+
+下载最新版本的 python 包，并安装到新建的虚拟环境中
+
+.. code:: shell
+
+   $ pipx install <PACKAGE>
+
+运行
+----
+
+``pipx run`` 后面可接一个包的 url
+链接，会将这个包下载下来并运行，也可以接已安装过的应用名来直接运行它
+
+.. code:: shell
+
+   $ pipx run <PACKAGE_URL/APP>
+
+如果一个 app 有多个版本，那么可以通过 ``spec`` 指定版本号
+
+.. code:: shell
+
+   $ pipx run --spec PACKAGE==1.0.0 app
+
+更神奇的是，pipx 支持指定 git 代码仓库直接运行
+
+.. code:: shell
+
+   $ pipx run --spec git+https://github.com/psf/black.git black
+
+   # 指定分支
+   $ pipx run --spec git+https://github.com/psf/black.git@branch black  
+
+   # 指定某个git hash
+   $ pipx run --spec git+https://github.com/psf/black.git@ce14fa8b497bae2b50ec48b3bd7022573a59cdb1 black 
+
+   # 指定某个发行版本
+   $ pipx run --spec https://github.com/psf/black/archive/18.9b0.zip black # install a release
+
+升级
+----
+
+升级某个包
+
+.. code:: shell
+
+   $ pipx upgrade <pkg>
+
+升级全部包
+
+.. code:: shell
+
+   $ pipx upgrade-all
+
+卸载
+----
+
+卸载某个包
+
+.. code:: shell
+
+   $ pipx uninstall <pkg>
+
+卸载全部包
+
+.. code:: shell
+
+   $ pipx uninstall-all
+
+重装全部包
+
+.. code:: shell
+
+   $ pipx reinstall-all
+
+使用 pip
+--------
+
+每执行一次 pipx install
+就会新建一个虚拟环境，那我们有没有办法管理这些虚拟机环境呢？
+
+比如我想看这个虚拟环境里安装了哪些包？
+
+使用如下命令就可以像使用 pip 一样，来管理 pipx 的虚拟环境
+
+.. code:: shell
+
+   $ pipx runpip <env_name> <args>
+
+效果如下
+
+|image6|
+
+其他
+----
+
+执行 ``pipx completions`` 可以启用 pipx 的补全说明。
+
+对于不同的终端开启方式不一样，我使用的是 zsh，方法是
+
+.. code:: shell
+
+   $ autoload -U bashcompinit
+   $ bashcompinit
+   $ eval "$(register-python-argcomplete pipx)"
+
+|image7|
+
+执行 ``pipx ensurepath`` 可以确保 ``~/.local/bin``
+这个重要的目录，已经放入到 ``$PATH`` 的变量中。
+
+|image8|
+
+pipx vs pip
+-----------
+
+-  pip 适用于大多数的 Python 版本，而 pipx 需要 Python 3.6+ 才可以使用
+-  pipx 依赖 pip 和 venv，可以使用 pip 安装pipx ，反过来则不行。
+-  pip 和 pipx 默认都是从 pypi 上安装包
+-  pipx 在安装和管理 cli 应用程序时，比 pip
+   更灵活，它可以在允许在隔离环境中安装和运行 Python 应用
+
+总结一下
+--------
+
+pipx 只是解决 pip
+的一个痛点，因此他的适用场景比较单一，它只适用于安装和运行那些有提供命令行入口的app。
+
+参考文章
+--------
+
+-  https://github.com/pipxproject/pipx
+-  https://pipxproject.github.io/pipx/comparisons/
+
 .. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/20200227201644.png
-.. |image2| image:: http://image.iswbm.com/20200607174235.png
+.. |image1| image:: http://image.iswbm.com/image-20201130124107950.png
+.. |image2| image:: http://image.iswbm.com/image-20201130124554404.png
+.. |image3| image:: http://image.iswbm.com/image-20201130125257203.png
+.. |image4| image:: http://image.iswbm.com/image-20201130131138939.png
+.. |image5| image:: http://image.iswbm.com/image-20201130210539907.png
+.. |image6| image:: http://image.iswbm.com/image-20201130215320069.png
+.. |image7| image:: http://image.iswbm.com/image-20201130220233001.png
+.. |image8| image:: http://image.iswbm.com/image-20201130215826513.png
 

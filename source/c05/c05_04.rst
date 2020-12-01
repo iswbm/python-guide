@@ -1,0 +1,316 @@
+5.4 反射函数
+============
+
+|image0|
+
+自省，在我们日常生活中，通常是自我反省的意思。
+
+但在计算机编程中，自省并不是这个意思，它的英文单词是
+introspection，表示的是自我检查的行为或能力。
+
+它的内容包括
+
+1. 告诉别人，我是谁
+2. 告诉别人，我能做什么
+
+Python
+是一门动态语言，有了自省，就能让程序在运行时能够获知对象的类型以及该对象下有哪些方法等。
+
+1. 学习 Python 模块的入口
+-------------------------
+
+help()
+~~~~~~
+
+在 console 模式下，输入 ``help()``
+，可以看到输出了一段帮助文档，教你如何使用这个
+help，当你看到提示符变成了 ``help>`` 时，这时候就进入了 help 模式。
+
+|image1|
+
+此时你可以键入你想要了解的模块、语法等，help 告诉你如何使用。
+
+比如我输入 keywords ，就可以看到 Python 里所有的关键字。再输入 modules
+就可以查看 Python 中所有的内置模块。
+
+|image2|
+
+输入 modules + ``指定包名``\ ，就可以查看这个包下有哪些模块
+
+|image3|
+
+如果你想学习某个包要如何使用，可以直接在 help 模式下输入
+``包名``\ ，就像下面这样，我就可以获得一份 json 的帮助文档。
+
+|image4|
+
+如果你想学习某个关键字的用法，可以在 help 模式下直接键入 ``关键字``
+查询用法，比如我直接键入 ``for`` 。
+
+|image5|
+
+查完后，使用 quit 就可以退出 help 模式了。
+
+|image6|
+
+如果你觉得进入 help 模式太麻烦，可以在 console 模式下直接查询
+
+.. code:: python
+
+   >>> help("json")
+
+dir()
+~~~~~
+
+dir() 函数可能是 Python
+自省机制中最著名的部分了。它返回传递给它的任何对象的属性名称经过排序的列表。如果不指定对象，则
+dir() 返回当前作用域中的名称。让我们将 dir() 函数应用于 keyword
+模块，并观察它揭示了什么：
+
+|image7|
+
+2. 应用到实际开发中
+-------------------
+
+type()
+~~~~~~
+
+type()
+函数有助于我们确定对象是字符串还是整数，或是其它类型的对象。它通过返回类型对象来做到这一点，可以将这个类型对象与
+types 模块中定义的类型相比较：
+
+.. code:: python
+
+   >>> type(42)
+   <class 'int'>
+   >>> type([])
+   <class 'list'>
+
+hasattr()
+~~~~~~~~~
+
+使用 dir() 函数会返回一个对象的属性列表。
+
+但是，有时我们只想测试一个或多个属性是否存在。如果对象具有我们正在考虑的属性，那么通常希望只检索该属性。这个任务可以由
+hasattr() 来完成.
+
+.. code:: python
+
+   >>> import json
+   >>> hasattr(json, "dumps")
+   True
+   >>>
+
+getattr()
+~~~~~~~~~
+
+使用 hasattr 获知了对象拥有某个属性后，可以搭配 getattr()
+函数来获取其属性值。
+
+.. code:: python
+
+   >>> getattr(json, "__path__")
+   ['/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/json']
+   >>>
+
+使用 getattr
+获取函数后，可以很方便地使用这个函数，比如下面这样，可以不再使写
+json.dumps 这么字。
+
+.. code:: python
+
+   >>> dumps = getattr(json, "dumps")
+   >>> dumps({"name": "MING"})
+   '{"name": "MING"}'
+   >>>
+
+   # 当然你还有更简单的方法
+   >>> mydumps = json.dumps
+   >>> mydumps({"name": "MING"})
+   '{"name": "MING"}'
+
+id()
+~~~~
+
+**id()** 函数返回对象的唯一标识符，标识符是一个整数。
+
+.. code:: python
+
+   >>> a = "hello"
+   >>> b = "world"
+   >>>
+   >>> id(a)
+   4470767944
+   >>> id(b)
+   4499487408
+   >>>
+
+isinstance()
+~~~~~~~~~~~~
+
+使用 isinstance() 函数可以确定一个对象是否是某个特定类型或定制类的实例。
+
+.. code:: python
+
+   >>> isinstance("python", str)
+   True
+   >>> isinstance(10, int)
+   True
+   >>> isinstance(False, bool)
+   True
+
+callable()
+~~~~~~~~~~
+
+使用 callable
+可以确定一个对象是否是可调用的，比如函数，类这些对象都是可以调用的对象。
+
+.. code:: python
+
+   >>> callable("hello")
+   False
+   >>>
+   >>> callable(str)
+   True
+   >>>
+
+3. 模块（Modules）
+------------------
+
+\__doc_\_
+~~~~~~~~~
+
+使用 ``__doc__`` 这个魔法方法，可以查询该模块的文档，它输出的内容和
+help() 一样。
+
+|image8|
+
+\__name_\_
+~~~~~~~~~~
+
+始终是定义时的模块名；即使你使用import .. as
+为它取了别名，或是赋值给了另一个变量名。
+
+.. code:: python
+
+   >>> import json
+   >>> json.__name__
+   'json'
+   >>>
+   >>> import json as js
+   >>> js.__name__
+   'json'
+
+\__file_\_
+~~~~~~~~~~
+
+包含了该模块的文件路径。需要注意的是内建的模块没有这个属性，访问它会抛出异常！
+
+.. code:: python
+
+   >>> import json
+   >>> json.__file__
+   '/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/json/__init__.py'
+
+\__dict_\_
+~~~~~~~~~~
+
+包含了模块里可用的属性名-属性的字典；也就是可以使用模块名.属性名访问的对象。
+
+4. 类（Class）
+--------------
+
+.. _doc__-1:
+
+\__doc_\_
+~~~~~~~~~
+
+文档字符串。如果类没有文档，这个值是None。
+
+.. code:: python
+
+   >>> class People:
+   ...     '''
+   ...     people class
+   ...     '''
+   ...
+   >>> p = People()
+   >>>
+   >>> print(p.__doc__)
+
+       people class
+
+   >>>
+
+.. _name__-1:
+
+\__name_\_
+~~~~~~~~~~
+
+始终是定义时的类名。
+
+.. code:: python
+
+   >>> People.__name__
+   'People'
+
+.. _dict__-1:
+
+\__dict_\_
+~~~~~~~~~~
+
+包含了类里可用的属性名-属性的字典；也就是可以使用类名.属性名访问的对象。
+
+.. code:: python
+
+   >>> People.__dict__
+   mappingproxy({'__module__': '__main__', '__doc__': '\n    people class\n    ', '__dict__': <attribute '__dict__' of 'People' objects>, '__weakref__': <attribute '__weakref__' of 'People' objects>})
+
+\__module_\_
+~~~~~~~~~~~~
+
+包含该类的定义的模块名；需要注意，是字符串形式的模块名而不是模块对象。
+
+由于我是在 交互式命令行的环境下，所以模块是 ``__main__``
+
+.. code:: python
+
+   >>> People.__module__
+   '__main__'
+
+如果将上面的代码放入 demo.py，并且从 people 模块导入 People 类，其值就是
+people 模块
+
+|image9|
+
+\__bases_\_
+~~~~~~~~~~~
+
+直接父类对象的元组；但不包含继承树更上层的其他类，比如父类的父类。
+
+.. code:: python
+
+   >>> class People: pass
+   ...
+   >>> class Teenager: pass
+   ...
+   >>> class Student(Teenager): pass
+   ...
+   >>> Student.__bases__
+   (<class '__main__.Teenager'>,)
+   >>>
+
+|image10|
+
+.. |image0| image:: http://image.iswbm.com/20200602135014.png
+.. |image1| image:: http://image.iswbm.com/image-20200606121047415.png
+.. |image2| image:: http://image.iswbm.com/image-20200606121544062.png
+.. |image3| image:: http://image.iswbm.com/image-20200606121942898.png
+.. |image4| image:: http://image.iswbm.com/image-20200606122408522.png
+.. |image5| image:: http://image.iswbm.com/image-20200606133933401.png
+.. |image6| image:: http://image.iswbm.com/image-20200606123145109.png
+.. |image7| image:: http://image.iswbm.com/image-20200606134519352.png
+.. |image8| image:: http://image.iswbm.com/image-20200606134858285.png
+.. |image9| image:: http://image.iswbm.com/image-20200905115039771.png
+.. |image10| image:: http://image.iswbm.com/20200607174235.png
+
