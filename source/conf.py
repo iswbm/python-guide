@@ -142,7 +142,6 @@ html_js_files = [
 author = '王炳明'
 copyright = '2020, Python编程时光'
 exclude_patterns = ['_build']
-extensions = ['sphinxcontrib.disqus']  # Add to this list.
 master_doc = 'index'
 project = 'Python中文指南'
 release = '1.0'
