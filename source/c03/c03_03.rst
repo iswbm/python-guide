@@ -1,2 +1,188 @@
 3.3 字典
 ========
+
+字典（英文名
+dict），它是由一系列的键值（key-value）对组合而成的数据结构。
+
+字典中的每个键都与一个值相关联，其中
+
+1. 键，必须是可 hash 的值，如字符串，数值等
+2. 值，则可以是任意对象
+
+1. 创建字典
+-----------
+
+创建一个字典有三种方法
+
+**第一种方法**\ ：先使用 ``dict()`` 创建空字典实例，再往实例中添加元素
+
+.. code:: python
+
+   >>> profile = dict(name="王炳明", age=27, 众号="ython编程时光")
+   >>> profile
+   {'name': '王炳明', 'age': 27, '众号': 'ython编程时光'}
+
+**第二种方法**\ ：直接使用 ``{}`` 定义字典，并填充元素。
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> profile
+   {'name': '王炳明', 'age': 27, '公众号': 'Python编程时光'}
+
+**第三种方法**\ ：使用 ``dict()``
+构造函数可以直接从键值对序列里创建字典。
+
+.. code:: python
+
+   >>> info = [('name', '王炳明 '), ('age', 27), ('公众号', 'Python编程时光')]
+   >>> dict(info)
+   {'name': '王炳明 ', 'age': 27, '公众号': 'Python编程时光'}
+
+**第四种方法**\ ：使用字典推导式，这一种对于新手来说可能会比较难以理解，我会放在后面专门进行讲解，这里先作了解，新手可直接跳过。
+
+.. code:: python
+
+   >>> adict = {x: x**2 for x in (2, 4, 6)}
+   >>> adict
+   {2: 4, 4: 16, 6: 36}
+
+2. 增删改查
+-----------
+
+**增删改查**\ ：是 新增元素、删除元素、修改元素、查看元素的简写。
+
+由于，内容比较简单，让我们直接看演示
+
+查看元素
+~~~~~~~~
+
+查看或者访问元素，直接使用 ``dict[key]`` 的方式就可以
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> profile["公众号"]
+   'Python编程时光'
+
+但这种方法，在 key 不存在时会报 KeyValue 的异常
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> profile["gender"]
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   KeyError: 'gender'
+
+所以更好的查看获取值的方法是使用 ``get()`` 函数，当不存在 gender
+的key时，默认返回 male
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> profile.get("gender", "male")
+   'male'
+
+新增元素
+~~~~~~~~
+
+新增元素，直接使用 ``dict[key] = value`` 就可以
+
+.. code:: python
+
+   >>> profile = dict()
+   >>> profile
+   {}
+   >>> profile["name"] = "王炳明"
+   >>> profile["age"] = 27
+   >>> profile["公众号"] = "Python编程时光"
+   >>> profile
+   {'name': '王炳明','age': 27,'公众号': 'Python编程时光'}
+
+修改元素
+~~~~~~~~
+
+修改元素，直接使用 ``dict[key] = new_value`` 就可以
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>>
+   >>> profile["age"] = 28
+   >>> profile
+   {'name': '王炳明', 'age': 28, '公众号': 'Python编程时光'}
+
+删除元素
+~~~~~~~~
+
+删除元素，有三种方法
+
+**第一种方法**\ ：使用 pop 函数
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> profile.pop("age")
+   27
+   >>> profile
+   {'name': '王炳明', '公众号': 'Python编程时光'}
+
+**第二种方法**\ ：使用 del 函数
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> del profile["age"]
+   >>> profile
+   {'name': '王炳明', '公众号': 'Python编程时光'}
+
+3. 重要方法
+-----------
+
+判断key是否存在
+~~~~~~~~~~~~~~~
+
+在 Python 2 中的字典对象有一个 has_key 函数，可以用来判断一个 key
+是否在该字典中
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> profile.has_key("name")
+   True
+   >>> 
+   >>> profile.has_key("gender")
+   True
+
+但是这个方法在 Python 3
+中已经取消了，原因是有一种更简单直观的方法，那就是使用 ``in`` 和
+``not in`` 来判断。
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   >>> "name" in profile
+   True
+   >>>
+   >>> "gender" in profile
+   False
+
+设置默认值
+~~~~~~~~~~
+
+要给某个 key 设置默认值，最简单的方法
+
+.. code:: python
+
+   profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+
+   if "gender" not in profile:
+       profile["gender"] = "male"
+
+实际上有个更简单的方法
+
+.. code:: python
+
+   profile = {"name": "王炳明", "age": 27, "公众号": "Python编程时光"}
+   profile.setdefault("gender", "male")

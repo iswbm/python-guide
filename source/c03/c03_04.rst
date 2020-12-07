@@ -1,2 +1,311 @@
-3.4 元组
+3.4 集合
 ========
+
+集合（英文名 set），它是一个无序的不重复元素序列。
+
+这里面有两个重点：
+
+1. 无序，
+2. 不重复
+
+1. 创建集合
+-----------
+
+集合的创建有两种方法
+
+**第一种方法**\ ：使用 花括号 ``{}`` 直接创建，创建的时候，\ ``{}``
+可以包含有重要的元素，但是创建完后，集合会去重，只留第一个。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei", "Xiaomi"}
+   >>> aset
+   set(['Huawei', 'Xiaomi', 'Apple'])
+
+**第二种方法**\ ：使用 ``set()`` 方法进行创建，当\ ``set()``
+函数不接任何参数时，创建的是空集合，如果不创建空集合，可以传入一个列表。
+
+.. code:: python
+
+   >>> bset = set()  # 空集合
+   >>> bset
+   set([])
+   >>>
+   >>> cset = set(["Apple", "Huawei", "Xiaomi"])
+   >>> cset
+   set(['Huawei', 'Apple', 'Xiaomi'])
+
+2. 增删改查
+-----------
+
+增加元素
+~~~~~~~~
+
+使用 ``add`` 函数可以往集合中传入函数
+
+.. code:: python
+
+   >>> aset = set()
+   >>>
+   >>> aset
+   set([])
+   >>> aset.add("Apple")
+   >>> aset.add("Huawei")
+   >>> aset
+   set(['Huawei', 'Apple'])
+
+另外，还可以使用 ``update`` 函数，来往集合中添加元素，\ ``update``
+函数后可接集合，列表，元组，字典等。
+
+这是接集合的例子
+
+.. code:: python
+
+   >>> aset = set()
+   >>> aset
+   set([])
+   >>>
+   >>> # 接集合
+   >>> aset.update({"Apple"})
+   >>> aset
+   set(['Apple'])
+   >>>
+   >>> # 接列表
+   >>> aset.update(["Huawei"])
+   >>> aset
+   set(['Huawei', 'Apple'])
+   >>>
+   >>> # 接元组
+   >>> aset.update(("Xiaomi",))
+   >>> aset
+   set(['Huawei', 'Apple', 'Xiaomi'])
+   >>>
+   >>> # 接字典
+   >>> aset.update({"VIVO": "xxxx"})
+   >>> aset
+   set(['Huawei', 'Apple', 'VIVO', 'Xiaomi'])
+
+删除元素
+~~~~~~~~
+
+使用 ``remove`` 函数可以删除集合中的元素
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei", "Xiaomi"}
+   >>> aset.remove("Xiaomi")
+   >>> aset
+   set(['Huawei', 'Apple'])
+
+使用 ``remove`` 函数，如果对应的元素不存在，是会报错的。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei", "Xiaomi"}
+   >>> aset.remove("VIVO")
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   KeyError: 'VIVO'
+
+对于这种情况，你可以使用 ``discard``
+函数，存在元素则移除，不存在也不会报错。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei", "Xiaomi"}
+   >>> aset.discard("VIVO")
+   >>> aset
+   set(['Huawei', 'Xiaomi', 'Apple'])
+
+此外，还有一个 ``pop`` 函数，用于从集合中随机删除元素，和列表、字典的
+``pop`` 不一样，这里的 pop 不能加任何的参数。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei", "Xiaomi"}
+   >>> aset.pop()
+   'Huawei'
+   >>> aset.pop()
+   'Xiaomi'
+   >>> aset.pop()
+   'Apple'
+
+最后，还要介绍一个 ``clear`` 函数，它用于清空集合的元素。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei", "Xiaomi"}
+   >>> aset
+   set(['Huawei', 'Xiaomi', 'Apple'])
+   >>> aset.clear()
+   >>> aset
+   set([])
+
+修改元素
+~~~~~~~~
+
+文章开头处，已经说明了集合是 ``无序`` 的，因此集合是没有索引的。
+
+既然没有索引，修改也无从谈起。
+
+**记住**\ ：集合只有添加元素、删除元素。
+
+查询元素
+~~~~~~~~
+
+同上，没有顺序，也就没有索引，没有索引，查询也无从谈起。
+
+但是我们可以查看集合的其他内容
+
+比如，查看集合的长度
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei", "Xiaomi"}
+   >>> len(aset)
+   3
+
+3. 集合运算
+-----------
+
+求合集
+~~~~~~
+
+将两个集合进行合并并去重，可以使用 ``union`` 函数，下面的示例中，由于
+``Huawei`` 是重复的元素，只会保留一个。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset.union(bset)
+   set(['Huawei', 'Apple', 'Xiaomi'])
+
+另外还可以使用 ``|`` 的操作符
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset | bset
+   set(['Huawei', 'Apple', 'Xiaomi'])
+
+求差集
+~~~~~~
+
+要找出存在集合 A 但是不存在 集合 B 的元素，就是对两个集合求差集。
+
+可以使用 ``difference`` 函数，下面的示例中， ``Apple`` 在 aset
+中存在，但在 bset 中不存在。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset.difference(bset)
+   set(['Apple'])
+
+另外还可以使用 ``-`` 的操作符，更加直观
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset - bset
+   set(['Apple'])
+
+求交集
+~~~~~~
+
+要找出存在集合 A 并且存在集合 B 的元素，就是对两个集合求交集。
+
+可以使用 ``intersection`` 函数
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset.intersection(bset)
+   set(['Huawei'])
+   >>>
+
+和 ``intersection`` 相似的还有一个 ``intersection_update``
+函数，它们的区别是，\ ``intersection_update`` 会原地更新在 aset
+上，而不是会回交集。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset.intersection_update(bset)
+   >>> aset
+   set(['Huawei'])
+
+另外还可以使用 ``&`` 的操作符
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset & bset
+   set(['Huawei'])
+
+求不重合集
+~~~~~~~~~~
+
+如果计算两个集合中不重复的元素集合，可以使用 ``symmetric_difference``
+函数
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset.symmetric_difference(bset)
+   set(['Xiaomi', 'Apple'])
+
+和 ``symmetric_difference`` 相似的还有一个
+``symmetric_difference_update``
+函数，它们的区别是，\ ``symmetric_difference_update`` 会原地更新在 aset
+上，而不是直接返回。
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset.symmetric_difference_update(bset)
+   >>> aset
+   set(['Apple', 'Xiaomi'])
+
+4. 集合判断
+-----------
+
+判断是否有某元素
+~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> "Apple" in aset
+   True
+
+判断两集合是否有相同元素
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+如果两集合有相同元素，则返回 False，如果没有相同元素，则返回 True
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Xiaomi", "Huawei"}
+   >>> aset.isdisjoint(bset)
+   False
+
+判断是否是子集
+~~~~~~~~~~~~~~
+
+.. code:: python
+
+   >>> aset = {"Apple", "Huawei"}
+   >>> bset = {"Huawei"}
+   >>> bset.issubset(aset)
+   True

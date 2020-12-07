@@ -15,24 +15,24 @@
 
 创建列表有两种方法
 
-1. 先创建空列表实例，再往实例中添加元素
+**第一种方法**\ ：先创建空列表实例，再往实例中添加元素
 
-   .. code:: python
+.. code:: python
 
-      >>> phones = list()   # 实例化
-      >>> phones.append("Apple")  # 添加元素
-      >>> phones.append("Huawei")  # 添加元素
-      >>> phones.append("Xiaomi")  # 添加元素
-      >>> phones
-      ['Apple', 'Huawei', 'Xiaomi']
+   >>> phones = list()   # 实例化
+   >>> phones.append("Apple")  # 添加元素
+   >>> phones.append("Huawei")  # 添加元素
+   >>> phones.append("Xiaomi")  # 添加元素
+   >>> phones
+   ['Apple', 'Huawei', 'Xiaomi']
 
-2. 直接定义列表，并填充元素。
+**第二种方法**\ ：直接定义列表，并填充元素。
 
-   .. code:: python
+.. code:: python
 
-      >>> phones = ["Apple", "Huawei", "Xiaomi"]
-      >>> phones
-      ['Apple', 'Huawei', 'Xiaomi']
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> phones
+   ['Apple', 'Huawei', 'Xiaomi']
 
 很明显，第二种最简单直接，容易理解。并且经过测试，第二种的效率也比第一种的要高。因此推荐新手使用第二种。
 
