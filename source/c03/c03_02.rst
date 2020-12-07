@@ -1,2 +1,153 @@
-3.2 集合
+3.2 元组
 ========
+
+元组（英文名
+tuple），和列表非常的相似，它也是由一系列元素按顺序进行排列而成的容器。
+
+不同的是，元组是不可变的，而列表是可变的。
+
+1. 创建元组
+-----------
+
+创建元组有三种方法
+
+**第一种方法**\ ：直接使用 圆括号
+将所有的元素进行包围。这有别于创建列表时使用的是中括号：\ ``[]``
+
+.. code:: python
+
+   >>> atuple = (1,2,3,4)
+   >>> atuple
+   (1, 2, 3, 4)
+   >>>
+
+**第二种方法**\ ：有时候，创建元组时，圆括号可有可无的。
+
+.. code:: python
+
+   >>> btuple = 1,2,3,4
+   >>> btuple
+   (1, 2, 3, 4)
+   >>>
+
+**第三种方法**\ ：使用元组推导式，由于元组是不可变的，所以生成一个生成器对象。这一种对于新手来说可能会比较难以理解，我会放在后面专门进行讲解，这里先作了解，新手可直接跳过。
+
+.. code:: python
+
+   >>> ctuple = (i for i in range(1,6))
+   >>> ctuple
+   <generator object <genexpr> at 0x10a288f90>
+
+上面三种方法介绍完毕~
+
+你以为就这么简单？
+
+当你在创建只有一个元素的元组时，你有可能会这样子创建
+
+.. code:: python
+
+   >>> ctuple = (1)
+   >>> type(ctuple)
+   <class 'int'>
+   >>> ctuple
+   1
+   >>>
+
+却发现，创建出来的并不是 tuple，而是一个 int 对象。
+
+此时千万要记住，当你创建只包含一个元素的元组时，要在第一个元素后面加一个逗号
+
+.. code:: python
+
+   >>> ctuple = (1,)
+   >>> type(ctuple)
+   <class 'tuple'>
+   >>> ctuple
+   (1,)
+   >>>
+   >>> dtuple = 1,
+   >>> type(dtuple)
+   <class 'tuple'>
+   >>> dtuple
+   (1,)
+
+另外，创建空元组可以这样
+
+.. code:: python
+
+   >>> a = tuple()  # 第一种方法
+   >>> a
+   ()
+   >>> type(a)
+   <class 'tuple'>
+   >>> b = ()  # 第二种方法
+   >>> b
+   ()
+   >>> type(b)
+   <class 'tuple'>
+
+2. 增删改查
+-----------
+
+最前面我们说过，元组是不可变的。因此，你想对元组进行修改的行为都是不被允许的。
+
+呐，看一下示例，查看元素可以，但是修改元素和删除元素都报错了。
+
+.. code:: python
+
+   >>> atuple = (1,2,3,4)
+   >>> atuple[0]   # 查看元素
+   1
+   >>> atuple[0] = 0
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   TypeError: 'tuple' object does not support item assignment
+     >>>
+     >>> del atuple[0]
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   TypeError: 'tuple' object doesn't support item deletion
+
+新增元素呢？当然同样也是不支持的，这里不再演示。
+
+3. 元组与列表的转换
+-------------------
+
+虽然元组可能看起来与列表很像，但它们通常是在不同的场景被使用，并且有着不同的用途。
+
+元组是 immutable
+（不可变的），其序列通常包含不同种类的元素，并且通过解包或者索引来访问（如果是
+``namedtuples`` 的话甚至还可以通过属性访问）。
+
+列表是 mutable
+（可变的），并且列表中的元素一般是同种类型的，并且通过迭代访问。
+
+那有办法可以实现二者的转换吗？
+
+当然有，而且非常简单。
+
+**将元组转成列表**
+
+.. code:: python
+
+   >>> atuple = (1,2,3,4)
+   >>> type(atuple)
+   <class 'tuple'>
+   >>>
+   >>>
+   >>> list(atuple)
+   [1, 2, 3, 4]
+   >>>
+   >>>
+
+**将列表转成元组**
+
+.. code:: python
+
+   >>> alist = [1,2,3,4]
+   >>> type(alist)
+   <class 'list'>
+   >>>
+   >>>
+   >>> tuple(alist)
+   (1, 2, 3, 4)

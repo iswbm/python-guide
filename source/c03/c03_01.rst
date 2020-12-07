@@ -1,2 +1,271 @@
 3.1 列表
 ========
+
+列表（英文名 list），是由一系列元素按顺序进行排列而成的容器。
+
+这里面有两个重点：
+
+-  **元素**\ ：没有要求同一类型，所以可以是任意类型。
+-  **顺序**\ ：按顺序排列而成，说明列表是有序的。
+
+在接下来的例子中，我会向你演示，列表的一些特性和常用的方法。
+
+1. 创建列表
+-----------
+
+创建列表有两种方法
+
+1. 先创建空列表实例，再往实例中添加元素
+
+   .. code:: python
+
+      >>> phones = list()   # 实例化
+      >>> phones.append("Apple")  # 添加元素
+      >>> phones.append("Huawei")  # 添加元素
+      >>> phones.append("Xiaomi")  # 添加元素
+      >>> phones
+      ['Apple', 'Huawei', 'Xiaomi']
+
+2. 直接定义列表，并填充元素。
+
+   .. code:: python
+
+      >>> phones = ["Apple", "Huawei", "Xiaomi"]
+      >>> phones
+      ['Apple', 'Huawei', 'Xiaomi']
+
+很明显，第二种最简单直接，容易理解。并且经过测试，第二种的效率也比第一种的要高。因此推荐新手使用第二种。
+
+2. 增删改查
+-----------
+
+**增删改查**\ ：是 新增元素、删除元素、修改元素、查看元素的简写。
+
+由于，内容比较简单，让我们直接看演示
+
+查看元素
+~~~~~~~~
+
+使用 ``[i]`` 的方式查看第 ``i+1`` 个元素。例如 x 的起始值为 0
+，代表第一个元素。
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> phones[0]
+   'Apple'
+   >>> phones[1]
+   'Huawei'
+   >>> phones[2]
+   'Xiaomi'
+   >>>
+
+使用 index 方法，查看第一个值为 x 的索引。
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi", "Huawei"]
+   >>> phones.index("Huawei")
+   1
+   >>>
+
+使用 count 方法，查看该列表中有几个值为 x
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi", "Huawei"]
+   >>> phones.count("Huawei")
+   2
+   >>>
+
+使用内置函数\ ``len()``\ ，可以查看该列表中有几个值
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> len(phones)
+   3
+   >>>
+
+新增元素
+~~~~~~~~
+
+使用列表的 append 、insert、和 extend 方法
+
+-  append 方法：将元素插入在列表的最后一个位置
+
+.. code:: python
+
+   >>> phones = []
+   >>> phones
+   []
+   >>> phones.append("Apple")
+   >>> phones
+   ['Apple']
+   >>> phones.append("Huawei")  # append 后 Huawei 会在最后一个位置
+   >>> phones
+   ['Apple', 'Huawei']
+   >>>
+
+-  insert 方法：将元素插入在列表的指定的位置
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> phones.insert(1, "OPPO")  # 把 OPPO 插入到索引为 1 的位置
+   >>> phones
+   ['Apple', 'OPPO', 'Huawei', 'Xiaomi']
+
+-  extend：将一个新的列表直接连接在旧的列表后面
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> new_phones = ["OPPO", "VIVO"]
+   >>> phones.extend(new_phones)
+   >>> phones
+   ['Apple', 'Huawei', 'Xiaomi', 'OPPO', 'VIVO']
+
+修改元素
+~~~~~~~~
+
+直接使用 ``list[x]=new_item`` 的方法直接替换
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> phones[1] = "OPPO"
+   >>> phones
+   ['Apple', 'OPPO', 'Xiaomi']
+
+删除元素
+~~~~~~~~
+
+使用 pop ，remove 、clear 方法或者 del 语句删除元素
+
+-  pop 方法：删除指定位置的元素。默认删除最后一个元素，并返回
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> phones.pop()  # 删除最后一个元素
+   'Xiaomi'
+   >>> phones.pop(0) # 删除索引为0的元素
+   'Apple'
+   >>> phones
+   ['Huawei']
+   >>>
+
+-  remove：删除第一个值为 x 的元素。
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi", "Huawei"]
+   >>> phones.remove("Huawei")
+   >>> phones
+   ['Apple', 'Xiaomi', 'Huawei']
+   >>>
+
+-  clear 方法：把所有的元素清空
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> phones.clear()
+   >>> phones
+   []
+   >>>
+
+-  del 语句：清空列表，还有另一种方法
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> del phones[:]
+   >>> phones
+   []
+   >>>
+
+使用 del 语句，还可以删除某一个或者某几个连续的元素。
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi", "OPPO", "VIVO"]
+   >>> del phones[0]  # 删除索引为0的元素
+   >>> phones
+   ['Huawei', 'Xiaomi', 'OPPO', 'VIVO']
+   >>>
+   >>> del phones[1:3]  # 删除索引在 [1:3) 区间内元素，注意是左闭右开区间
+   >>> phones
+   ['Huawei', 'VIVO']
+
+3. 列表反转
+-----------
+
+列表反转有两种方法
+
+**第一种方法**\ ：使用自带的 reverse 方法
+
+.. code:: python
+
+   >>> nums = [1,2,3,4,5]
+   >>> nums.reverse()
+   >>> nums
+   [5, 4, 3, 2, 1]
+
+**第二种方法**\ ：使用切片的方法
+
+.. code:: python
+
+   >>> nums = [1,2,3,4,5]
+   >>> nums[::-1]
+   [5, 4, 3, 2, 1]
+
+这两种方法，区别在于：
+
+-  reverse 方法是原地反转，作用在原对象上
+-  切片反转是返回一个新对象，原对象不改变
+
+4. 列表排序
+-----------
+
+列表的排序同样有两种方法：
+
+**第一种方法**\ ：列表对象内置了 sort 方法，可方便我们对元素进行排序。
+
+.. code:: python
+
+   >>> alist = [4,8,1,7,2]
+   >>> alist.sort()
+   >>> alist
+   [1, 2, 4, 7, 8]
+   >>>
+
+**第二种方法**\ ：Python 有个内置的 sorted
+函数，它不仅可用作列表的排序，后面我们还会学到 字典
+等其他数据结构的排序也会用到它。
+
+.. code:: python
+
+   >>> alist = [4,8,1,7,2]
+   >>> sorted(alist)
+   [1, 2, 4, 7, 8]
+   >>>
+
+不管用哪种方法，都要保证列表内的元素俩俩是可比较的。
+
+比如，数值和数值是可比较的，字符串和字符串之间是可比较的。
+
+但是数值和字符串是不可比较的，示例如下
+
+.. code:: python
+
+   >>> alist = [9,3,1,"d","k","a"]
+   >>> alist.sort()
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   TypeError: '<' not supported between instances of 'str' and 'int'
+   >>>
+
+除了上面介绍的俩种之外，其实利用 sort
+函数还可以实现自定义排序，这部分内容对于新手来说学习起来稍有点难度，且用到的场景也不多，因此这边我就不介绍啦。
