@@ -1,2 +1,118 @@
-4.2 循环语句：while 和 for 循环
-===============================
+4.2 循环语句：for
+=================
+
+for 循环可以遍历任何序列的项目，如一个列表或者一个字符串。
+
+它的基本语法是
+
+.. code:: python
+
+   for 元素 in 序列对象:
+      代码块
+
+1. 普通循环
+-----------
+
+直接上案例
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>> for phone in phones:
+   ...     print("当前手机是: " + phone)
+   ...
+   当前手机是: Apple
+   当前手机是: Huawei
+   当前手机是: Xiaomi
+
+2. 带索引循环
+-------------
+
+如果想在循环的时候，把索引也取出来，可以加一个 ``enumerate`` 函数
+
+.. code:: python
+
+   >>> phones = ["Apple", "Huawei", "Xiaomi"]
+   >>>
+   >>> for index,phone in enumerate(phones):
+   ...     print("我的第 {} 把手机是: {}".format(index+1, phone))
+   ...
+   我的第 1 把手机是: Apple
+   我的第 2 把手机是: Huawei
+   我的第 3 把手机是: Xiaomi
+
+3. break 中断
+-------------
+
+正常情况下，我们都需要 for
+循环能够全部循环完，但在某些情况下，需要中断循环的执行，中断循环使用的是
+``break`` 关键字。
+
+举个例子
+
+.. code:: python
+
+   >>> for i in [0, 1, 2]:
+   ...     if i == 1:
+   ...         print(f"当前的数是 {i}, 将退出循环")
+   ...         break
+   ...     print("当前的数是 " + str(i))
+   ...
+   当前的数是 0
+   当前的数是 1, 将退出循环
+
+4. continue 下一循环
+--------------------
+
+在有些循环中，不需要把 for
+的循环体内的代码全部执行完毕，这种情况下，可以使用 ``continue``
+关键字，直接进入下一循环。
+
+举个例子，下面的循环中当 i 等于 1 时，就直接跳过了循环。
+
+.. code:: python
+
+   >>> for i in [0, 1, 2]:
+   ...     if i == 1:
+   ...         continue
+   ...     print("当前的数是 " + str(i))
+   ...
+   当前的数是 0
+   当前的数是 2
+
+5. for - else 循环
+------------------
+
+其实在 for 循环语句的后面，可以加一个 else 分支，当代码在 for
+循环体中\ **正常执行完**\ ，自然就会走到 else 分支中。
+
+那么什么叫做 **正常执行完** 呢？就是只要不通过 break
+语句中断的，都算正常执行完。
+
+先以 continue 为例，所有的循环都非常正常，会走到 else 分支
+
+.. code:: python
+
+   >>> for i in [0, 1, 2]:
+   ...     if i == 1:
+   ...         continue
+   ...     print("当前的数是 " + str(i))
+   ... else:
+   ...     print("循环非常正常")
+   ...
+   当前的数是 0
+   当前的数是 2
+   循环非常正常
+
+再把 ``continue`` 改成 ``break`` 后，发现不会走到 else 分支
+
+.. code:: python
+
+   >>> for i in [0, 1, 2]:
+   ...     if i == 1:
+   ...         break
+   ...     print("当前的数是 " + str(i))
+   ... else:
+   ...     print("循环非常正常")
+   ...
+   当前的数是 0

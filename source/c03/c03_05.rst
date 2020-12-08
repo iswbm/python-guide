@@ -1,2 +1,165 @@
 3.5 迭代器
 ==========
+
+1. 可迭代对象
+-------------
+
+可以利用 for 循环的对象，都叫可迭代对象。
+
+譬如我们前面学过的 列表、元组、字典、字符串等都是可迭代对象。
+
+.. code:: python
+
+   # 以列表为例
+   >>> alist = [0, 1, 2, 3, 4, 5]
+   >>> for i in alist:
+   ...     print(i)
+   ...
+   0
+   1
+   2
+   3
+   4
+   5
+
+2. 是否可迭代？
+---------------
+
+对 Python
+比较熟悉的朋友，肯定知道哪些数据类型是可迭代的，哪些是不可迭代的。
+
+但是对新手来说，可能需要借助一些函数来判别，比如 Python 内置的
+``collections.abc`` 模块，这个模块只有在 Python
+中才有噢，在这个模块中提供了一个 Iterable 类，可以用 isinstance 来判断。
+
+.. code:: python
+
+   >>> from collections.abc import Iterable
+   >>>
+   >>> isinstance([0, 1, 2], Iterable) # 列表
+   True
+   >>> isinstance({"name": "王炳明"}, Iterable) # 字典
+   True
+   >>> isinstance((1,2,3), Iterable) # 元组
+   True
+   >>> isinstance("hello", Iterable) # 字符串
+   True
+
+但是这种方法并不是百分百准确（具体下面会说到），最准确的方法，还是应该使用
+for 循环。
+
+3. 可迭代协议
+-------------
+
+可迭代对象内部是如何实现在你对其进行 for
+循环时，可以一个一个元素的返回出来呢？
+
+这就要谈到迭代器协议。
+
+**第一种场景**\ ：如果一个对象内部实现了 ``__iter__()`` 方法
+，并返回一个迭代器实例，那么该对象就是可迭代对象
+
+.. code:: python
+
+   class Array:
+       mylist = [0,1,2]
+       
+       # 返回迭代器类的实例
+       def __iter__(self):
+           return iter(self.mylist)
+
+   # 得到可迭代对象
+   my_list = Array()  
+   print(isinstance(my_list, Iterable)) # True
+
+   for i in my_list:
+       print(i)
+
+**第二种场景**\ ：假设一个对象没有实现 ``__iter__()`` ，Python 解释器
+``__getitem__()`` 方法获取元素，如果可行，那么该对象也是一个可迭代对象。
+
+.. code:: python
+
+   from collections.abc import Iterable
+
+   class Array:
+       mylist = [0,1,2]
+
+       def __getitem__(self, item):
+           return self.mylist[item]
+
+   # 得到一个可迭代对象
+   my_list = Array()  
+   print(isinstance(my_list, Iterable)) # False
+
+   for i in my_list:
+       print(i)
+
+此时如果你使用 ``isinstance(my_list, Iterable)``
+去判断是否是可迭代，就会返回 False，因为 isinstance
+这种方法就是检查对象是否有 ``__iter__`` 方法。这也论证了使用
+``isinstance(my_list, Iterable)`` 去判断是否可迭代是不准确的。
+
+4. 什么是迭代器
+---------------
+
+当你对一个可迭代对象使用 iter
+函数后，它会返回一个迭代器对象，对于迭代器对象，我们可以使用 next
+函数，去获取元素，每执行一次，获取一次，等到全部获取完毕，会抛出
+StopIteration 提示无元素可取。
+
+.. code:: python
+
+   >>> alist = [0, 1, 2, 3]
+   >>> gen = iter(alist)
+   >>> next(gen)
+   0
+   >>> next(gen)
+   1
+   >>> next(gen)
+   2
+   >>> next(gen)
+   3
+   >>> next(gen)
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   StopIteration
+
+5. 迭代器协议
+-------------
+
+对比可迭代对象，\ ``迭代器``\ 的内部只是多了一个函数而已 –
+``__next__()``
+
+正因为有了它，我们才可以用 next 来获取元素。
+
+迭代器，是在可迭代的基础上实现的。要创建一个迭代器，我们首先，得有一个可迭代对象。
+现在就来看看，如何创建一个可迭代对象，并以可迭代对象为基础创建一个迭代器。
+
+.. code:: python
+
+   from collections.abc import Iterator
+
+   class Array:
+       index = 0
+       mylist = [0,1,2]
+
+       # 返回该对象的迭代器类的实例
+       # 因为自己就是迭代器，所以返回self
+       def __iter__(self):
+           return self
+
+       # 当无元素时，必要抛出 StopIteration
+       def __next__(self):
+           if self.index <= len(self.mylist)-1:
+               value = self.mylist[self.index]
+               self.index += 1
+               return value
+           raise StopIteration
+
+   my_iterator = iter(Array())
+   print(isinstance(my_iterator, Iterator)) # output: True
+   print(next(my_iterator))  # output: 0
+   print(next(my_iterator))  # output: 1
+   print(next(my_iterator))  # output: 2
+   print(next(my_iterator))  # StopIteration
