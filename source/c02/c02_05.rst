@@ -1,2 +1,202 @@
-2.5 运算符
-==========
+2.5 输入与输出
+==============
+
+无论是从我们一开始的“hello
+world”，还是前面章节的里各种例子，基本都是些“自说自话”，展示类的代码片段。只有能够接收用户输入，根据输入动态生成结果，并输出到屏幕上展示出来，才算一个较为完整，起码是有那么点乐趣或者说成就的简单程序。
+
+1. input 输入函数
+-----------------
+
+input函数：获取用户输入，保存成一个\ **字符串**\ 。重要的话，说两遍，input函数的返回值是一个字符串类型。哪怕你输入的是个数字1，返回给你的只会是字符串“1”，而不是
+整数1。下面是一些简单的展示例子：
+
+.. code:: python
+
+   >>> name  = input("please input your name: ")
+   please input your name: jack
+   >>> name
+   'jack'
+   >>> type(name)
+   <class 'str'>
+
+第一个例子中，\ ``inp = input("please input your name: ")``\ ，input函数里可以提供一个字符串，用来给用户进行输入提示。input函数的返回值赋值给inp这个变量后，inp里就保存了用户输入的值。
+
+``type()``
+是Python内置的函数之一，非常有用，用于查看对象的数据类型。例子中的 name
+是一个str字符串类型，这验证了我们前面说的话。
+
+如果你想要输入的是数值，那么需要你手动使用 ``int()`` 函数转一下类型
+
+.. code:: python
+
+   >>> age = input("please input your age: ")
+   please input your age: 18
+   >>> age
+   '18'
+   >>> age = int(age)
+   >>> age
+   18
+   >>> type(age)
+   <class 'int'>
+
+有时候可能输入两边会多敲入几个空格，这时候可以使用 ``strip()``
+函数去除首尾空格
+
+.. code:: python
+
+   >>> name  = input("please input your name: ")
+   please input your name:      jack
+   >>> name
+   '     jack'
+   >>> name = name.strip()
+   >>> name
+   'jack'
+
+有时候用户输入的内容会不符合程序的预期，比如我想要获取年龄，那输入必然是全数字，而不能是其他非数值，这时候就可以使用
+``isdigit`` 函数进行判断
+
+.. code:: python
+
+   >>> age = input("please input your age: ")
+   please input your age: jack
+   >>> if age.isdigit():
+   ...     age = int(age)
+   ...     print("你的年龄是: ", age)
+   ... else:
+   ...     print("输入不合法！")
+   ...
+   输入不合法！
+
+input函数有时可以巧妙地用于阻塞或暂停程序
+
+.. code:: python
+
+   print("程序前面部分执行完毕......")
+
+   input("请按回车继续......")       # 在这里程序会暂停，等待你的回车动作
+
+   print("继续执行程序的后面部分......")
+
+此时的input函数不会将输入保存下来，只是用作暂停程序动作。
+
+2. print 输入函数
+-----------------
+
+print函数我们其实已经不陌生了，前前后后也用了不少次，多少有点经验，明白点它的用法了。
+
+print函数用于将内容格式化显示在标准输出上，主要指的是屏幕显示器。
+
+print可以接受多个字符串，字符串类型的变量或者可print的对象。每个字符串用逗号“,”隔开，连成一串输出。print会依次打印每个字符串，同时，每遇到一个逗号“,”就输出一个空格。
+
+::
+
+   >>> a = "i am"
+   >>> b = "student"
+   >>> print(a,"a" , b)
+   i am a student      # 自动以空格分隔
+   >>> print(a+"a"+b)
+   i amastudent        # 无分隔
+
+对于形如\ ``print(a+"a"+b)``\ 的语句，其实是先计算\ ``a+"a"+b``\ 的值，然后再通过print打印它。print()会自动执行内部的语句，输出想要的结果。再看一个例子：
+
+::
+
+   >>> a = 10
+   >>> b = 2
+   >>> print(sum((a, a*b)))        # 先求a*b，再求和，再打印
+   30
+
+我们看一下print函数的原型：\ ``print(self, *args, sep=' ', end='\n', file=None)``
+
+**sep参数**: 分隔的符号，默认是一个空格；
+
+**end参数**:
+打印后的结束方式，默认为换行符\ ``\n``\ 。如果，设置\ ``end=''``\ ，则可以不换行，让print在一行内连续打印。活用print的参数，可以实现灵活的打印控制。
+
+::
+
+   >>> a = "i am"
+   >>> b = "student"
+   >>> print(a,"a" , b, sep="*")
+   i am*a*student
+
+3. print 格式化输出
+-------------------
+
+格式化输出，主要有三种方式
+
+1. 使用 % 进行格式化
+2. 使用 format 函数进行格式化
+3. 使用 f-string 进行格式化
+
+由于这三种格式化的内容都非常的多，这里仅为了你看本教程后面的内容，我只介绍最常用的几种
+
+**第一种方法**\ ：使用 %
+
+``%s`` 表示这个位置接的是一个字符串变量
+
+``%d`` 表示这个位置接的是一个整型变量
+
+前面有多少个 %，后面就要有多少个变量，一一对应，多个变量要括号括起来
+
+.. code:: python
+
+   >>> name = "Jack"
+   >>> age = 18
+   >>> print("我的名字是: %s，今年 %d 岁" %(name, age))
+   我的名字是: Jack，今年 18 岁
+
+更多的格式化式符号，可以参考这张表
+
+|image0|
+
+**第二种方法**\ ：使用 format 函数
+
+在字符串中，使用 ``{}`` 进行占位，然后在字符串后跟上 ``.format()``
+函数，这个函数的参数就是我们要往字符串中填充的变量。
+
+format 函数会依次填充，比如第一个 ``{}`` 会取到第一个参数 name，第二个
+``{}`` 会取到第二个参数 age
+
+.. code:: python
+
+   >>> name = "Jack"
+   >>> age = 18
+   >>> print("我的名字是:{}, 今年 {} 岁".format(name, age))
+   我的名字是:Jack, 今年 18 岁
+
+然后如果变量值比较多的话，这样往往会看错乱掉。你可以改成使用索引
+
+.. code:: python
+
+   >>> print("我的名字是:{0}, 今年 {1} 岁".format(name, age))
+   我的名字是:Jack, 今年 18 岁
+
+甚至还可以直接用变量名进行替代
+
+.. code:: python
+
+   >>> name = "Jack"
+   >>> age = 18
+   >>> print("我的名字是:{name}, 今年 {age} 岁".format(name=name, age=age))
+   我的名字是:Jack, 今年 18 岁
+
+更多 format
+函数的用法，可详读我另一篇文章：\ `Python强大的格式化format <https://www.cnblogs.com/wongbingming/p/6848701.html>`__
+
+**第三种方法**\ ：使用 f-string
+
+这种方法是 Python 3.9 才支持的写法，只要你在字符串前面加一个
+``f``\ ，开启 f-string ，就可以在字符中写入变量。
+
+直接看案例了
+
+.. code:: python
+
+   >>> name = "Jack"
+   >>> age = 18
+   >>> print(f"我的名字是:{name}, 今年 {age} 岁")
+   我的名字是:Jack, 今年 18 岁
+
+.. |image0| image:: http://image.iswbm.com/20201209211318.png
+

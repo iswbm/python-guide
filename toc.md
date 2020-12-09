@@ -6,13 +6,13 @@
    * [1.2 第一个 Python 程序](http://demo.iswbm.com/en/latest/c01/c01_02.html)
    * [1.3 Python 开发环境的搭建](http://demo.iswbm.com/en/latest/c01/c01_03.html)
    * [1.4 运行 Python 脚本的两种方法](http://demo.iswbm.com/en/latest/c01/c01_04.html)
-   * [1.5 输入与输出](http://demo.iswbm.com/en/latest/c01/c01_05.html)
 - **第二章：数据类型**
    * [2.1 常量与变量](http://demo.iswbm.com/en/latest/c02/c02_01.html)
    * [2.2 字符串类型](http://demo.iswbm.com/en/latest/c02/c02_02.html)
    * [2.3 整型与浮点数](http://demo.iswbm.com/en/latest/c02/c02_03.html)
    * [2.4 布尔值：真与假](http://demo.iswbm.com/en/latest/c02/c02_04.html)
-   * [2.5 运算符](http://demo.iswbm.com/en/latest/c02/c02_05.html)
+   * [2.5 输入与输出](http://demo.iswbm.com/en/latest/c02/c02_05.html)
+   * [2.6 运算符](http://demo.iswbm.com/en/latest/c02/c02_06.html)
 - **第三章：数据结构**
    * [3.1 列表](http://demo.iswbm.com/en/latest/c03/c03_01.html)
    * [3.2 元组](http://demo.iswbm.com/en/latest/c03/c03_02.html)
@@ -21,9 +21,10 @@
    * [3.5 迭代器](http://demo.iswbm.com/en/latest/c03/c03_05.html)
    * [3.6 生成器](http://demo.iswbm.com/en/latest/c03/c03_06.html)
 - **第四章：控制流程**
-   * [4.1 条件语句：if 判断语句](http://demo.iswbm.com/en/latest/c04/c04_01.html)
-   * [4.2 循环语句：while 和 for 循环](http://demo.iswbm.com/en/latest/c04/c04_02.html)
-   * [4.3 列表/字典推导式](http://demo.iswbm.com/en/latest/c04/c04_03.html)
+   * [4.1 条件语句：if](http://demo.iswbm.com/en/latest/c04/c04_01.html)
+   * [4.2 循环语句：for](http://demo.iswbm.com/en/latest/c04/c04_02.html)
+   * [4.3 循环语句：while](http://demo.iswbm.com/en/latest/c04/c04_03.html)
+   * [4.4 五种推导式](http://demo.iswbm.com/en/latest/c04/c04_04.html)
 - **第五章：学习函数**
    * [5.1 普通函数](http://demo.iswbm.com/en/latest/c05/c05_01.html)
    * [5.2 匿名函数](http://demo.iswbm.com/en/latest/c05/c05_02.html)
