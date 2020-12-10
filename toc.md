@@ -31,9 +31,9 @@
    * [5.3 高阶函数](http://demo.iswbm.com/en/latest/c05/c05_03.html)
    * [5.4 反射函数](http://demo.iswbm.com/en/latest/c05/c05_04.html)
    * [5.5 with 与上下文管理器](http://demo.iswbm.com/en/latest/c05/c05_05.html)
-   * [5.6 精通装饰器的八种用法](http://demo.iswbm.com/en/latest/c05/c05_06.html)
-   * [5.7 函数式编程](http://demo.iswbm.com/en/latest/c05/c05_07.html)
-   * [5.8 泛型函数](http://demo.iswbm.com/en/latest/c05/c05_08.html)
+   * [5.6 泛型函数](http://demo.iswbm.com/en/latest/c05/c05_06.html)
+   * [5.7 偏函数](http://demo.iswbm.com/en/latest/c05/c05_07.html)
+   * [5.8 装饰器的八种写法](http://demo.iswbm.com/en/latest/c05/c05_08.html)
 - **第六章：错误异常**
    * [6.1 什么是异常？](http://demo.iswbm.com/en/latest/c06/c06_01.html)
    * [6.2 如何捕获异常](http://demo.iswbm.com/en/latest/c06/c06_02.html)
