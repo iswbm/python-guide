@@ -1,8 +1,6 @@
 7.6 静态方法其实暗藏玄机
 ========================
 
-|image0|
-
 静态方法，应该没人不知道吧？它可以算是一个很基础、简单的知识点。
 
 但是就是这样一个知识点，也有不少可以探究的东西。
@@ -22,7 +20,7 @@ Python3中，我却发现完全又是另一套准则。
 
 首先先来 Python2 的（以下在 Python2.7中测试通过）
 
-|image1|
+|image0|
 
 可以得出结论：
 
@@ -61,7 +59,7 @@ Python3，我反而觉得Python3里方法和函数的区分似乎更加合理。
 还是刚刚那段代码，我更改了解释器为Python3.6（以下在
 Python3.6中测试通过）
 
-|image2|
+|image1|
 
 和Python2的唯一区别是，\ ``People.jump`` 在Python3 中变成了函数。
 
@@ -73,14 +71,14 @@ Python3.6中测试通过）
 
 执行People.jump(‘hello’)，会报错说，jump的首参必须为People的实例对象，这可以理解，毕竟jump定义时，第一个参数为self。
 
-|image3|
+|image2|
 
 **在 Python3中**
 
 你可以发现，这里的jump的首参不再要求是 People
 的一个实例，而可以是任意的对象，比如我使用字符串对象，也没有报错。
 
-|image4|
+|image3|
 
 也就是说，当你往jump中传入的首参为People的实例时，jump
 就是方法，而当你传入的首参不是People的实例对象时，jump就是函数。
@@ -109,9 +107,8 @@ self.jump了，因为首参不是 self，而如果使用@staticmethod
 
 写这篇文章的起源，是前两天有位读者在交流里问到了相关的问题，正好没什么主题可以写，就拿过来做为素材整理一下，也正好没有写过静态方法、类方法的内容，没想到简单的东西，也能写出这么多的内容出来。
 
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/20190630111243.png
-.. |image2| image:: http://image.iswbm.com/20190630104956.png
-.. |image3| image:: http://image.iswbm.com/20190630105735.png
-.. |image4| image:: http://image.iswbm.com/20190630105600.png
+.. |image0| image:: http://image.iswbm.com/20190630111243.png
+.. |image1| image:: http://image.iswbm.com/20190630104956.png
+.. |image2| image:: http://image.iswbm.com/20190630105735.png
+.. |image3| image:: http://image.iswbm.com/20190630105600.png
 

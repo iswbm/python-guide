@@ -32,6 +32,35 @@ Python，那就另说啦。
 
 |image1|
 
+下载到本地后，双击打开开始安装
+
+|image2|
+
+|image3|
+
+全部选上，然后点击 Next
+
+|image4|
+
+这里根据需要进行打勾，一般默认就行，直接点击 Install 开始安装。
+
+|image5|
+
+安装过程只要几分钟就行
+
+|image6|
+
+|image7|
+
+|image8|
+
 .. |image0| image:: http://image.iswbm.com/image-20201129172024424.png
 .. |image1| image:: http://image.iswbm.com/image-20201129172153677.png
+.. |image2| image:: http://image.iswbm.com/20201207164009.png
+.. |image3| image:: http://image.iswbm.com/20201207164148.png
+.. |image4| image:: http://image.iswbm.com/20201207164207.png
+.. |image5| image:: http://image.iswbm.com/20201207164309.png
+.. |image6| image:: http://image.iswbm.com/20201207164451.png
+.. |image7| image:: http://image.iswbm.com/20201207164957.png
+.. |image8| image:: http://image.iswbm.com/20201207165111.png
 

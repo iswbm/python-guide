@@ -1,2 +1,23 @@
 6.3 如何自定义异常
 ==================
+
+大多数情况下，内置的错误和异常已经够用了。
+
+但是有时候你还是需要自定义一些异常。自定义异常应该继承 ``Exception``
+类，直接继承或者间接继承都可以，例如：
+
+.. code:: python
+
+   class MyExcept(Exception):
+       def __init__(self, msg):
+           self.message = msg
+
+       def __str__(self):
+           return self.message
+
+   try:
+       raise MyExcept('我的异常!')
+   except MyExcept as ex:
+       print(ex)　
+
+异常的名字都以\ ``Error``\ 结尾，我们在为自定义异常命名的时候也需要遵守这一规范，就跟标准的异常命名一样。

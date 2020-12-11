@@ -1,10 +1,6 @@
 7.2 经典类与新式类
 ==================
 
-|image0|
-
---------------
-
 1. 版本支持 / 写法差异
 ----------------------
 
@@ -48,7 +44,7 @@
 2. 使用方法 / 独特属性
 ----------------------
 
-经典类无法使用super() |image1| 经典类的类型是 classobj |image2|
+经典类无法使用super() |image0| 经典类的类型是 classobj |image1|
 
 新式类的类型是 type，保持class与type的统一。
 
@@ -115,7 +111,7 @@
 
 非常好理解，但是在菱形继承时，方法的调用会出现问题。
 
-|image3|
+|image2|
 
 假设 d 是 D 的一个实例，那么执行 d.show()是调用 A.show() 呢 还是调用
 C.show()呢？
@@ -133,7 +129,7 @@ A.show()，这显然是不合理的。所以这才有了后来的一步一步优
 Python 2.2 的新式类 MRO 计算方式和经典类 MRO
 的计算方式非常相似：它仍然采用从左至右的深度优先遍历，但是如果遍历中出现重复的类，只保留最后一个。重新考虑上面「菱形继承」的例子：
 
-|image4|
+|image3|
 
 同样地，我们也来验证一下。另说明，在新式类中，除用inspect外，可以直接通过__mro__属性获取类的
 MRO。
@@ -164,7 +160,7 @@ MRO。
 
 再来看一个复杂一点的例子。
 
-|image5|
+|image4|
 
 如果只依靠上面的算法，我们来一起算下，其继承关系是怎样的。
 
@@ -210,7 +206,7 @@ C 搜索顺序中 X 和 Y 互换仍然不能解决问题，这时候它又会和
 
 例如下面这张图。
 
-|image6|
+|image5|
 
 计算过程，会采用一种 merge算法。它的基本思想如下：
 
@@ -270,11 +266,10 @@ C 搜索顺序中 X 和 Y 互换仍然不能解决问题，这时候它又会和
 -  https://www.python.org/download/releases/2.3/mro/
 -  https://www.cnblogs.com/whatisfantasy/p/6046991.html
 
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/20201004123025.png
-.. |image2| image:: http://image.iswbm.com/20201004123036.png
-.. |image3| image:: http://image.iswbm.com/20201004123106.png
-.. |image4| image:: http://image.iswbm.com/20201004123056.png
-.. |image5| image:: http://image.iswbm.com/20201004123115.png
-.. |image6| image:: http://image.iswbm.com/20201004123126.png
+.. |image0| image:: http://image.iswbm.com/20201004123025.png
+.. |image1| image:: http://image.iswbm.com/20201004123036.png
+.. |image2| image:: http://image.iswbm.com/20201004123106.png
+.. |image3| image:: http://image.iswbm.com/20201004123056.png
+.. |image4| image:: http://image.iswbm.com/20201004123115.png
+.. |image5| image:: http://image.iswbm.com/20201004123126.png
 

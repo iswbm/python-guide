@@ -1,2 +1,209 @@
 6.1 什么是异常？
 ================
+
+在程序运行过程中，总会遇到各种各样的问题和错误。
+
+-  有些错误是我们编写代码时自己造成的，比如语法错误、调用错误，甚至逻辑错误。
+-  还有一些错误，则是不可预料的错误，但是完全有可能发生的，比如文件不存在、磁盘空间不足、网络堵塞、系统错误等等。
+
+这些导致程序在运行过程中出现异常中断和退出的错误，我们统称为异常。大多数的异常都不会被程序处理，而是以错误信息的形式展现出来。
+
+异常有很多种类型，Python内置了几十种常见的异常，就在builtins模块内，无需特别导入，直接就可使用。需要注意的是，所有的异常都是异常类，首字母是大写的！
+
+在发生异常的时候，Python会打印出异常信息，信息的前面部分显示了异常发生的上下文环境，并以调用栈的形式显示具体信息。异常类型作为信息的一部分也会被打印出来，例如ZeroDivisionError，TypeError。
+
+.. code:: python
+
+   >>> 1/0
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   ZeroDivisionError: integer division or modulo by zero
+   >>> 
+   >>> 
+   >>> 10 + "1"
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   TypeError: unsupported operand type(s) for +: 'int' and 'str'
+
+正常情况下，我们都不需要去记住 Python
+到底内置了哪些错误和异常类型，除非你需要去捕获它，关于捕获的内容，我会放在下一节。这一节先来认识一下
+Python
+中有哪些常见的错误和异常，对于新手，下面的内容大概过一下就好，不用深究，因为这些在你以后的编码中都会遇到的。
+
+1.SyntaxError
+-------------
+
+SyntaxError，是语法错误，可能是新手在学习 Python 时最容易遇到的错误
+
+.. code:: python
+
+   >>> while True print('Hello world')
+     File "<stdin>", line 1
+       while True print('Hello world')
+                      ^
+   SyntaxError: invalid syntax
+
+解析器会输出出现语法错误的那一行，并显示一个“箭头”，指向这行里面检测到的第一个错误。
+错误是由箭头指示的位置 *上面* 的 token
+引起的（或者至少是在这里被检测出的）：在示例中，在
+```print()`` <https://docs.python.org/zh-cn/3/library/functions.html#print>`__
+这个函数中检测到了错误，因为在它前面少了个冒号 (``':'``)
+。文件名和行号也会被输出，以便输入来自脚本文件时你能知道去哪检查。
+
+2、TypeError
+------------
+
+TypeError，是类型错误，也就是说将某个操作或功能应用于不合适类型的对象时引发，比如整型与字符型进行加减法
+
+.. code:: python
+
+   >>> a = 10
+   >>> b = "1"
+   >>> 
+   >>> a-b
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   TypeError: unsupported operand type(s) for -: 'int' and 'str'
+
+3、IndexError
+-------------
+
+IndexError，是指索引出现了错误，比如最常见下标索引超出了序列边界
+
+.. code:: python
+
+   >>> alist = [0,1,2]
+   >>> alist[5]
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   IndexError: list index out of range
+
+4、KeyError
+-----------
+
+KeyError是关键字错误，这个异常主要发生在字典中，比如当用户试图访问一个字典中不存在的键时会被引发。
+
+.. code:: python
+
+   >>> profile = {"name": "王炳明"}
+   >>> profile["age"]
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   KeyError: 'age'
+
+5、ValueError
+-------------
+
+ValueError为值错误，当用户传入一个调用者不期望的值时会引发，即使这个值的类型是正确的，比如想获取一个列表中某个不存在值的索引。
+
+.. code:: python
+
+   >>> int("1")
+   1
+   >>> int("a")
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   ValueError: invalid literal for int() with base 10: 'a'
+
+6、AttributeError
+-----------------
+
+AttributeError是属性错误，当用户试图访问一个对象不存在的属性时会引发。
+
+比如字典有get方法，而列表却没有，所以对一个列表对象调用该方法就会引发该异常。
+
+.. code:: python
+
+   >>> alist = [0,1,2]
+   >>> alist.get(0)
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   AttributeError: 'list' object has no attribute 'get'
+
+7、NameError
+------------
+
+NameError是指变量名称发生错误，比如用户试图调用一个还未被赋值或初始化的变量时会被触发。
+
+.. code:: python
+
+   >>> name
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   NameError: name 'name' is not defined
+
+8、IOError
+----------
+
+IOError 为打开文件错误，当用户试图以读取方式打开一个不存在的文件时引发。
+
+.. code:: python
+
+   >>> fb = open('demo.txt')
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   IOError: [Errno 2] No such file or directory: 'demo.txt'
+
+9、StopIteration
+----------------
+
+StopIteration为迭代器错误，当访问至迭代器最后一个值时仍然继续访问，就会引发这种异常，提醒用户迭代器中已经没有值可供访问了。
+
+.. code:: python
+
+   >>> alist = range(2)
+   >>> agen = iter(alist)
+   >>> next(agen)
+   0
+   >>> next(agen)
+   1
+   >>> next(agen)
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   StopIteration
+
+10、AssertionError
+------------------
+
+AssertionError
+为断言错误，当用户利用断言语句检测异常时，如果断言语句检测的表达式为假，则会引发这种异常。
+
+.. code:: python
+
+   >>> alist = [0,1,2]
+   >>> assert isinstance(alist, list)
+   >>> assert isinstance(alist, dict)
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   AssertionError
+
+11. IndentationError
+--------------------
+
+Python
+是一门严格缩进的语言，如果缩进有问题，就会导致解释器解析异常，抛出
+IndentationError
+
+.. code:: python
+
+   >>> while True:
+   ... print("hello")
+     File "<stdin>", line 2
+       print("hello")
+           ^
+   IndentationError: expected an indented block
+
+12. ImportError
+---------------
+
+当你在使用 import
+导包的时候，如果因为包名错误或者路径不对、包未安装，都会抛出 ImportError
+
+.. code:: python
+
+   >>> import oxx
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   ImportError: No module named oxx
+
+上面这些异常应该是平时编程中遇见频率比较高的一部分，还有更多的异常，可以前往官方文档：https://docs.python.org/3/library/exceptions.html
