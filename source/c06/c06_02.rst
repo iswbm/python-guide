@@ -26,17 +26,38 @@ Exception 通用异常。
 
 出现错误或者异常没有关系，关键在于你要学会预判程序可能会出现的错误或异常，然后在代码中捕获这些异常并处理。
 
-异常的捕获主要有三种方式：
+异常的捕获的语法有如下两种：
 
--  第一种：使用 ``try ... except ...``
-
-如果代码A发生了异常，则会走到代码B的逻辑
+第一种：只捕捉但是不想获取异常信息
 
 .. code:: python
 
    try:
        代码A
-   except:
+   except [EXCEPTION]:
+       代码B
+
+第二种：不但捕捉了还要获取异常信息，赋值给 e
+后，后面你可以把异常信息打印到日志中。
+
+.. code:: python
+
+   try:
+       代码A
+   except [EXCEPTION] as e:
+       代码B
+
+有了上面的基础语法，可以扩展出下面三种常用的异常捕获的写法。
+
+-  第一种：正常使用 ``try ... except ...``
+
+如果代码A发生了异常，则会走到代码B的逻辑。
+
+.. code:: python
+
+   try:
+       代码A
+   except [exception] as e :
        代码B
 
 举个例子
@@ -59,7 +80,7 @@ Exception 通用异常。
 
    try:
        代码A
-   except:
+   except [exception] as e:
        代码B
    else:
        代码C
@@ -102,7 +123,7 @@ Exception 通用异常。
 
    try:
        代码A
-   except:
+   except [exception] as e:
        代码B
    finally:
        代码C
