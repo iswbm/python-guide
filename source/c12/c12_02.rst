@@ -1,149 +1,240 @@
-12.2 创建多线程的几种方法
-=========================
+12.2 方案一：virtualenv
+=======================
+
+1. 安装virtualenv
+-----------------
+
+由于 virtualenvwrapper 是 virtualenv 的一组扩展，所以如果要使用
+virtualenvwrapper，就必须先安装 virtualenv。
+
+**基本使用**
+
+由于virtualenv创建虚拟环境是在当前环境下创建的。所以我们要准备一个专门存放虚拟环境的目录。（以下操作在Linux在完成，windows相对简单，请自行完成，有不明白的请微信与我联系。）
+
+**创建**
+
+.. code:: bash
+
+   # 准备目录并进入
+   $ mkdir -p /home/wangbm/Envs
+   $ cd !$
+
+   # 创建虚拟环境（按默认的Python版本）
+   # 执行完，当前目录下会有一个my_env01的目录
+   $ virtualenv my_env01
+
+   # 你也可以指定版本
+   $ virtualenv -p /usr/bin/python2.7 my_env01
+   $ virtualenv -p /usr/bin/python3.6 my_env02
+
+   # 你肯定觉得每次都要指定版本，相当麻烦吧？
+   # 在Linux下，你可以把这个选项写进入环境变量中
+   $ echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python2.7" >> ~/.bashrc
+
+**进入/退出**
+
+.. code:: bash
+
+   $ cd /home/wangbm/Envs
+
+   # 进入
+   $ source my_env01/bin/activate
+
+   # 退出
+   $ deactivate
+
+**删除**
+删除虚拟环境，只需删除对应的文件夹就行了。并不会影响全局的Python和其他环境。
+
+.. code:: bash
+
+   $ cd /home/wangbm/Envs
+   $ rm -rf my_env01
+
+..
+
+   注意：
+   创建的虚拟环境，不会包含原生全局环境的第三方包，其会保证新建虚拟环境的干净。
+
+如果你需要和全局环境使用相同的第三方包。可以使用如下方法：
+
+.. code:: bash
+
+   # 导出依赖包
+   $ pip freeze > requirements.txt
+
+   # 安装依赖包
+   $ pip install -r requirements.txt 
+
+2. 使用 virtualenvwrapper
+-------------------------
+
+virtualenv 虽然已经相当好用了，可是功能还是不够完善。
+
+你可能也发现了，要进入虚拟环境，必须得牢记之前设置的虚拟环境目录，如果你每次按规矩来，都将环境安装在固定目录下也没啥事。但是很多情况下，人是会懒惰的，到时可能会有很多个虚拟环境散落在系统各处，你将有可能忘记它们的名字或者位置。
+
+还有一点，virtualenv 切换环境需要两步，退出 -> 进入。不够简便。
+
+为了解决这两个问题，virtualenvwrapper就诞生了。
+
+**安装**
+
+.. code:: python
+
+   # 安装 - Linux
+   pip install virtualenvwrapper
+
+   # 安装 - Windows
+   pip install virtualenvwrapper-win
+
+**配置** 先find一下\ ``virtualenvwrapper.sh``\ 文件的位置
+
+.. code:: powershell
+
+   find / -name virtualenvwrapper.sh
+   # /usr/bin/virtualenvwrapper.sh
+
+若是 windows 则使用everything 查找 virtualenvwrapper.bat 脚本
+
+::
+
+   D:\Program Files (x86)\Python38-32\Scripts\virtualenvwrapper.bat
+
+在~/.bashrc 文件新增配置
+
+::
+
+   export WORKON_HOME=$HOME/.virtualenvs
+   export PROJECT_HOME=$HOME/workspace
+   export VIRTUALENVWRAPPER_SCRIPT=/usr/bin/virtualenvwrapper.sh
+   source /usr/bin/virtualenvwrapper.sh
+
+若是 windows 则新增环境变量：\ ``WORKON_HOME``
 
 |image0|
 
---------------
+**基本语法**\ ：
 
-今天的内容会比较基础，主要是为了让新手也能无障碍地阅读，所以还是要再巩固下基础。学完了基础，你们也就能很顺畅地跟着我的思路理解以后的文章。
+mkvirtualenv [-a project_path] [-i package] [-r requirements_file]
+[virtualenv options] ENVNAME
 
-经过总结，Python创建多线程主要有如下两种方法：
+**常用方法**
 
--  函数
--  类
+.. code:: bash
 
-接下来，我们就来揭开多线程的神秘面纱。
+   # 创建
+   $ mkvirtualenv my_env01
 
-1. 用函数创建多线程
--------------------
+   # 进入
+   $ workon my_env01
 
-在Python3中，Python提供了一个内置模块
-``threading.Thread``\ ，可以很方便地让我们创建多线程。
+   # 退出
+   $ deactivate
 
-``threading.Thread()`` 一般接收两个参数：
+   # 列出所有的虚拟环境，两种方法
+   $ workon
+   $ lsvirtualenv
 
--  线程函数名：要放置线程让其后台执行的函数，由我们自已定义，注意不要加\ ``()``\ ；
--  线程函数的参数：线程函数名所需的参数，以元组的形式传入。若不需要参数，可以不指定。
+   # 在虚拟环境内直接切换到其他环境
+   $ workon my_env02
 
-**举个例子**
+   # 删除虚拟环境
+   $ rmvirtualenv my_env01
 
-.. code:: python
+**其他命令**
 
-   import time
-   from threading import Thread
+.. code:: bash
 
-   # 自定义线程函数。
-   def target(name="Python"):
-       for i in range(2):
-           print("hello", name)
-           time.sleep(1)
+   # 列出帮助文档
+   $ virtualenvwrapper
 
-   # 创建线程01，不指定参数
-   thread_01 = Thread(target=target)
-   # 启动线程01
-   thread_01.start()
+   # 拷贝虚拟环境
+   $ cpvirtualenv ENVNAME [TARGETENVNAME]
 
+   # 在所有的虚拟环境上执行命令
+   $ allvirtualenv pip install -U pip
 
-   # 创建线程02，指定参数，注意逗号
-   thread_02 = Thread(target=target, args=("MING",))
-   # 启动线程02
-   thread_02.start()
+   # 删除当前环境的所有第三方包
+   $ wipeenv
 
-可以看到输出
+   # 进入到当前虚拟环境的目录
+   $ cdsitepackages
 
-.. code:: python
+   # 进入到当前虚拟环境的site-packages目录
+   $ cdvirtualenv
 
-   hello Python
-   hello MING
-   hello Python
-   hello MING
+   # 显示 site-packages 目录中的内容
+   $ lssitepackages
 
-2. 用类创建多线程
------------------
+更多内容，可查看 官方文档
+https://virtualenvwrapper.readthedocs.io/en/latest/command_ref.html
 
-相比较函数而言，使用类创建线程，会比较麻烦一点。
+3. 实战演示
+-----------
 
-首先，我们要自定义一个类，对于这个类有两点要求，
+以上内容，是一份使用指南。接下来，一起来看看，如何在项目中使用虚拟环境。
 
--  必须继承 ``threading.Thread`` 这个父类；
--  必须复写 ``run`` 方法。
+如何使用在我们的开发中使用我们的虚拟环境呢
 
-这里的 ``run``
-方法，和我们上面\ ``线程函数``\ 的性质是一样的，可以写我们的业务逻辑程序。在
-``start()`` 后将会调用。
+通常我们使用的场景有如下几种
 
-来看一下例子 为了方便对比，\ ``run``\ 函数我复用上面的\ ``main``\ 。
+-  交互式中
+-  PyCharm中
+-  工程中
 
-.. code:: python
+接下来，我将一一展示。
 
-   import time
-   from threading import Thread
+3.1 交互式中
+~~~~~~~~~~~~
 
-   class MyThread(Thread):
-       def __init__(self, type="Python"):
-           # 注意：super().__init__() 必须写
-           # 且最好写在第一行
-           super().__init__()
-           self.type=type
-
-       def run(self):
-           for i in range(2):
-               print("hello", self.type)
-               time.sleep(1)
-
-   if __name__ == '__main__':
-       # 创建线程01，不指定参数
-       thread_01 = MyThread()
-       # 创建线程02，指定参数
-       thread_02 = MyThread("MING")
-
-       thread_01.start()
-       thread_02.start()
-
-当然结果也是一样的。
-
-.. code:: python
-
-   hello Python
-   hello MING
-   hello Python
-   hello MING
-
-3. 线程对象的方法
------------------
-
-上面介绍了当前 Python 中创建线程两种主要方法。
-
-创建线程是件很容易的事，但要想用好线程，还需要学习线程对象的几个函数。
-
-经过我的总结，大约常用的方法有如下这些：
-
-.. code:: python
-
-   # 如上所述，创建一个线程
-   t=Thread(target=func)
-
-   # 启动子线程
-   t.start()
-
-   # 阻塞子线程，待子线程结束后，再往下执行
-   t.join()
-
-   # 判断线程是否在执行状态，在执行返回True，否则返回False
-   t.is_alive()
-   t.isAlive()
-
-   # 设置线程是否随主线程退出而退出，默认为False
-   t.daemon = True
-   t.daemon = False
-
-   # 设置线程名
-   t.name = "My-Thread"
-
---------------
-
+先对比下，全局环境和虚拟环境的区别，全局环境中有requests包，而虚拟环境中并未安装。
+当我们敲入
+``workon my_env01``\ ，前面有\ ``my_env01``\ 的标识，说明我们已经处在虚拟环境中。后面所有的操作，都将在虚拟环境下执行。
 |image1|
 
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/20200607174235.png
+3.2 工程项目中
+~~~~~~~~~~~~~~
+
+我们的工程项目，都有一个入口文件，仔细观察，其首行可以指定Python解释器。
+
+倘若我们要在虚拟环境中运行这个项目，只要更改这个文件头部即可。
+
+现在我还是以，\ ``import requests``
+为例，来说明，是否是在虚拟环境下运行的，如果是，则和上面一样，会报错。
+
+文件内容：
+
+.. code:: python
+
+   #!/root/.virtualenvs/my_env01/bin/python
+
+   import requests
+   print "ok"
+
+运行前，注意添加执行权限。
+
+.. code:: bash
+
+   $ chmod +x ming.py
+
+好了。来执行一下
+
+.. code:: bash
+
+   $ ./ming.py
+
+发现和预期一样，真的报错了。说明我们指定的虚拟环境有效果。 |image2|
+
+3.3 PyCharm中
+~~~~~~~~~~~~~
+
+点击 File - Settings - Project - Interpreter |image3|
+点击小齿轮。如图点击添加，按提示添加一个虚拟环境。然后点 OK
+就可以使用这个虚拟环境，之后的项目都会在这个虚拟环境下运行。 |image4|
+
+.. |image0| image:: http://image.iswbm.com/20200209161935.png
+.. |image1| image:: https://i.loli.net/2018/06/11/5b1e7d36ce8ad.png
+.. |image2| image:: https://i.loli.net/2018/06/11/5b1e7f140be6a.png
+.. |image3| image:: https://i.loli.net/2018/06/11/5b1e805c996c8.png
+.. |image4| image:: https://i.loli.net/2018/06/11/5b1e812db603f.png
 

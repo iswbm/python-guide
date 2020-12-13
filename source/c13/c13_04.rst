@@ -1,0 +1,77 @@
+13.4 使用 pre-commit hook 解决编码规范
+======================================
+
+   转载自：https://juejin.cn/post/6844903844103585805
+
+代码规范、测试是开发中很重要的一环，重要性无需我多说。我们需要一些自动化工具，来帮助我们更轻松地管理项目。本文推荐几个实用的自动化工具。
+
+pre-commit 我在之前的一篇文章 `推荐一些维护大型 Python
+项目的工具 <https://juejin.im/post/6844903838382555143>`__\ 中简要提到过，这里再稍微讲一下。
+
+pre-commit
+用到一个配置文件：\ ``.pre-commit-config.yaml``\ ，官方文档在\ `这里 <https://pre-commit.com>`__\ 。这里针对
+Python 项目，希望 git precommit hooks 能够实现以下功能：能找出不符合
+pep8规范的代码，并且能够自动格式化。这需要用到两个工具：\ ``black``\ 和\ ``flake8``\ ，\ ``black``\ 自动格式化，\ ``flake8``\ 检测代码不规范的地方。
+
+整个的 workflow 如下图所示：
+
+|image0|
+
+具体的执行步骤如下：
+
+1. 安装 pre-commit : ``pip install pre-commit``
+2. 写\ ``.pre-commit-config.yaml``\ 配置文件
+3. 用\ ``pre-commit install``\ 安装git hooks到你的\ ``.git/``\ 目录
+
+我们的\ ``.pre-commit-config.yaml``\ 很简单，如下：
+
+::
+
+   repos:
+   - repo: https://github.com/ambv/black
+     rev: stable
+     hooks:
+       - id: black
+         language_version: python3.7
+   - repo: https://github.com/pre-commit/pre-commit-hooks
+     rev: v1.2.3
+     hooks:
+       - id: flake8
+   复制代码
+
+然后我们下一次提交 commit
+的时候，会先运行\ ``black``\ 和\ ``flake8``\ ，检查出哪有不规范的地方，并且能自动帮你格式化。你修改之后重新提交
+commit，就能顺利提交了。
+
+实际操作一下：
+
+新建一个测试文件：\ ``bad_pep8.py``\ ：
+
+|image1|
+
+有好几处不符合 pep8规范，我们试着 commit 一下：
+
+|image2|
+
+可以看到两个 hook 都没有通过，另外 ``black``\ 帮我们把代码格式化了。
+
+|image3|
+
+同时\ ``flake8``\ 提示我们\ ``x``\ 变量定义了但是没有使用，把这一行删掉，然后重新add
+并 commit：
+
+|image4|
+
+如果你觉得没有必要强制要求不能定义变量而不使用（从输出可以看出这个规范的编号为F841），可以在项目根目录建一个\ ``.flake8``\ 配置文件，如下图。更加详细的配置请看\ `官方文档 <http://flake8.pycqa.org/en/latest/user/configuration.html>`__\ 。
+
+::
+
+   [flake8]
+   ignore = F841
+
+.. |image0| image:: http://image.iswbm.com/20201213224702.png
+.. |image1| image:: http://image.iswbm.com/20201213224716.png
+.. |image2| image:: http://image.iswbm.com/20201213224726.png
+.. |image3| image:: http://image.iswbm.com/20201213224737.png
+.. |image4| image:: http://image.iswbm.com/20201213224752.png
+

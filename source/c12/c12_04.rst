@@ -1,471 +1,256 @@
-12.4 线程消息通信机制
-=====================
+12.4 方案三：使用 pipx
+======================
 
 |image0|
 
+1. 什么是 pipx
 --------------
 
-前面我已经向大家介绍了，如何使用创建线程，启动线程。相信大家都会有这样一个想法，线程无非就是创建一下，然后再\ ``start()``\ 下，实在是太简单了。
+pipx 是一款用于帮助你安装和运行那些用 python 编写的终端程序，它类似于
+macOS 上的 brew，Ubuntu 上的 apt，CentOS 上的 yum。
 
-可是要知道，在真实的项目中，实际场景可要我们举的例子要复杂的多得多，不同线程的执行可能是有顺序的，或者说他们的执行是有条件的，是要受控制的。如果仅仅依靠前面学的那点浅薄的知识，是远远不够的。
+pipx 依赖 pip 和 venv，它只能在 python 3.6+ 的 Python 版本中才能使用。
 
-那今天，我们就来探讨一下如何控制线程的触发执行。
+默认情况下，pipx 和 pip 一样会从 pypi 上安装包，同时 pipx 也能像 pip
+一样从本地、git仓库、wheel 文件中安装包。
 
-要实现对多个线程进行控制，其实本质上就是消息通信机制在起作用，利用这个机制发送指令，告诉线程，什么时候可以执行，什么时候不可以执行，执行什么内容。
+为了避免你在安装 python app时，由于多版本而导致冲突，通常我们会使用 venv
+或者 virtualenv 新建一个虚拟环境，然后将 app 安装到虚拟环境中。
 
-经过我的总结，线程中通信方法大致有如下三种： - threading.Event -
-threading.Condition - queue.Queue
+后续你对这个 app 的管理操作，都得先进入这个虚拟环境。
 
-接下来我们来一一探讨下。
+发现没有？好像有点麻烦。
 
---------------
+pipx 的存在使这个流程变得更加舒畅，使用 pipx
+你可以无需关注虚拟环境的存在，并在你的机器上安装多个版本的 python app。
 
-1. Event事件
-------------
-
-Python提供了非常简单的通信机制
-``Threading.Event``\ ，通用的条件变量。多个线程可以\ ``等待某个事件的发生``\ ，在事件发生后，\ ``所有的线程``\ 都会被\ ``激活``\ 。
-
-关于Event的使用也超级简单，就三个函数
-
-.. code:: python
-
-   event = threading.Event()
-
-   # 重置event，使得所有该event事件都处于待命状态
-   event.clear()
-
-   # 等待接收event的指令，决定是否阻塞程序执行
-   event.wait()
-
-   # 发送event指令，使所有设置该event事件的线程执行
-   event.set()
-
-举个例子来看下。
-
-.. code:: python
-
-   import time
-   import threading
-
-
-   class MyThread(threading.Thread):
-       def __init__(self, name, event):
-           super().__init__()
-           self.name = name
-           self.event = event
-
-       def run(self):
-           print('Thread: {} start at {}'.format(self.name, time.ctime(time.time())))
-           # 等待event.set()后，才能往下执行
-           self.event.wait()
-           print('Thread: {} finish at {}'.format(self.name, time.ctime(time.time())))
-
-
-   threads = []
-   event = threading.Event()
-
-   # 定义五个线程
-   [threads.append(MyThread(str(i), event)) for i in range(1,5)]
-
-   # 重置event，使得event.wait()起到阻塞作用
-   event.clear()
-
-   # 启动所有线程
-   [t.start() for t in threads]
-
-   print('等待5s...')
-   time.sleep(5)
-
-   print('唤醒所有线程...')
-   event.set()
-
-执行一下，看看结果
-
-.. code:: python
-
-   Thread: 1 start at Sun May 13 20:38:08 2018
-   Thread: 2 start at Sun May 13 20:38:08 2018
-   Thread: 3 start at Sun May 13 20:38:08 2018
-   Thread: 4 start at Sun May 13 20:38:08 2018
-
-   等待5s...
-
-   唤醒所有线程...
-   Thread: 1 finish at Sun May 13 20:38:13 2018
-   Thread: 4 finish at Sun May 13 20:38:13 2018
-   Thread: 2 finish at Sun May 13 20:38:13 2018
-   Thread: 3 finish at Sun May 13 20:38:13 2018
-
-可见在所有线程都启动（\ ``start()``\ ）后，并不会执行完，而是都在\ ``self.event.wait()``\ 止住了，需要我们通过\ ``event.set()``\ 来给所有线程发送执行指令才能往下执行。
-
-2. Condition
-------------
-
-Condition和Event 是类似的，并没有多大区别。
-
-同样，Condition也只需要掌握几个函数即可。
-
-.. code:: python
-
-   cond = threading.Condition()
-
-   # 类似lock.acquire()
-   cond.acquire()
-
-   # 类似lock.release()
-   cond.release()
-
-   # 等待指定触发，同时会释放对锁的获取,直到被notify才重新占有琐。
-   cond.wait()
-
-   # 发送指定，触发执行
-   cond.notify()
-
-举个网上一个比较趣的捉迷藏的例子来看看
-
-.. code:: python
-
-   import threading, time
-
-   class Hider(threading.Thread):
-       def __init__(self, cond, name):
-           super(Hider, self).__init__()
-           self.cond = cond
-           self.name = name
-
-       def run(self):
-           time.sleep(1)  #确保先运行Seeker中的方法
-           self.cond.acquire()
-
-           print(self.name + ': 我已经把眼睛蒙上了')
-           self.cond.notify()
-           self.cond.wait()
-           print(self.name + ': 我找到你了哦 ~_~')
-           self.cond.notify() 
-
-           self.cond.release()
-           print(self.name + ': 我赢了')
-
-   class Seeker(threading.Thread):
-       def __init__(self, cond, name):
-           super(Seeker, self).__init__()
-           self.cond = cond
-           self.name = name
-           
-       def run(self):
-           self.cond.acquire()
-           self.cond.wait()
-           print(self.name + ': 我已经藏好了，你快来找我吧')
-           self.cond.notify()
-           self.cond.wait()
-           self.cond.release()
-           print(self.name + ': 被你找到了，哎~~~')
-           
-   cond = threading.Condition()
-   seeker = Seeker(cond, 'seeker')
-   hider = Hider(cond, 'hider')
-   seeker.start()
-   hider.start()
-
-通过cond来通信，阻塞自己，并使对方执行。从而，达到有顺序的执行。
-看下结果
-
-.. code:: python
-
-   hider:   我已经把眼睛蒙上了
-   seeker:  我已经藏好了，你快来找我吧
-   hider:   我找到你了 ~_~
-   hider:   我赢了
-   seeker:  被你找到了，哎~~~
-
-3. Queue队列
-------------
-
-最后一个，队列，它是本节的重点，因为它是我们日常开发中最使用频率最高的。
-
-从一个线程向另一个线程发送数据最安全的方式可能就是使用 queue
-库中的队列了。创建一个被多个线程共享的 Queue
-对象，这些线程通过使用\ ``put()`` 和 ``get()``
-操作来向队列中发送和获取元素。
-
-同样，对于Queue，我们也只需要掌握几个函数即可。
-
-.. code:: python
-
-   from queue import Queue
-   # maxsize默认为0，不受限
-   # 一旦>0，而消息数又达到限制，q.put()也将阻塞
-   q = Queue(maxsize=0)
-
-   # 默认阻塞程序，等待队列消息，可设置超时时间
-   q.get(block=True, timeout=None)
-
-   # 发送消息：默认会阻塞程序至队列中有空闲位置放入数据
-   q.put(item, block=True, timeout=None)
-
-   # 等待所有的消息都被消费完
-   q.join()
-
-
-   # 通知队列任务处理已经完成，当所有任务都处理完成时，join() 阻塞将会解除
-   q.task_done()
-
-以下三个方法，知道就好，一般不需要使用
-
-.. code:: python
-
-   # 查询当前队列的消息个数
-   q.qsize()
-
-   # 队列消息是否都被消费完，返回 True/False
-   q.empty()
-
-   # 检测队列里消息是否已满
-   q.full()
-
-函数会比之前的多一些，同时也从另一方面说明了其功能更加丰富。
-
-我来举个老师点名的例子。
-
-.. code:: python
-
-   # coding=utf-8
-   # /usr/bin/env python
-
-   '''
-   Author: wangbm
-   Email: wongbingming@163.com
-   Wechat: mrbensonwon
-   Blog: python-online.cn
-   公众号：Python编程时光
-
-
-   date: 2020/9/20 下午7:30
-   desc: 
-   '''
-
-   __author__ = 'wangbm'
-
-
-   from queue import Queue
-   from threading import Thread
-   import time
-
-   class Student:
-       def __init__(self, name):
-           self.name = name
-
-       def speak(self):
-           print("{}：到！".format(self.name))
-
-
-   class Teacher:
-       def __init__(self, queue):
-           super().__init__()
-           self.queue=queue
-
-       def call(self, student_name):
-           if student_name == "exit":
-               print("点名结束，开始上课..")
-           else:
-               print("老师：{}来了没？".format(student_name))
-               # 发送消息，要点谁的名
-           self.queue.put(student_name)
-
-   class CallManager(Thread):
-       def __init__(self, queue):
-           super().__init__()
-           self.students = {}
-           self.queue = queue
-
-       def put(self, student):
-           self.students.setdefault(student.name, student)
-
-       def run(self):
-           while True:
-               # 阻塞程序，时刻监听老师，接收消息
-               student_name = queue.get()
-               if student_name == "exit":
-                   break
-               elif student_name in self.students:
-                   self.students[student_name].speak()
-               else:
-                   print("老师，咱班，没有 {} 这个人".format(student_name))
-
-   queue = Queue()
-   teacher = Teacher(queue=queue)
-
-   s1 = Student(name="小明")
-   s2 = Student(name="小亮")
-
-   cm = CallManager(queue)
-   cm.put(s1)
-   cm.put(s2)
-   cm.start()
-
-   print('开始点名~')
-   teacher.call('小明')
-   time.sleep(1)
-   teacher.call('小亮')
-   time.sleep(1)
-   teacher.call("exit")
-
-运行结果如下
-
-.. code:: python
-
-   开始点名~
-   老师：小明来了没？
-   小明：到！
-   老师：小亮来了没？
-   小亮：到！
-   点名结束，开始上课..
-
-其实 queue 还有一个很重要的方法，Queue.task_done()
-
-如果不明白它的原理，我们在写程序，就很有可能卡死。
-
-当我们使用 Queue.get()
-从队列取出数据后，这个数据有没有被正常消费，是很重要的。
-
-如果数据没有被正常消费，那么Queue会认为这个任务还在执行中，此时你使用
-Queue.join() 会一直阻塞，即使此时你的队列里已经没有消息了。
-
-那么如何解决这种一直阻塞的问题呢？
-
-就是在我们正常消费完数据后，记得调用一下
-Queue.task_done()，说明队列这个任务已经结束了。
-
-当队列内部的任务计数器归于零时，调用 Queue.join() 就不会再阻塞了。
-
-要理解这个过程，请参考 http://python.iswbm.com/en/latest/c02/c02_06.html
-里自定义线程池的的例子。
-
-4. 消息队列的先进先出
----------------------
-
-消息队列可不是只有\ ``queue.Queue``\ 这一个类，除它之外，还有\ ``queue.LifoQueue``\ 和\ ``queue.PriorityQueue``\ 这两个类。
-
-从名字上，对于他们之间的区别，你大概也能猜到一二吧。
-
-   ``queue.Queue``\ ：先进先出队列 ``queue.LifoQueue``\ ：后进先出队列
-   ``queue.PriorityQueue``\ ：优先级队列
-
-先来看看，我们的老朋友，\ ``queue.Queue``\ 。
-所谓的\ ``先进先出``\ （FIFO，First in First
-Out），就是先进入队列的消息，将优先被消费。
-这和我们日常排队买菜是一样的，先排队的人肯定是先买到菜。
-
-用代码来说明一下
-
-.. code:: python
-
-   import queue
-
-   q = queue.Queue()
-
-   for i in range(5):
-       q.put(i)
-
-   while not q.empty():
-       print q.get()
-
-看看输出，符合我们先进先出的预期。存入队列的顺序是\ ``01234``\ ，被消费的顺序也是\ ``01234``\ 。
-
-::
-
-   0
-   1
-   2
-   3
-   4
-
-再来看看\ ``Queue.LifoQueue``\ ，后进先出，就是后进入消息队列的，将优先被消费。
-
-这和我们羽毛球筒是一样的，最后放进羽毛球筒的球，会被第一个取出使用。
-
-用代码来看下
-
-.. code:: python
-
-   import queue
-
-   q = queue.LifoQueue()
-
-   for i in range(5):
-       q.put(i)
-
-   while not q.empty():
-       print q.get()
-
-来看看输出，符合我们后进后出的预期。存入队列的顺序是\ ``01234``\ ，被消费的顺序也是\ ``43210``\ 。
-
-::
-
-   4
-   3
-   2
-   1
-   0
-
-最后来看看\ ``Queue.PriorityQueue``\ ，优先级队列。
-这和我们日常生活中的会员机制有些类似，办了金卡的人比银卡的服务优先，办了银卡的人比不办卡的人服务优先。
-
-来用代码看一下
-
-.. code:: python
-
-   from queue import PriorityQueue
-
-   # 重新定义一个类，继承自PriorityQueue
-   class MyPriorityQueue(PriorityQueue):
-       def __init__(self):
-           PriorityQueue.__init__(self)
-           self.counter = 0
-
-       def put(self, item, priority):
-           PriorityQueue.put(self, (priority, self.counter, item))
-           self.counter += 1
-
-       def get(self, *args, **kwargs):
-           _, _, item = PriorityQueue.get(self, *args, **kwargs)
-           return item
-
-
-   queue = MyPriorityQueue()
-   queue.put('item2', 2)
-   queue.put('item5', 5)
-   queue.put('item3', 3)
-   queue.put('item4', 4)
-   queue.put('item1', 1)
-
-   while True:
-       print(queue.get())
-
-来看看输出，符合我们的预期。我们存入入队列的顺序是\ ``25341``\ ，对应的优先级也是\ ``25341``\ ，可是被消费的顺序丝毫不受传入顺序的影响，而是根据指定的优先级来消费。
-
-.. code:: python
-
-   item1
-   item2
-   item3
-   item4
-   item5
-
-5. 总结一下
+2. 安装使用
 -----------
 
-学习了以上三种通信方法，我们很容易就能发现\ ``Event`` 和 ``Condition``
-是threading模块原生提供的模块，原理简单，功能单一，它能发送 ``True`` 和
-``False`` 的指令，所以只能适用于某些简单的场景中。
+安装 pipx
 
-而\ ``Queue``\ 则是比较高级的模块，它可能发送任何类型的消息，包括字符串、字典等。其内部实现其实也引用了\ ``Condition``\ 模块（譬如\ ``put``\ 和\ ``get``\ 函数的阻塞），正是其对\ ``Condition``\ 进行了功能扩展，所以功能更加丰富，更能满足实际应用。
+.. code:: shell
 
---------------
+   $ python3 -m pip install --user pipx
+   $ python3 -m userpath append ~/.local/bin
+   Success!
+
+使用 Pipx 需要注意两个路径
+
+1. 二进制文件的保存位置：默认是 ``~/.local/bin``\ ，可使用环境变量
+   ``PIPX_BIN_DIR``
+   进行更改，或者执行如下命令(\ ``python3 -m userpath append ${you_path}``)
+2. 虚拟环境的保存位置：默认是 ``~/.local/pipx``\ ，可使用环境变量
+   ``PIPX_HOME`` 进行更改
+
+在我安装好 pipx ，准备使用的时候，发现全局找不到 pipx 这个命令。
 
 |image1|
 
+按照如上图所示，难道使用全路径执行命令？
+
+**不，怎么都觉得不太对劲。。**
+
+想要解决这个问题，其实很简单，有两种方法（两种都可以，我演示使用的第一种方法）：
+
+1. 添加个软链接指向刚刚那个全路径就好啦
+2. 将这个路径添加到 PATH 中 ``/Users/MING/Library/Python/3.9/bin/``
+
+.. code:: shell
+
+   $ ln -s /Users/MING//Library/Python/3.9/bin/pipx /usr/local/bin/pipx
+
+软链接建好后，就可以直接使用 ``pipx`` 的命令啦。
+
+|image2|
+
+刚刚我使用 pipx 安装了 youtube-dl 后，其实并没有将这个 youtube-dl
+安装到系统全局的 Python 环境中。
+
+还记得最开始，我强调过两个非常重要的路径吗？
+
+现在来看一下，这个路径下面都有哪些东西？
+
+|image3|
+
+从截图上可以看出
+
+-  pipx 在 ``~/.local/pipx/venvs`` 目录下新建了个名叫 ``youtube-dl``
+   的虚拟机环境
+-  并将 ``youtube-dl`` 安装到这个虚拟机环境中
+-  然后在 ``~/.local/bin`` 的目录下新建一个软链接，指向这个虚拟环境中
+-  这样 ``youtube-dl`` 就变成全局的工具啦。
+
+|image4|
+
+为了避免你新安装的 youtube-dl 与全局的冲突，你也可以指定 pipx
+的命令来运行 youtube-dl
+
+.. code:: shell
+
+   $ pipx run youtube-dl --no-check-certificate https://www.bilibili.com/video/BV1jK4y1h7uA
+
+运行效果如下：
+
+|image5|
+
+pip run 也可以直接执行在线的 python 脚本
+
+.. code:: shell
+
+   $ pipx run https://gist.githubusercontent.com/cs01/fa721a17a326e551ede048c5088f9e0f/raw/6bdfbb6e9c1132b1c38fdd2f195d4a24c540c324/pipx-demo.py
+   pipx is working!
+
+3. 查看包
+---------
+
+查看已安装过的包
+
+.. code:: shell
+
+   $ pipx list
+
+4. 安装包
+---------
+
+下载最新版本的 python 包，并安装到新建的虚拟环境中
+
+.. code:: shell
+
+   $ pipx install <PACKAGE>
+
+4. 运行APP
+----------
+
+``pipx run`` 后面可接一个包的 url
+链接，会将这个包下载下来并运行，也可以接已安装过的应用名来直接运行它
+
+.. code:: shell
+
+   $ pipx run <PACKAGE_URL/APP>
+
+如果一个 app 有多个版本，那么可以通过 ``spec`` 指定版本号
+
+.. code:: shell
+
+   $ pipx run --spec PACKAGE==1.0.0 app
+
+更神奇的是，pipx 支持指定 git 代码仓库直接运行
+
+.. code:: shell
+
+   $ pipx run --spec git+https://github.com/psf/black.git black
+
+   # 指定分支
+   $ pipx run --spec git+https://github.com/psf/black.git@branch black  
+
+   # 指定某个git hash
+   $ pipx run --spec git+https://github.com/psf/black.git@ce14fa8b497bae2b50ec48b3bd7022573a59cdb1 black 
+
+   # 指定某个发行版本
+   $ pipx run --spec https://github.com/psf/black/archive/18.9b0.zip black # install a release
+
+5. 升级包
+---------
+
+升级某个包
+
+.. code:: shell
+
+   $ pipx upgrade <pkg>
+
+升级全部包
+
+.. code:: shell
+
+   $ pipx upgrade-all
+
+6. 卸载包
+---------
+
+卸载某个包
+
+.. code:: shell
+
+   $ pipx uninstall <pkg>
+
+卸载全部包
+
+.. code:: shell
+
+   $ pipx uninstall-all
+
+重装全部包
+
+.. code:: shell
+
+   $ pipx reinstall-all
+
+7. 使用 pip
+-----------
+
+每执行一次 pipx install
+就会新建一个虚拟环境，那我们有没有办法管理这些虚拟机环境呢？
+
+比如我想看这个虚拟环境里安装了哪些包？
+
+使用如下命令就可以像使用 pip 一样，来管理 pipx 的虚拟环境
+
+.. code:: shell
+
+   $ pipx runpip <env_name> <args>
+
+效果如下
+
+|image6|
+
+8. 其他
+-------
+
+执行 ``pipx completions`` 可以启用 pipx 的补全说明。
+
+对于不同的终端开启方式不一样，我使用的是 zsh，方法是
+
+.. code:: shell
+
+   $ autoload -U bashcompinit
+   $ bashcompinit
+   $ eval "$(register-python-argcomplete pipx)"
+
+我安装好后，可以使用 tab 键进行命令补全。
+
+|image7|
+
+执行 ``pipx ensurepath`` 可以确保 ``~/.local/bin``
+这个重要的目录，已经放入到 ``$PATH`` 的变量中。
+
+|image8|
+
+9. pipx vs pip
+--------------
+
+pipx 只是解决 pip
+的一个痛点，因此他的适用场景比较单一，它只适用于安装和运行那些有提供命令行入口的app。
+
+-  pip 适用于大多数的 Python 版本，而 pipx 需要 Python 3.6+ 才可以使用
+-  pipx 依赖 pip 和 venv，可以使用 pip 安装pipx ，反过来则不行。
+-  pip 和 pipx 默认都是从 pypi 上安装包
+-  pipx 在安装和管理 cli 应用程序时，比 pip
+   更灵活，它可以在允许在隔离环境中安装和运行 Python 应用
+
+10. 参考文章
+------------
+
+-  https://github.com/pipxproject/pipx
+-  https://pipxproject.github.io/pipx/comparisons/
+
 .. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/20200607174235.png
+.. |image1| image:: http://image.iswbm.com/image-20201130124107950.png
+.. |image2| image:: http://image.iswbm.com/image-20201130124554404.png
+.. |image3| image:: http://image.iswbm.com/image-20201130125257203.png
+.. |image4| image:: http://image.iswbm.com/image-20201130131138939.png
+.. |image5| image:: http://image.iswbm.com/image-20201130210539907.png
+.. |image6| image:: http://image.iswbm.com/image-20201130215320069.png
+.. |image7| image:: http://image.iswbm.com/image-20201130220233001.png
+.. |image8| image:: http://image.iswbm.com/image-20201130215826513.png
 

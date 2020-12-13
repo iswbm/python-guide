@@ -466,7 +466,7 @@
 
 8、[像操作Excel一样玩Pandas，这款可视化神器太棒了](http://mp.weixin.qq.com/s?__biz=MzIzMzMzOTI3Nw==&mid=2247493689&idx=1&sn=2e614500c8359e4b87de55128fe69593&chksm=e88588dbdff201cd761e20605f10f1aa9525d6d89072cbbc9a307e35788b8a425c2044d337d4#rd)
 
-9、![8 个 Jupyter Notebook Tips，隐藏得太深了](http://mp.weixin.qq.com/s?__biz=MzIzMzMzOTI3Nw==&mid=2247494062&idx=2&sn=860539d7eae82c53791cd7a2eb005536&chksm=e885894cdff2005ae9169c7dfabe3760c19eded392ec18805f1d763ad8dce77c21150698178a&scene=27#wechat_redirect)
+9、[8 个 Jupyter Notebook Tips，隐藏得太深了](http://mp.weixin.qq.com/s?__biz=MzIzMzMzOTI3Nw==&mid=2247494062&idx=2&sn=860539d7eae82c53791cd7a2eb005536&chksm=e885894cdff2005ae9169c7dfabe3760c19eded392ec18805f1d763ad8dce77c21150698178a&scene=27#wechat_redirect)
 
 
 ## 04. 开发工具

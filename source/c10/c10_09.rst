@@ -1,9 +1,5 @@
-12.9 初识异步IO框架：asyncio 上篇
+10.9 初识异步IO框架：asyncio 上篇
 =================================
-
-|image0|
-
---------------
 
 通过前两节的铺垫（关于协程的使用），今天我们终于可以来介绍我们整个系列的重点
 – ``asyncio``\ 。
@@ -242,15 +238,11 @@
 
    这里是回调函数，获取返回结果是： 暂停了2秒！
 
-emmm，和上面的结果是一样的。nice
+和上面的结果是一样的。非常好。
 
 --------------
 
-|image4|
-
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
 .. |普通函数中 不能使用 await| image:: https://i.loli.net/2018/05/26/5b09794f45340.png
 .. |async 中 不能使用yield| image:: https://i.loli.net/2018/05/26/5b0978b646230.png
 .. |验证通过| image:: https://i.loli.net/2018/05/26/5b09814dc4714.png
-.. |image4| image:: http://image.iswbm.com/20200607174235.png
 

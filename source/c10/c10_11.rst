@@ -1,18 +1,5 @@
-12.11 实战异步IO框架：asyncio 下篇
+10.11 实战异步IO框架：asyncio 下篇
 ==================================
-
-|image0|
-
---------------
-
-前面两节，我们讲了协程中的单任务和多任务
-
-这节我们将通过一个小实战，来对这些内容进行巩固。
-
---------------
-
-在实战中，将会用到以下知识点： - 多线程的基本使用 - Queue消息队列的使用
-- Redis的基本使用 - asyncio的使用
 
 1. 动态添加协程
 ---------------
@@ -127,11 +114,11 @@
 为了简单起见，并且协程更适合单线程的方式，我们的主线程用来监听队列，子线程用于处理队列。这里使用redis的队列。主线程中有一个是无限循环，用户消费队列。
 
 先安装Redis 到 https://github.com/MicrosoftArchive/redis/releases 下载
-|image1| 解压到你的路径。 |image2|
+|image0| 解压到你的路径。 |image1|
 
-然后，在当前路径运行cmd，运行redis的服务端。 |image3|
+然后，在当前路径运行cmd，运行redis的服务端。 |image2|
 服务开启后，我们就可以运行我们的客户端了。
-并依次输入key=queue，value=5,3,1的消息。 |image4|
+并依次输入key=queue，value=5,3,1的消息。 |image3|
 
 一切准备就绪之后，我们就可以运行我们的代码了。
 
@@ -212,18 +199,8 @@
 
 运行后，程序是一直运行在后台的，我们每一次在Redis中输入新值，都会触发新任务的执行。。
 
---------------
-
-好了，经过这个实战内容，你应该对asyncio的实际应用有了一个更深刻的认识了，至此，你已经可以使用asyncio来实现任务的并发。快去体验一下。如果有什么疑问，请在后台加我微信与我联系。。
-
---------------
-
-|image5|
-
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: https://i.loli.net/2018/06/03/5b13ba8525bcf.png
-.. |image2| image:: https://i.loli.net/2018/06/03/5b13ba9f66baa.png
-.. |image3| image:: https://i.loli.net/2018/06/03/5b13bab682a32.png
-.. |image4| image:: https://i.loli.net/2018/06/03/5b13bad79f5ce.png
-.. |image5| image:: http://image.iswbm.com/20200607174235.png
+.. |image0| image:: https://i.loli.net/2018/06/03/5b13ba8525bcf.png
+.. |image1| image:: https://i.loli.net/2018/06/03/5b13ba9f66baa.png
+.. |image2| image:: https://i.loli.net/2018/06/03/5b13bab682a32.png
+.. |image3| image:: https://i.loli.net/2018/06/03/5b13bad79f5ce.png
 
