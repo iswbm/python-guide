@@ -1,6 +1,3 @@
-
-# 目录大纲
-
 - **第一章：安装运行**
    * [1.1 安装 Python 解释器](http://demo.iswbm.com/en/latest/c01/c01_01.html)
    * [1.2 第一个 Python 程序](http://demo.iswbm.com/en/latest/c01/c01_02.html)
@@ -30,21 +27,27 @@
    * [5.2 匿名函数](http://demo.iswbm.com/en/latest/c05/c05_02.html)
    * [5.3 高阶函数](http://demo.iswbm.com/en/latest/c05/c05_03.html)
    * [5.4 反射函数](http://demo.iswbm.com/en/latest/c05/c05_04.html)
-   * [5.5 with 与上下文管理器](http://demo.iswbm.com/en/latest/c05/c05_05.html)
+   * [5.5 偏函数](http://demo.iswbm.com/en/latest/c05/c05_05.html)
    * [5.6 泛型函数](http://demo.iswbm.com/en/latest/c05/c05_06.html)
-   * [5.7 偏函数](http://demo.iswbm.com/en/latest/c05/c05_07.html)
+   * [5.7 with 与上下文管理器](http://demo.iswbm.com/en/latest/c05/c05_07.html)
    * [5.8 装饰器的八种写法](http://demo.iswbm.com/en/latest/c05/c05_08.html)
+   * [5.9 变量的作用域](http://demo.iswbm.com/en/latest/c05/c05_09.html)
 - **第六章：错误异常**
    * [6.1 什么是异常？](http://demo.iswbm.com/en/latest/c06/c06_01.html)
    * [6.2 如何捕获异常](http://demo.iswbm.com/en/latest/c06/c06_02.html)
    * [6.3 如何自定义异常](http://demo.iswbm.com/en/latest/c06/c06_03.html)
+   * [6.4 异常处理的三个好习惯](http://demo.iswbm.com/en/latest/c06/c06_04.html)
 - **第七章：类与对象**
-   * [7.1 类的定义与使用](http://demo.iswbm.com/en/latest/c07/c07_01.html)
-   * [7.2 经典类与新式类](http://demo.iswbm.com/en/latest/c07/c07_02.html)
-   * [7.3 多继承和 Mixin 设计模式](http://demo.iswbm.com/en/latest/c07/c07_03.html)
-   * [7.4 理解元类编程](http://demo.iswbm.com/en/latest/c07/c07_04.html)
-   * [7.5 深入理解描述符](http://demo.iswbm.com/en/latest/c07/c07_05.html)
-   * [7.6 静态方法其实暗藏玄机](http://demo.iswbm.com/en/latest/c07/c07_06.html)
+   * [7.1 类的理解与使用](http://demo.iswbm.com/en/latest/c07/c07_01.html)
+   * [7.2 静态方法与类方法](http://demo.iswbm.com/en/latest/c07/c07_02.html)
+   * [7.3 私有变量与私有方法](http://demo.iswbm.com/en/latest/c07/c07_03.html)
+   * [7.4 类的封装（Encapsulation）](http://demo.iswbm.com/en/latest/c07/c07_04.html)
+   * [7.5 类的继承（Inheritance）](http://demo.iswbm.com/en/latest/c07/c07_05.html)
+   * [7.6 类的多态（Polymorphism）](http://demo.iswbm.com/en/latest/c07/c07_06.html)
+   * [7.7 类的 property 属性](http://demo.iswbm.com/en/latest/c07/c07_07.html)
+   * [7.8 类的 Mixin 设计模式](http://demo.iswbm.com/en/latest/c07/c07_08.html)
+   * [7.9 深入理解描述符](http://demo.iswbm.com/en/latest/c07/c07_09.html)
+   * [7.10 学习元类编程](http://demo.iswbm.com/en/latest/c07/c07_10.html)
 - **第八章：包与模块**
    * [8.1 什么是包、模块和库？](http://demo.iswbm.com/en/latest/c08/c08_01.html)
    * [8.2 安装第三方包的四种方法](http://demo.iswbm.com/en/latest/c08/c08_02.html)
