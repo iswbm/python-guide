@@ -1,8 +1,14 @@
-5.8 装饰器的八种写法
+5.8 装饰器的六种写法
 ====================
 
 Hello，装饰器
-~~~~~~~~~~~~~
+-------------
+
+装饰器本质上是一个Python函数，它可以让其他函数在不需要做任何代码变动的前提下增加额外功能，装饰器的返回值也是一个函数对象。
+
+它经常用于有切面需求的场景，比如：插入日志、性能测试、事务处理、缓存、权限校验等场景。
+
+装饰器是解决这类问题的绝佳设计，有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码并继续重用。
 
 装饰器的使用方法很固定
 
@@ -14,11 +20,13 @@ Hello，装饰器
 
 .. code:: python
 
+   # 定义装饰器
    def decorator(func):
        def wrapper(*args, **kw):
            return func()
        return wrapper
 
+   # 定义业务函数并进行装饰
    @decorator
    def function():
        print("hello, decorator")
@@ -30,20 +38,20 @@ Hello，装饰器
 
 接下来，我将以实例讲解，如何编写出各种简单及复杂的装饰器。
 
-入门：日志打印器
-~~~~~~~~~~~~~~~~
+第一种：普通装饰器
+------------------
 
-首先是\ **日志打印器**\ 。 实现的功能：
+首先咱来写一个最普通的装饰器，它实现的功能是：
 
--  在函数执行前，先打印一行日志告知一下主人，我要执行函数了。
--  在函数执行完，也不能拍拍屁股就走人了，咱可是有礼貌的代码，再打印一行日志告知下主人，我执行完啦。
+-  在函数执行前，先记录一行日志
+-  在函数执行完，再记录一行日志
 
 .. code:: python
 
    # 这是装饰器函数，参数 func 是被装饰的函数
    def logger(func):
        def wrapper(*args, **kw):
-           print('主人，我准备开始执行：{} 函数了:'.format(func.__name__))
+           print('我准备开始执行：{} 函数了:'.format(func.__name__))
 
            # 真正执行的是这行。
            func(*args, **kw)
@@ -69,50 +77,12 @@ Hello，装饰器
 
 .. code:: python
 
-   主人，我准备开始执行：add 函数了:
+   我准备开始执行：add 函数了:
    200 + 50 = 250
-   主人，我执行完啦。
+   我执行完啦。
 
-入门：时间计时器
-~~~~~~~~~~~~~~~~
-
-再来看看 **时间计时器** 实现功能：顾名思义，就是计算一个函数的执行时长。
-
-.. code:: python
-
-   # 这是装饰函数
-   def timer(func):
-       def wrapper(*args, **kw):
-           t1=time.time()
-           # 这是函数真正执行的地方
-           func(*args, **kw)
-           t2=time.time()
-
-           # 计算下时长
-           cost_time = t2-t1 
-           print("花费时间：{}秒".format(cost_time))
-       return wrapper
-
-假如，我们的函数是要睡眠10秒。这样也能更好的看出这个计算时长到底靠不靠谱。
-
-.. code:: python
-
-   import time
-
-   @timer
-   def want_sleep(sleep_time):
-       time.sleep(sleep_time)
-
-   want_sleep(10)
-
-来看看输出，如预期一样，输出10秒。
-
-::
-
-   花费时间：10.0073800086975098秒
-
-进阶：带参数的函数装饰器
-~~~~~~~~~~~~~~~~~~~~~~~~
+第二种：带参数的函数装饰器
+--------------------------
 
 通过上面两个简单的入门示例，你应该能体会到装饰器的工作原理了。
 
@@ -189,8 +159,8 @@ periodic_task
    ------------
    hello.
 
-高阶：不带参数的类装饰器
-~~~~~~~~~~~~~~~~~~~~~~~~
+第三种：不带参数的类装饰器
+--------------------------
 
 以上都是基于函数实现的装饰器，在阅读别人代码时，还可以时常发现还有基于类实现的装饰器。
 
@@ -224,8 +194,8 @@ periodic_task
    [INFO]: the function say() is running...
    say hello!
 
-高阶：带参数的类装饰器
-~~~~~~~~~~~~~~~~~~~~~~
+第四种：带参数的类装饰器
+------------------------
 
 上面不带参数的例子，你发现没有，只能打印\ ``INFO``\ 级别的日志，正常情况下，我们还需要打印\ ``DEBUG``
 ``WARNING``\ 等级别的日志。
@@ -262,8 +232,8 @@ periodic_task
    [WARNING]: the function say() is running...
    say hello!
 
-使用偏函数与类实现装饰器
-~~~~~~~~~~~~~~~~~~~~~~~~
+第五种：使用偏函数与类实现装饰器
+--------------------------------
 
 绝大多数装饰器都是基于函数和闭包实现的，但这并非制造装饰器的唯一方式。
 
@@ -334,8 +304,8 @@ Python工匠：使用装饰器的小技巧）
    >>> add.func # 实现实例方法
    <function add at 0x107bef1e0>
 
-如何写能装饰类的装饰器？
-~~~~~~~~~~~~~~~~~~~~~~~~
+第六种：能装饰类的装饰器
+------------------------
 
 用 Python
 写单例模式的时候，常用的有三种写法。其中一种，是用装饰器来实现的。
@@ -371,102 +341,6 @@ Python工匠：使用装饰器的小技巧）
 其实例化的过程，你可以参考我这里的调试过程，加以理解。
 
 |image0|
-
-wraps 装饰器有啥用？
-~~~~~~~~~~~~~~~~~~~~
-
-在 functools 标准库中有提供一个 wraps
-装饰器，你应该也经常见过，那他有啥用呢？
-
-先来看一个例子
-
-.. code:: python
-
-   def wrapper(func):
-       def inner_function():
-           pass
-       return inner_function
-
-   @wrapper
-   def wrapped():
-       pass
-
-   print(wrapped.__name__)
-   #inner_function
-
-为什么会这样子？不是应该返回 ``func`` 吗？
-
-这也不难理解，因为上边执行\ ``func`` 和下边 ``decorator(func)``
-是等价的，所以上面 ``func.__name__``
-是等价于下面\ ``decorator(func).__name__`` 的，那当然名字是
-``inner_function``
-
-.. code:: python
-
-   def wrapper(func):
-       def inner_function():
-           pass
-       return inner_function
-
-   def wrapped():
-       pass
-
-   print(wrapper(wrapped).__name__)
-   #inner_function
-
-那如何避免这种情况的产生？方法是使用 functools .wraps
-装饰器，它的作用就是将 **被修饰的函数(wrapped)** 的一些属性值赋值给
-**修饰器函数(wrapper)** ，最终让属性的显示更符合我们的直觉。
-
-.. code:: python
-
-   from functools import wraps
-
-   def wrapper(func):
-       @wraps(func)
-       def inner_function():
-           pass
-       return inner_function
-
-   @wrapper
-   def wrapped():
-       pass
-
-   print(wrapped.__name__)
-   # wrapped
-
-准确点说，wraps 其实是一个偏函数对象（partial），源码如下
-
-.. code:: python
-
-   def wraps(wrapped,
-             assigned = WRAPPER_ASSIGNMENTS,
-             updated = WRAPPER_UPDATES):
-       return partial(update_wrapper, wrapped=wrapped,
-                      assigned=assigned, updated=updated)
-
-可以看到wraps其实就是调用了一个函数\ ``update_wrapper``\ ，知道原理后，我们改写上面的代码，在不使用
-wraps的情况下，也可以让 ``wrapped.__name__`` 打印出 wrapped，代码如下：
-
-.. code:: python
-
-   from functools import update_wrapper
-
-   WRAPPER_ASSIGNMENTS = ('__module__', '__name__', '__qualname__', '__doc__',
-                          '__annotations__')
-
-   def wrapper(func):
-       def inner_function():
-           pass
-
-       update_wrapper(inner_function, func, assigned=WRAPPER_ASSIGNMENTS)
-       return inner_function
-
-   @wrapper
-   def wrapped():
-       pass
-
-   print(wrapped.__name__)
 
 .. |image0| image:: http://image.iswbm.com/20190512113917.png
 
