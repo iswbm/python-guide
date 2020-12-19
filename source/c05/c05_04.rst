@@ -1,7 +1,7 @@
 5.4 反射函数
 ============
 
-|image0|
+.. image:: http://image.iswbm.com/20200602135014.png
 
 自省，在我们日常生活中，通常是自我反省的意思。
 
@@ -26,32 +26,32 @@ help()
 ，可以看到输出了一段帮助文档，教你如何使用这个
 help，当你看到提示符变成了 ``help>`` 时，这时候就进入了 help 模式。
 
-|image1|
+.. image:: http://image.iswbm.com/image-20200606121047415.png
 
 此时你可以键入你想要了解的模块、语法等，help 告诉你如何使用。
 
 比如我输入 keywords ，就可以看到 Python 里所有的关键字。再输入 modules
 就可以查看 Python 中所有的内置模块。
 
-|image2|
+.. image:: http://image.iswbm.com/image-20200606121544062.png
 
 输入 modules + ``指定包名``\ ，就可以查看这个包下有哪些模块
 
-|image3|
+.. image:: http://image.iswbm.com/image-20200606121942898.png
 
 如果你想学习某个包要如何使用，可以直接在 help 模式下输入
 ``包名``\ ，就像下面这样，我就可以获得一份 json 的帮助文档。
 
-|image4|
+.. image:: http://image.iswbm.com/image-20200606122408522.png
 
 如果你想学习某个关键字的用法，可以在 help 模式下直接键入 ``关键字``
 查询用法，比如我直接键入 ``for`` 。
 
-|image5|
+.. image:: http://image.iswbm.com/image-20200606133933401.png
 
 查完后，使用 quit 就可以退出 help 模式了。
 
-|image6|
+.. image:: http://image.iswbm.com/image-20200606123145109.png
 
 如果你觉得进入 help 模式太麻烦，可以在 console 模式下直接查询
 
@@ -67,7 +67,7 @@ dir() 函数可能是 Python
 dir() 返回当前作用域中的名称。让我们将 dir() 函数应用于 keyword
 模块，并观察它揭示了什么：
 
-|image7|
+.. image:: http://image.iswbm.com/image-20200606134519352.png
 
 2. 应用到实际开发中
 -------------------
@@ -183,7 +183,7 @@ callable()
 使用 ``__doc__`` 这个魔法方法，可以查询该模块的文档，它输出的内容和
 help() 一样。
 
-|image8|
+.. image:: http://image.iswbm.com/image-20200606134858285.png
 
 \__name_\_
 ~~~~~~~~~~
@@ -281,7 +281,7 @@ help() 一样。
 如果将上面的代码放入 demo.py，并且从 people 模块导入 People 类，其值就是
 people 模块
 
-|image9|
+.. image:: http://image.iswbm.com/image-20200905115039771.png
 
 \__bases_\_
 ~~~~~~~~~~~
@@ -300,17 +300,4 @@ people 模块
    (<class '__main__.Teenager'>,)
    >>>
 
-|image10|
-
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/image-20200606121047415.png
-.. |image2| image:: http://image.iswbm.com/image-20200606121544062.png
-.. |image3| image:: http://image.iswbm.com/image-20200606121942898.png
-.. |image4| image:: http://image.iswbm.com/image-20200606122408522.png
-.. |image5| image:: http://image.iswbm.com/image-20200606133933401.png
-.. |image6| image:: http://image.iswbm.com/image-20200606123145109.png
-.. |image7| image:: http://image.iswbm.com/image-20200606134519352.png
-.. |image8| image:: http://image.iswbm.com/image-20200606134858285.png
-.. |image9| image:: http://image.iswbm.com/image-20200905115039771.png
-.. |image10| image:: http://image.iswbm.com/20200607174235.png
-
+.. image:: http://image.iswbm.com/20200607174235.png

@@ -140,15 +140,13 @@ Cookiecutters <https://github.com/audreyr/cookiecutter/tree/db14e06a1dcc0187beea
 
 `cookiecutter <https://github.com/audreyr/cookiecutter>`__\ 的简短形式，支持以下三种平台。
 
-+----------------------------------------+--------------+
-| Platform                               | abbreviation |
-+========================================+==============+
-| `GitHub <https://github.com/>`__       | ``gh``       |
-+----------------------------------------+--------------+
-| `BitBucket <https://bitbucket.org/>`__ | ``bb``       |
-+----------------------------------------+--------------+
-| `GitLab <https://gitlab.com/>`__       | ``gl``       |
-+----------------------------------------+--------------+
+====================================== ============
+Platform                               abbreviation
+====================================== ============
+`GitHub <https://github.com/>`__       ``gh``
+`BitBucket <https://bitbucket.org/>`__ ``bb``
+`GitLab <https://gitlab.com/>`__       ``gl``
+====================================== ============
 
 `cookiecutter <https://github.com/audreyr/cookiecutter>`__\ 也支持Mercurial（\ ``hg``\ ）。
 

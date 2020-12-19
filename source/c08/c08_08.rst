@@ -1,7 +1,7 @@
 8.8 pip 的详细使用指南
 ======================
 
-|image0|
+.. image:: http://image.iswbm.com/20200602135014.png
 
 所有的 Python 开发者都清楚，Python
 之所以如此受欢迎，能够在众多高级语言中，脱颖而出，除了语法简单，上手容易之外，更多还要归功于
@@ -387,8 +387,4 @@ pip 的文件夹，若没有则创建之。
 
 以上几乎包含了 pip 的所有常用使用场景，为了方便，我将其整理成一张表格。
 
-|image1|
-
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-.. |image1| image:: http://image.iswbm.com/20191105200041.png
-
+.. image:: http://image.iswbm.com/20191105200041.png

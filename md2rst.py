@@ -4,9 +4,6 @@ import os
 import subprocess
 import platform
 
-from git import Repo
-
-
 osName = platform.system()
 repo_path ='.'
 if (osName == 'Windows'):
@@ -17,12 +14,6 @@ elif (osName == 'Darwin'):
     repo_path = '/Users/MING/Github/python-guide/'
     blog_path = '/Users/MING/Github/python-guide/source'
     index_path = '/Users/MING/Github/python-guide/README.md'
-
-
-repo = Repo.init(path=repo_path)
-if not repo.is_dirty():
-    # 没有文件变更
-    os._exit(0)
 
 base_link = "http://demo.iswbm.com/en/latest/"
 readme_header = '''

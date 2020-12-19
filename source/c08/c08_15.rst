@@ -36,7 +36,7 @@
 
 创建一个压缩的tarball和一个zip文件。可用格式为：
 
-|image0|
+.. image:: http://image.iswbm.com/20191218203517.png
 
 对以上的格式，有几点需要注意一下：
 
@@ -102,6 +102,3 @@ setup.py 文件是可用的呢？
 .. code:: shell
 
    $ python setup.py develop
-
-.. |image0| image:: http://image.iswbm.com/20191218203517.png
-

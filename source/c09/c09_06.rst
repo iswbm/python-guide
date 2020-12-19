@@ -1,7 +1,7 @@
 9.6 如何调试已经运行的程序？
 ============================
 
-|image0|
+.. image:: http://image.iswbm.com/20200602135014.png
 
 官方原始wiki：https://wiki.python.org/moin/DebuggingWithGdb
 
@@ -45,6 +45,3 @@
 .. code:: shell
 
    sudo yum install gdb python-debuginfo
-
-.. |image0| image:: http://image.iswbm.com/20200602135014.png
-

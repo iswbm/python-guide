@@ -37,7 +37,7 @@ IDEA，C 语言对应 Clion 等等。
 可以看出专业版比社区版多了
 ``科学工具``\ 、\ ``WEB 开发``\ 、\ ``Python Web 框架``\ 、\ ``Python 代码分析``\ 、\ ``远程开发调试``\ 、\ ``数据库支持``\ 。
 
-|image0|
+.. image:: http://image.iswbm.com/20190506150523.png
 
 社区版的功能有限，有些非常好用的功能只有专业版才有，比如 远程调试。
 
@@ -71,7 +71,7 @@ IDEA，C 语言对应 Clion 等等。
 如果你暂时付不起购买费用，可以加下面微信，我这有
 ``绿色免安装的专业版``\ ，对，就是那种连安装都不用安装的 专业版。
 
-|image1|
+.. image:: http://image.iswbm.com/image-20201218210141865.png
 
 1. 下载链接
 -----------
@@ -85,38 +85,38 @@ PyCharm for Mac
 PyCharm for Linux
 ：https://www.jetbrains.com/pycharm/download/#section=linux
 
-|image2|
+.. image:: http://image.iswbm.com/20200901213017.png
 
 2. 安装步骤
 -----------
 
 下载完成后，双击 exe 文件
 
-|image3|
+.. image:: http://image.iswbm.com/20200901213223.png
 
 选择安装目录，Pycharm需要的内存较多，建议将其安装在D盘或者E盘，不建议放在系统盘C盘：
 
-|image4|
+.. image:: http://image.iswbm.com/20200901213310.png
 
 选好路径后，点击 Next ，创建桌面快捷方式等一系列选项参照下图勾选！
 
-|image5|
+.. image:: http://image.iswbm.com/20200901213325.png
 
 最后默认安装即可，直接点击Install。
 
-|image6|
+.. image:: http://image.iswbm.com/20200901213415.png
 
 7、耐心的等待两分钟左右。
 
 之后就会得到下面的安装完成的界面
 
-|image7|
+.. image:: http://image.iswbm.com/20200901213504.png
 
 点击Finish，Pycharm安装完成。
 
 接下来对Pycharm进行配置，双击运行桌面上的Pycharm图标，进入下图界面：
 
-|image8|
+.. image:: http://image.iswbm.com/20200901213526.png
 
 选择Do not import settings，之后选择OK，进入下一步。
 
@@ -126,7 +126,7 @@ PyCharm for Linux
 
 -> 点击Next:Featured plugins
 
-|image9|
+.. image:: http://image.iswbm.com/20200901213602.png
 
 建议选择Darcula主题，该主题更有利于保护眼睛。
 
@@ -135,7 +135,7 @@ PyCharm for Linux
 首先，点击 ``View`` -> ``Appearance`` 勾上
 ``Toolbar``\ ，来调出工具栏，个人认为这个工具栏对于新手非常有用，使用频率很高。
 
-|image10|
+.. image:: http://image.iswbm.com/20201218203225.png
 
 再然后，应该告诉 PyCharm 你的 CPython 解释器在哪里？不然后面要执行
 Python 代码的时候，都不知道去哪里找。
@@ -143,28 +143,28 @@ Python 代码的时候，都不知道去哪里找。
 点击 ``File`` -> ``Settings`` ，就会出现如下界面，在搜索框输入
 ``interpreter`` ，点击右上角的 ``Add``
 
-|image11|
+.. image:: http://image.iswbm.com/20201218203836.png
 
 跳到如下界面，再选择 ``System Interpreter``
 ，然后右边选择你在上一节中安装 CPython 的路径。
 
-|image12|
+.. image:: http://image.iswbm.com/20201218203632.png
 
 然后在文件夹下，新建一个 ``demo.py``
 的文件，并写入如下代码，然后再点击上面的 ``Add Configuration``
 配置脚本运行的参数
 
-|image13|
+.. image:: http://image.iswbm.com/20201218204204.png
 
 接下来，我们要在 PyCharm 中运行这个 ``demo.py`` 这个脚本了。右键然后选择
 ``Run 'demo'`` ，或者直接按住快捷键：\ ``Ctrl+Shift+F10``
 
-|image14|
+.. image:: http://image.iswbm.com/image-20201218204355375.png
 
 运行后，在下面就会弹出一个 ``Run`` 窗口，你在执行 Python
 脚本时，所有的输出内容，都会出现在这里。
 
-|image15|
+.. image:: http://image.iswbm.com/image-20201218204718039.png
 
 至此， PyCharm
 这个非常好用的集成开发环境就配置完成了，后面我们就要正式开始接触代码了。
@@ -173,23 +173,4 @@ Python 代码的时候，都不知道去哪里找。
 的使用，我花了两个月的时间，整理了一份非常实用且全面的 `《PyCharm
 中文指南》 <http://pycharm.iswbm.com/>`__\ ，点击这个链接，即可跳转学习：http://pycharm.iswbm.com/
 
-|image16|
-
-.. |image0| image:: http://image.iswbm.com/20190506150523.png
-.. |image1| image:: http://image.iswbm.com/image-20201218210141865.png
-.. |image2| image:: http://image.iswbm.com/20200901213017.png
-.. |image3| image:: http://image.iswbm.com/20200901213223.png
-.. |image4| image:: http://image.iswbm.com/20200901213310.png
-.. |image5| image:: http://image.iswbm.com/20200901213325.png
-.. |image6| image:: http://image.iswbm.com/20200901213415.png
-.. |image7| image:: http://image.iswbm.com/20200901213504.png
-.. |image8| image:: http://image.iswbm.com/20200901213526.png
-.. |image9| image:: http://image.iswbm.com/20200901213602.png
-.. |image10| image:: http://image.iswbm.com/20201218203225.png
-.. |image11| image:: http://image.iswbm.com/20201218203836.png
-.. |image12| image:: http://image.iswbm.com/20201218203632.png
-.. |image13| image:: http://image.iswbm.com/20201218204204.png
-.. |image14| image:: http://image.iswbm.com/image-20201218204355375.png
-.. |image15| image:: http://image.iswbm.com/image-20201218204718039.png
-.. |image16| image:: http://image.iswbm.com/20200901220204.png
-
+.. image:: http://image.iswbm.com/20200901220204.png
