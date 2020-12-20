@@ -192,8 +192,8 @@ importlib-metadata==0.20
 找不到），\ `这篇文章 <https://link.zhihu.com/?target=http%3A//greyli.com/set-custom-pypi-mirror-url-for-pip-pipenv-poetry-and-flit/>`__\ 列出了一些其他国内的
 PyPI 源。
 
-参考文章
---------
+7. 参考文章
+-----------
 
 -  `相比 Pipenv，Poetry
    是一个更好的选择 <https://zhuanlan.zhihu.com/p/81025311>`__
