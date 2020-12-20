@@ -1,5 +1,5 @@
-8.15 超详细讲解 setup.py 的编写
-===============================
+8.15 【进阶】超详细讲解 setup.py 的编写
+=======================================
 
 1. setup.py 的编写
 ------------------
@@ -15,8 +15,7 @@
 
 那这种包如何安装呢？
 
-答案是，使用下一节即将介绍的 ``setuptools`` 中提供的 ``easy_install``
-工具。
+答案是，使用 ``setuptools`` 中提供的 ``easy_install`` 工具。
 
 .. code:: shell
 
@@ -36,7 +35,7 @@
 
 创建一个压缩的tarball和一个zip文件。可用格式为：
 
-.. image:: http://image.iswbm.com/20191218203517.png
+|image0|
 
 对以上的格式，有几点需要注意一下：
 
@@ -47,9 +46,9 @@
 
 另外，如果您希望归档文件的所有文件归root拥有，可以这样指定
 
-::
+.. code:: shell
 
-   python setup.py sdist --owner=root --group=root
+   $ python setup.py sdist --owner=root --group=root
 
 2、构建二进制分发包。
 
@@ -102,3 +101,6 @@ setup.py 文件是可用的呢？
 .. code:: shell
 
    $ python setup.py develop
+
+.. |image0| image:: http://image.iswbm.com/20191218203517.png
+

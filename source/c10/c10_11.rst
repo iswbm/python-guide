@@ -1,5 +1,5 @@
-10.11 实战异步IO框架：asyncio 下篇
-==================================
+10.11 【并发编程】实战异步IO框架：asyncio 下篇
+==============================================
 
 1. 动态添加协程
 ---------------
@@ -114,11 +114,11 @@
 为了简单起见，并且协程更适合单线程的方式，我们的主线程用来监听队列，子线程用于处理队列。这里使用redis的队列。主线程中有一个是无限循环，用户消费队列。
 
 先安装Redis 到 https://github.com/MicrosoftArchive/redis/releases 下载
-|image1| 解压到你的路径。 |image2|
+|image0| 解压到你的路径。 |image1|
 
-然后，在当前路径运行cmd，运行redis的服务端。 |image3|
+然后，在当前路径运行cmd，运行redis的服务端。 |image2|
 服务开启后，我们就可以运行我们的客户端了。
-并依次输入key=queue，value=5,3,1的消息。 |image4|
+并依次输入key=queue，value=5,3,1的消息。 |image3|
 
 一切准备就绪之后，我们就可以运行我们的代码了。
 
@@ -199,7 +199,8 @@
 
 运行后，程序是一直运行在后台的，我们每一次在Redis中输入新值，都会触发新任务的执行。。
 
-.. |image1| image:: https://i.loli.net/2018/06/03/5b13ba8525bcf.png
-.. |image2| image:: https://i.loli.net/2018/06/03/5b13ba9f66baa.png
-.. |image3| image:: https://i.loli.net/2018/06/03/5b13bab682a32.png
-.. |image4| image:: https://i.loli.net/2018/06/03/5b13bad79f5ce.png
+.. |image0| image:: https://i.loli.net/2018/06/03/5b13ba8525bcf.png
+.. |image1| image:: https://i.loli.net/2018/06/03/5b13ba9f66baa.png
+.. |image2| image:: https://i.loli.net/2018/06/03/5b13bab682a32.png
+.. |image3| image:: https://i.loli.net/2018/06/03/5b13bad79f5ce.png
+

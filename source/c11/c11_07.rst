@@ -1,0 +1,48 @@
+11.7 【代码美化】使用 flake8 保证代码风格
+=========================================
+
+``pep8`` 是Python
+语言的一个代码编写规范。如若你是新手，目前只想快速掌握基础，而不想过多去注重代码的的编写风格（虽然这很重要），那你可以尝试一下这个工具
+- ``autopep8``
+
+首先在全局环境中（不要在虚拟环境中安装），安装一下这个工具。
+
+.. code:: bash
+
+   $ sudo pip install autopep8
+
+然后在 PyCharm 导入这个工具，具体设置如下图
+
+::
+
+   Name: AutoPep8
+   Description: autopep8 your code
+   Program: autopep8
+   Arguments: --in-place --aggressive --aggressive $FilePath$
+   Working directory: $ProjectFileDir$
+   Output filters: $FILE_PATH$\:$LINE$\:$COLUMN$\:.*
+
+|image0|
+
+我随意写了一段不符合 pep8 规范的代码。
+
+|image1|
+
+点击右键，选择 ``External Tools`` -> ``AutoPep8``
+
+|image2|
+
+看一下效果，还是挺明显的。
+
+|image3|
+
+你可能会说，Pycharm 本身就自带这个功能了呀，快捷键
+``Command``\ +\ ``Option``\ +\ ``L``
+，就可以实现一键pep8了。你可以对比一下，Pycharm 自带的代码 pep8 化功能
+并没有像这个\ ``autopep8`` 来得彻底。 我相信你最终的选择肯定是后者。
+
+.. |image0| image:: http://image.iswbm.com/20190323164120.png
+.. |image1| image:: http://image.iswbm.com/20190323211635.png
+.. |image2| image:: http://image.iswbm.com/20190323211301.png
+.. |image3| image:: http://image.iswbm.com/20190324111603.png
+

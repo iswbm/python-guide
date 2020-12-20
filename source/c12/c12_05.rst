@@ -1,19 +1,202 @@
-12.5 方案四：使用 poetry
-========================
+12.5 【虚拟环境】方案四：使用 poetry
+====================================
 
-安装 poetry
------------
+1. 安装 poetry
+--------------
 
 poetry提供多种安装方式，个人推荐从以下2种方式中选择：
 
-方式一：（推荐）
+方式一：（推荐）使用在线脚本进行安装，是最为推荐的安装方式
 
 .. code:: shell
 
    $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 
-方式二：（pip）
+方式二：（pip） 官方不建议这么做，因为有可能会造成依赖冲突，可以考虑用
+pipx 或 pipsi
 
 .. code:: shell
 
    $ pip install --user poetry
+
+安装后，可以使用如下命令检测是否可用
+
+.. code:: shell
+
+   $ poetry --version
+   Poetry version 1.1.4
+
+2. 创建项目
+-----------
+
+如果你是在一个已有的项目里使用 Poetry，你只需要执行 poetry init
+命令来创建一个 pyproject.toml 文件：
+
+.. code:: shell
+
+   $ poetry init
+
+而如果是新建 一个项目，可以使用这个命令
+
+.. code:: shell
+
+   $ poetry new demo-priject
+
+运行完后，在当前目录下就会多一个 ``demo-project``
+的目录，这个目录下的文件结构如下
+
+.. code:: shell
+
+   $ tree demo-priject
+   demo-priject
+   ├── README.rst
+   ├── demo_priject
+   │   └── __init__.py
+   ├── pyproject.toml
+   └── tests
+       ├── __init__.py
+       └── test_demo_priject.py
+
+如果要把项目代码放入到 src 目录下，在创建项目时，可以加上 ``--src``
+参数。
+
+3. 创建虚拟环境
+---------------
+
+使用 poetry install 命令创建虚拟环境（确保当前目录有 pyproject.toml
+文件）：
+
+.. code:: shell
+
+   $ poetry install
+
+这个命令会读取 pyproject.toml
+中的所有依赖（包括开发依赖）并安装，如果不想安装开发依赖，可以附加
+–no-dev 选项。如果项目根目录有 poetry.lock
+文件，会安装这个文件中列出的锁定版本的依赖。如果执行 add/remove
+命令的时候没有检测到虚拟环境，也会为当前目录自动创建虚拟环境。
+
+|image0|
+
+4. 使用虚拟环境
+---------------
+
+创建虚拟环境后，如果想要在虚拟环境下执行命令，比如去执行脚本，去使用 pip
+list 等等。
+
+可以在项目目录下，使用如下命令
+
+.. code:: shell
+
+   $ poetry run <commands>
+
+比如我查看该虚拟环境中安装了哪些包
+
+.. code:: shell
+
+   $ poetry run pip list
+
+再比如我想在该虚拟环境下执行 ``app.py``
+
+.. code:: shell
+
+   $ poetry run python app.py
+
+每次在虚拟环境下做点啥事，命令前面都要加上
+``poetry run``\ ，有点太麻烦了。
+
+这时可以使用下面这条命令，直接激活当前的虚拟环境
+
+.. code:: shell
+
+   $ poetry shell
+
+5. 包的管理
+-----------
+
+安装包
+
+.. code:: shell
+
+   $ poetry add <pkg>
+
+添加 –dev 参数可以指定为开发依赖
+
+.. code:: shell
+
+   $ poetry add pytest --dev
+
+查看所有安装的依赖包
+
+.. code:: shell
+
+   $ poetry show
+
+加上 ``--tree`` 可以查看他们的依赖关系
+
+.. code:: shell
+
+   $ poetry show --tree
+
+加上 ``--outdated`` 可以查看可以更新的依赖
+
+.. code:: shell
+
+   $ poetry show --outdated
+
+如果要更新依赖可以执行这个命令
+
+.. code:: shell
+
+   # 更新全部
+   $ poetry update
+
+   # 更新某个依赖
+   $ poetry update foo
+
+想卸载某个包，用这个命令
+
+.. code:: shell
+
+   $ poetry remove foo
+
+6. 常用配置
+-----------
+
+Poetry 的配置存储在单独的文件中，比 Pipenv
+设置环境变量的方式要方便一点。配置通过 poetry config
+命令设置，比如下面的命令可以写入 PyPI 的账号密码信息：
+
+.. code:: shell
+
+   $ poetry config http-basic.pypi username password
+
+下面的命令设置在项目内创建虚拟环境文件夹：
+
+.. code:: shell
+
+   $ poetry config settings.virtualenvs.in-project true
+
+另一个常用的配置是设置 PyPI 镜像源，以使用豆瓣提供的 PyPI
+镜像源为例，你需要在 pyproject.toml 文件里加入这部分内容：
+
+::
+
+   [[tool.poetry.source]]
+   name = "douban"
+   url = "https://pypi.doubanio.com/simple/"
+
+不过经过测试 Poetry 会使用 pip.ini 设置的 PyPI
+镜像，而且豆瓣的源好像很久没更新了（创建虚拟环境安装的默认依赖里
+importlib-metadata==0.20
+找不到），\ `这篇文章 <https://link.zhihu.com/?target=http%3A//greyli.com/set-custom-pypi-mirror-url-for-pip-pipenv-poetry-and-flit/>`__\ 列出了一些其他国内的
+PyPI 源。
+
+参考文章
+--------
+
+-  `相比 Pipenv，Poetry
+   是一个更好的选择 <https://zhuanlan.zhihu.com/p/81025311>`__
+
+.. |image0| image:: http://image.iswbm.com/image-20201220164337699.png
+

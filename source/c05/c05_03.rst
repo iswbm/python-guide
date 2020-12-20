@@ -1,5 +1,5 @@
-5.3 高阶函数
-============
+5.3 【基础】高阶函数
+====================
 
 1. map 函数
 -----------
@@ -9,7 +9,7 @@ map
 
 它可以实现怎样的功能呢，我举个例子你就明白了。
 
-::
+.. code:: python
 
    >>> map(lambda x: x*2, [1,2,3,4,5])
    [2, 4, 6, 8, 10]
@@ -18,7 +18,7 @@ map
 
 当我们不使用 map 函数时，你也许会这样子写。
 
-::
+.. code:: python
 
    mylist=[]
    for i in [1,2,3,4,5]:
@@ -33,7 +33,7 @@ True，则元素会被保留下来，当表达式返回 False ，则元素会被
 
 下面这个例子，将过滤出一个列表中小于0的元素。
 
-::
+.. code:: python
 
    >>>filter(lambda x: x < 0, range(-5, 5))
    [-5, -4, -3, -2, -1]
@@ -45,18 +45,18 @@ reduce 函数，也是类似的。它的作用是先对序列中的第 1、2
 个元素进行操作，得到的结果再与第三个数据用 lambda
 函数运算，将其得到的结果再与第四个元素进行运算，以此类推下去直到后面没有元素了。
 
-.. image:: http://image.iswbm.com/20200930175131.png
+|image0|
 
 这边举个例子你也就明白了。
 
-::
+.. code:: python
 
    >>>reduce(lambda x,y: x+y, [1,2,3,4,5])
    15
 
 它的运算过程分解一下是这样的。
 
-::
+.. code:: python
 
    1+2=3
    3+3=6
@@ -77,7 +77,7 @@ Pythonic ，在某一程度上代码看起来更加的简洁。
 第一点，map 和 filter
 函数返回的都不再是一个列表，而是一个迭代器对象。这里以map为例
 
-::
+.. code:: python
 
    >>> map_obj = map(lambda x: x*2, [1,2,3,4,5])
    >>> from collections.abc import Iterator
@@ -90,6 +90,9 @@ Pythonic ，在某一程度上代码看起来更加的简洁。
 
 第二点，reduce 不可以直接调用，而是要先导入才能使用，
 
-::
+.. code:: python
 
    from functools import reduce
+
+.. |image0| image:: http://image.iswbm.com/20200930175131.png
+

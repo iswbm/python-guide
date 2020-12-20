@@ -1,7 +1,7 @@
-12.4 方案三：使用 pipx
-======================
+12.4 【虚拟环境】方案三：使用 pipx
+==================================
 
-.. image:: http://image.iswbm.com/20200602135014.png
+|image0|
 
 1. 什么是 pipx
 --------------
@@ -39,13 +39,13 @@ pipx 的存在使这个流程变得更加舒畅，使用 pipx
 
 1. 二进制文件的保存位置：默认是 ``~/.local/bin``\ ，可使用环境变量
    ``PIPX_BIN_DIR``
-   进行更改，或者执行如下命令(``python3 -m userpath append ${you_path}``)
+   进行更改，或者执行如下命令(\ ``python3 -m userpath append ${you_path}``)
 2. 虚拟环境的保存位置：默认是 ``~/.local/pipx``\ ，可使用环境变量
    ``PIPX_HOME`` 进行更改
 
 在我安装好 pipx ，准备使用的时候，发现全局找不到 pipx 这个命令。
 
-.. image:: http://image.iswbm.com/image-20201130124107950.png
+|image1|
 
 按照如上图所示，难道使用全路径执行命令？
 
@@ -62,7 +62,7 @@ pipx 的存在使这个流程变得更加舒畅，使用 pipx
 
 软链接建好后，就可以直接使用 ``pipx`` 的命令啦。
 
-.. image:: http://image.iswbm.com/image-20201130124554404.png
+|image2|
 
 刚刚我使用 pipx 安装了 youtube-dl 后，其实并没有将这个 youtube-dl
 安装到系统全局的 Python 环境中。
@@ -71,7 +71,7 @@ pipx 的存在使这个流程变得更加舒畅，使用 pipx
 
 现在来看一下，这个路径下面都有哪些东西？
 
-.. image:: http://image.iswbm.com/image-20201130125257203.png
+|image3|
 
 从截图上可以看出
 
@@ -81,7 +81,7 @@ pipx 的存在使这个流程变得更加舒畅，使用 pipx
 -  然后在 ``~/.local/bin`` 的目录下新建一个软链接，指向这个虚拟环境中
 -  这样 ``youtube-dl`` 就变成全局的工具啦。
 
-.. image:: http://image.iswbm.com/image-20201130131138939.png
+|image4|
 
 为了避免你新安装的 youtube-dl 与全局的冲突，你也可以指定 pipx
 的命令来运行 youtube-dl
@@ -92,7 +92,7 @@ pipx 的存在使这个流程变得更加舒畅，使用 pipx
 
 运行效果如下：
 
-.. image:: http://image.iswbm.com/image-20201130210539907.png
+|image5|
 
 pip run 也可以直接执行在线的 python 脚本
 
@@ -202,7 +202,7 @@ pip run 也可以直接执行在线的 python 脚本
 
 效果如下
 
-.. image:: http://image.iswbm.com/image-20201130215320069.png
+|image6|
 
 8. 其他
 -------
@@ -219,12 +219,12 @@ pip run 也可以直接执行在线的 python 脚本
 
 我安装好后，可以使用 tab 键进行命令补全。
 
-.. image:: http://image.iswbm.com/image-20201130220233001.png
+|image7|
 
 执行 ``pipx ensurepath`` 可以确保 ``~/.local/bin``
 这个重要的目录，已经放入到 ``$PATH`` 的变量中。
 
-.. image:: http://image.iswbm.com/image-20201130215826513.png
+|image8|
 
 9. pipx vs pip
 --------------
@@ -243,3 +243,14 @@ pipx 只是解决 pip
 
 -  https://github.com/pipxproject/pipx
 -  https://pipxproject.github.io/pipx/comparisons/
+
+.. |image0| image:: http://image.iswbm.com/20200602135014.png
+.. |image1| image:: http://image.iswbm.com/image-20201130124107950.png
+.. |image2| image:: http://image.iswbm.com/image-20201130124554404.png
+.. |image3| image:: http://image.iswbm.com/image-20201130125257203.png
+.. |image4| image:: http://image.iswbm.com/image-20201130131138939.png
+.. |image5| image:: http://image.iswbm.com/image-20201130210539907.png
+.. |image6| image:: http://image.iswbm.com/image-20201130215320069.png
+.. |image7| image:: http://image.iswbm.com/image-20201130220233001.png
+.. |image8| image:: http://image.iswbm.com/image-20201130215826513.png
+
