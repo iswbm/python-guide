@@ -11,9 +11,8 @@
 .. code:: python
 
    # profile.py
-   name='wangbm'
-   age=27
-   gender='male'
+   name='小明'
+   age=18
 
    __all__=['name']
 
@@ -23,15 +22,11 @@
 
    >>> from profile import *
    >>> print(name)
-   wangbm
+   小明
    >>> print(age)
    Traceback (most recent call last):
      File "<stdin>", line 1, in <module>
    NameError: name 'age' is not defined
-   >>> print(gender)
-   Traceback (most recent call last):
-     File "<stdin>", line 1, in <module>
-   NameError: name 'gender' is not defined
 
 ``__all__`` 仅对于使用\ ``from module import *`` 这种情况适用。
 

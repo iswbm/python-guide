@@ -22,7 +22,7 @@
    $ brew install pipenv
 
    # windows
-   pip install [--user] pipenv
+   $ pip install [--user] pipenv
 
 如果你的电脑是 windows 的。
 

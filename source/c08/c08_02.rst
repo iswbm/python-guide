@@ -1,4 +1,4 @@
-8.2 【基础】安装第三方包的四种方法
+8.2 【基础】安装第三方包的八种方法
 ==================================
 
 1. 使用 easy_install
@@ -47,7 +47,7 @@ pip 是最主流的包管理方案，使用 ``pip install xxx`` 就可以从 PYP
    $ pip install pkg<=2.1.2
 
 更多 pip 的使用方法，可参考本系列教程后面的文章，介绍得非常清楚：\ `8.8
-pip 的详细使用指南 <https://demo.iswbm.com/en/latest/c08/c08_08.html>`__
+pip 的详细使用指南 <https://python.iswbm.com/en/latest/c08/c08_08.html>`__
 
 3. 使用 pipx
 ------------
@@ -67,22 +67,34 @@ pipx 是一个专门用于安装和管理 cli 应用程序的工具，使用它�
 
 .. code:: shell
 
+   # 创建虚拟环境并安装包
    $ pipx install pkg
 
 更多 pipx
 的使用方法，可参考本系列教程后面的文章，介绍得非常清楚：\ `12.4 pipx
-安装程序的使用指南 <https://demo.iswbm.com/en/latest/c12/c12_04.html>`__
+安装程序的使用指南 <https://python.iswbm.com/en/latest/c12/c12_04.html>`__
 
-4. 使用 yum install
--------------------
+4. 使用 setup.py
+----------------
+
+如果你有编写 setup.py 文件，可以使用如下命令直接安装
+
+.. code:: python
+
+   # 使用源码直接安装
+   $ python setup.py install
+
+5. 使用 yum
+-----------
 
 Python 包在使用 ``setup.py``
 构建的时候（具体内容可阅读后面的内容：\ `8.15 超详细讲解 setup.py
-的编写 <https://demo.iswbm.com/en/latest/c08/c08_15.html>`__\ ），对于包的发布格式有多种选项，其中有一个选项是
+的编写 <https://python.iswbm.com/en/latest/c08/c08_15.html>`__\ ），对于包的发布格式有多种选项，其中有一个选项是
 ``bdist_rpm``\ ，以这个选项发布出来的包是 ``rpm`` 的包格式。
 
 .. code:: shell
 
+   # 发布 rpm 包
    $ python setup.py bdist_rpm
 
 对于\ ``rpm`` 这种格式，你需要使用 ``yum install xxx`` 或者
@@ -90,5 +102,41 @@ Python 包在使用 ``setup.py``
 
 .. code:: shell
 
+   # 使用 yum 安装
    $ yum install pkg
-   $ rpm install pkg
+
+   # 使用 rpm 安装
+   $ rpm -ivh pkg
+
+6. 使用 pipenv
+--------------
+
+如果你在使用 pipenv
+创建的虚拟环境中，可以使用下面这条命令把包安装到虚拟环境中
+
+.. code:: shell
+
+   $ pipenv install pkg
+
+7. 使用 poetry
+--------------
+
+如果你有使用 poetry 管理项目依赖，那么可以使用下面这条命令安装包
+
+.. code:: shell
+
+   # 直接安装包
+   $ poetry add pkg
+
+   # 指定为开发依赖
+   $ poetry add pytest --dev
+
+8. 使用 curl + 管道
+-------------------
+
+有一些第三方工具包提供的安装方法，是直接使用 curl
+配置管道来安装，比如上面提到的 poetry 就可以用这种方法安装。
+
+.. code:: shell
+
+   $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
