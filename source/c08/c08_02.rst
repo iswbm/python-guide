@@ -47,7 +47,8 @@ pip 是最主流的包管理方案，使用 ``pip install xxx`` 就可以从 PYP
    $ pip install pkg<=2.1.2
 
 更多 pip 的使用方法，可参考本系列教程后面的文章，介绍得非常清楚：\ `8.8
-pip 的详细使用指南 <https://python.iswbm.com/en/latest/c08/c08_08.html>`__
+pip
+的详细使用指南 <https://python.iswbm.com/en/latest/c08/c08_08.html>`__
 
 3. 使用 pipx
 ------------
