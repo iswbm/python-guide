@@ -1,0 +1,99 @@
+12.6 【虚拟环境】方案五：使用 venv
+==================================
+
+在前面介绍的几种方法中，都需要借助第三方模块来完成虚拟环境的管理。
+
+但其实在 Python 3 中就自带了一个专门用门管理虚拟环境的模块，它叫
+``venv``\ 。
+
+1. 创建虚拟环境
+---------------
+
+``venv``
+后可以接一个目录（如果此目录不存在，会自动创建）用于创建你的虚拟环境，他可以是绝对路径，也可以是相对路径。
+
+.. code:: shell
+
+   $ python3 -m venv [venv_dir]
+
+使用 venv 创建虚拟环境的速度非常快，大概只需要两三秒的样子。
+
+|image0|
+
+创建完成后，在你所指定的目录下会有一个 ``pyvenv.cfg``
+的配置文件，它记录着虚拟环境的基本信息，包括你使用的 Python
+的家目录，还有当前虚拟环境的 Python 版本，是否开启使用系统的
+site-packages
+模块，如果开启了，那么当你就可以直接使用系统中已经装过的第三方模块，但是你在虚拟环境下装的模块就不能被其他地方的程序使用。
+
+.. code:: ini
+
+   home = /usr/local/bin
+   include-system-site-packages = false
+   version = 3.9.1
+
+如果你的环境中有 Python 3.8 也有 Python 3.9 ，那该怎么办呢？
+
+只要你在创建时，用你预期版本的 Python 去执行就好啦
+
+.. code:: shell
+
+   $ python3.8 -m venv [venv_dir]
+   $ python3.9 -m venv [venv_dir]
+
+可如果你的环境中有两个 Python 3.9 呢？你想使用不在 ``PATH`` 的中的
+Python 去创建，就要用绝对路径去创建了。
+
+.. code:: shell
+
+   $ /usr/local/bin/python3 -m venv [venv_dir]
+
+2. 进入创建环境
+---------------
+
+进入虚拟环境的方法，对比之前介绍的方案，venv 的方法就相当原始了。
+
+如果你使用 Windows ，那么在 cmd 下进行 ``Scripts`` 目录，执行
+``activate.bat``
+
+.. code:: shell
+
+   $ cd Scripts
+   $ activate.bat
+
+而如果你使用的 Mac 或者 Linux，那么直接执行下面命令就行
+
+.. code:: shell
+
+   $ source bin/activate
+
+执行完后，若在你的命令行下有 ``demo`` 字样（之所以是 demo
+，因为我们创建时的目录名就是 demo），说明你已经处于虚拟环境下。
+由于虚拟环境是全新的干净环境，此时你使用 ``pip list``
+，会看到啥包都没有，只有最基本的 pip 和 setuptools 。
+
+|image1|
+
+3. 退出虚拟环境
+---------------
+
+退出虚拟环境，无论是 Windows 、 Mac 、 还是 Linux
+，方法都是同一条命令。退出后，你的虚拟环境名称（如上面的 ``demo``
+）也会消失。
+
+.. code:: shell
+
+   $ deactivate
+
+4. 总结一下
+-----------
+
+``venv`` 是 Python3
+中自带的虚拟环境管理工具，不需要额外安装，功能简单，用法也简单。但是它不能像
+poetry 和 pipenv 用于项目的管理，因此 venv
+建议只做了解，在一些简单的场景中可以使用，如果是复杂的项目中，可以直接上
+poetry 和 pipenv。
+
+.. |image0| image:: http://image.iswbm.com/image-20201226172542169.png
+.. |image1| image:: http://image.iswbm.com/image-20201226174305992.png
+

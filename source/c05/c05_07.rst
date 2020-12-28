@@ -1,187 +1,161 @@
-5.7 【基础】变量的作用域
-========================
+5.7 【进阶】泛型函数的使用
+==========================
 
-1. 作用域
----------
+根据传入参数类型的不同而调用不同的函数逻辑体，这种实现我们称之为泛型。在
+Python 中叫做 ``singledispatch``\ 。
 
-Python的作用域可以分为四种：
+``singledispatch`` 是 PEP443 中引入的，如果你对此有兴趣，PEP443
+应该是最好的学习文档：https://www.python.org/dev/peps/pep-0443/
 
--  L （Local） 局部作用域
--  E （Enclosing） 闭包函数外的函数中
--  G （Global） 全局作用域
--  B （Built-in） 内建作用域
+它使用方法极其简单，只要被\ ``singledispatch``
+装饰的函数，就是一个\ ``single-dispatch``
+的泛函数（\ ``generic functions``\ ）。
 
-变量/函数 的查找顺序： L –> E –> G –>B
+-  **单分派**\ ：根据一个参数的类型，以不同方式执行相同的操作的行为。
+-  **多分派**\ ：可根据多个参数的类型选择专门的函数的行为。
+-  **泛函数**\ ：多个函数绑在一起组合成一个泛函数。
 
-意思是，在局部找不到的，便去局部外的局部作用域找（例如
-闭包），再找不到的就去全局作业域里找，再找不到就去内建作业域中找。
-
-会影响 变量/函数 作用范围的有
-
--  函数：def 或 lambda
--  类：class
--  关键字：global noglobal
--  文件：*py
--  推导式：[],{},()等，仅限Py3.x中，Py2.x会出现变量泄露。
-
-1、赋值在前，引用在后
+这边举个简单的例子。
 
 .. code:: python
 
-   # ------同作用域内------
-   name = "MING"
-   print(name)
+   from functools import singledispatch
 
-   # ------不同作用域内------
-   name = "MING"
-   def main():
-       print(name)
+   @singledispatch
+   def age(obj):
+       print('请传入合法类型的参数！')
 
-2、引用在前，赋值在后（同一作用域内）
+   @age.register(int)
+   def _(age):
+       print('我已经{}岁了。'.format(age))
 
-.. code:: python
+   @age.register(str)
+   def _(age):
+       print('I am {} years old.'.format(age))
 
-   print(name)
-   name = "MING"
 
-   # UnboundLocalError: local variable 'name' referenced before assignment
+   age(23)  # int
+   age('twenty three')  # str
+   age(['23'])  # list
 
-3、赋值在低层，引用在高层
-
-.. code:: python
-
-   # L -> E -> G -> B
-   # 从左到右，由低层到高层
-   def main():
-       name = "MING"
-
-   print(name)
-   # NameError: name 'name' is not defined
-
-2. 闭包
--------
-
-闭包这个概念很重要噢。你一定要掌握。
-
-   在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。其实装饰函数，很多都是闭包。
-
-好像并不难理解，为什么初学者会觉得闭包难以理解呢？
-
-我解释一下，你就明白了。
-
-一般情况下，在我们认知当中，如果一个函数结束，函数的内部所有东西都会释放掉，还给内存，局部变量都会消失。但是闭包是一种特殊情况，如果外函数在结束的时候发现有自己的临时变量将来会在内部函数中用到，就把这个临时变量绑定给了内部函数，然后自己再结束。
-
-你可以看下面这段代码，就构成了闭包。在内函数里可以引用外函数的变量。
-
-.. code:: python
-
-   def deco():
-       name = "MING"
-       def wrapper():
-           print(name)
-       return wrapper
-
-   deco()()
-   # 输出：MING
-
-3. 改变作用域
--------------
-
-变量的作用域，与其定义（或赋值）的位置有关，但不是绝对相关。
-因为我们可以在某种程度上去改变\ ``向上``\ 的作用范围。
-
--  关键字：global 将 局部变量 变为全局变量
-
--  关键字：nonlocal
-   可以在闭包函数中，引用并使用闭包外部函数的变量（非全局的噢）
-
-global好理解，这里只讲下nonlocal。
-
-先来看个例子
-
-.. code:: python
-
-   def deco():
-       age = 10
-       def wrapper():
-           age += 1
-       return wrapper
-
-   deco()()
-
-运行一下，会报错。
+执行结果
 
 ::
 
-   # UnboundLocalError: local variable 'age' referenced before assignment
+   我已经23岁了。
+   I am twenty three years old.
+   请传入合法类型的参数！
 
-但是这样就OK
+说起泛型，其实在 Python 本身的一些内建函数中并不少见，比如 ``len()`` ，
+``iter()``\ ，\ ``copy.copy()`` ，\ ``pprint()`` 等
 
-::
+你可能会问，它有什么用呢？实际上真没什么用，你不用它或者不认识它也完全不影响你编码。
 
-   def deco():
-       age = 10
-       def wrapper():
-           nonlocal age
-           age += 1
-       return wrapper
+我这里举个例子，你可以感受一下。
 
-   deco()()
-   # 输出：11
-
-其实，你如果不使用
-``+=``\ 、\ ``-=``\ 等一类的操作，不加nonlocal也没有关系。这就展示了闭包的特性。
-
-::
-
-   def deco():
-       age = 10
-       def wrapper():
-           print(age)
-       return wrapper
-
-   deco()()
-   # 输出：10
-
-4. 变量集合
------------
-
-在Python中，有两个内建函数，你可能用不到，但是需要掌握它们。
-
--  globals() ：以dict的方式存储所有全局变量
--  locals()：以dict的方式存储所有局部变量
-
-globals()
+大家都知道，Python 中有许许多的数据类型，比如 str，list， dict， tuple
+等，不同数据类型的拼接方式各不相同，所以我这里我写了一个通用的函数，可以根据对应的数据类型对选择对应的拼接方式拼接，而且不同数据类型我还应该提示无法拼接。以下是简单的实现。
 
 .. code:: python
 
-   def foo():
-       print("I am a func")
+   def check_type(func):
+       def wrapper(*args):
+           arg1, arg2 = args[:2]
+           if type(arg1) != type(arg2):
+               return '【错误】：参数类型不同，无法拼接!!'
+           return func(*args)
+       return wrapper
 
-   def bar():
-       foo="I am a string"
-       foo_dup = globals().get("foo")
-       foo_dup()
 
-   bar()
-   # 输出
-   # I am a func
+   @singledispatch
+   def add(obj, new_obj):
+       raise TypeError
 
-locals()
+   @add.register(str)
+   @check_type
+   def _(obj, new_obj):
+       obj += new_obj
+       return obj
+
+
+   @add.register(list)
+   @check_type
+   def _(obj, new_obj):
+       obj.extend(new_obj)
+       return obj
+
+   @add.register(dict)
+   @check_type
+   def _(obj, new_obj):
+       obj.update(new_obj)
+       return obj
+
+   @add.register(tuple)
+   @check_type
+   def _(obj, new_obj):
+       return (*obj, *new_obj)
+
+   print(add('hello',', world'))
+   print(add([1,2,3], [4,5,6]))
+   print(add({'name': 'wangbm'}, {'age':25}))
+   print(add(('apple', 'huawei'), ('vivo', 'oppo')))
+
+   # list 和 字符串 无法拼接
+   print(add([1,2,3], '4,5,6'))
+
+输出结果如下
+
+::
+
+   hello, world
+   [1, 2, 3, 4, 5, 6]
+   {'name': 'wangbm', 'age': 25}
+   ('apple', 'huawei', 'vivo', 'oppo')
+   【错误】：参数类型不同，无法拼接!!
+
+如果不使用singledispatch 的话，你可能会写出这样的代码。
 
 .. code:: python
 
-   other = "test"
+   def check_type(func):
+       def wrapper(*args):
+           arg1, arg2 = args[:2]
+           if type(arg1) != type(arg2):
+               return '【错误】：参数类型不同，无法拼接!!'
+           return func(*args)
+       return wrapper
 
-   def foobar():
-       name = "MING"
-       gender = "male"
-       for key,value in locals().items():
-           print(key, "=", value)
+   @check_type
+   def add(obj, new_obj):
+       if isinstance(obj, str) :
+           obj += new_obj
+           return obj
 
-   foobar()
-   # 输出
-   # name = MING
-   # gender = male
+       if isinstance(obj, list) :
+           obj.extend(new_obj)
+           return obj
 
---------------
+       if isinstance(obj, dict) :
+           obj.update(new_obj)
+           return obj
+
+       if isinstance(obj, tuple) :
+           return (*obj, *new_obj)
+
+   print(add('hello',', world'))
+   print(add([1,2,3], [4,5,6]))
+   print(add({'name': 'wangbm'}, {'age':25}))
+   print(add(('apple', 'huawei'), ('vivo', 'oppo')))
+
+   # list 和 字符串 无法拼接
+   print(add([1,2,3], '4,5,6'))
+
+输出如下
+
+::
+
+   hello, world
+   [1, 2, 3, 4, 5, 6]
+   {'name': 'wangbm', 'age': 25}
+   ('apple', 'huawei', 'vivo', 'oppo')
+   【错误】：参数类型不同，无法拼接!!
