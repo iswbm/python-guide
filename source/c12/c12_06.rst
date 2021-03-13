@@ -14,7 +14,12 @@
 
 .. code:: shell
 
+   # mac or linux
    $ python3 -m venv [venv_dir]
+
+   # windows: 一定要指定  --without-pip 
+   # 最后再手动执行命令安装 python -m ensurepip
+   $ python3 -m venv --without-pip [venv_dir]
 
 使用 venv 创建虚拟环境的速度非常快，大概只需要两三秒的样子。
 
@@ -58,8 +63,16 @@ Python 去创建，就要用绝对路径去创建了。
 
 .. code:: shell
 
-   $ cd Scripts
-   $ activate.bat
+   # cmd.exe
+   $ .\Scripts\activate.bat
+
+   # PowserShell
+   $ .\Scripts\Activate.ps1
+
+如果你使用PowserShell激活虚拟环境出现如下错误，那要先执行这个命令：\ ``Set-ExecutionPolicy RemoteSigned``\ ，再按
+``Y``
+
+|image1|
 
 而如果你使用的 Mac 或者 Linux，那么直接执行下面命令就行
 
@@ -72,7 +85,7 @@ Python 去创建，就要用绝对路径去创建了。
 由于虚拟环境是全新的干净环境，此时你使用 ``pip list``
 ，会看到啥包都没有，只有最基本的 pip 和 setuptools 。
 
-|image1|
+|image2|
 
 3. 退出虚拟环境
 ---------------
@@ -95,5 +108,6 @@ poetry 和 pipenv 用于项目的管理，因此 venv
 poetry 和 pipenv。
 
 .. |image0| image:: http://image.iswbm.com/image-20201226172542169.png
-.. |image1| image:: http://image.iswbm.com/image-20201226174305992.png
+.. |image1| image:: http://image.iswbm.com/20201231140727.png
+.. |image2| image:: http://image.iswbm.com/image-20201226174305992.png
 
