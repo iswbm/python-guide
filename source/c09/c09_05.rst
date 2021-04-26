@@ -45,7 +45,7 @@ pdb，可能你还不知道它，为了讲解这个神器，我写了这篇文�
 
 ::
 
-   ptyhon -m pdb pdb_demo.py
+   python -m pdb pdb_demo.py
 
 使用这个方式进入调试模式，会在脚本的第一行开始单步调试。
 
