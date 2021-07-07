@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: http://python.iswbm.com/sitemap.xml

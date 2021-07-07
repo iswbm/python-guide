@@ -149,3 +149,5 @@ version = '1.0'
 
 # Options for extensions.
 disqus_shortname = 'iswbm'  # Add this line to conf.py.
+html_baseurl = 'http://python.iswbm.com'
+html_extra_path = ["robots.txt"]
