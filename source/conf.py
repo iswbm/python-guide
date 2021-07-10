@@ -64,10 +64,6 @@ html_theme = 'default'
 
 html_static_path = ['_static']
 
-# Output file base name for HTML help builder.
-htmlhelp_basename = 'Python-Time BLOG'
-
-
 # -- Options for LaTeX output ---------------------------------------------
 
 # 注：在生成html的时候这句话要注释
@@ -91,26 +87,8 @@ latex_elements={# The paper size ('letterpaper' or 'a4paper').
 \XeTeXlinebreakskip = 0pt plus 1pt
 """}
 
-# man_pages = [
-#     ('index', 'python3-cookbook', '《Python编程时光》',
-#      ['小明同学'], 1)
-# ]
-
-# If true, show URL addresses after external links.
-#man_show_urls = False
-
 
 # -- Options for Texinfo output -------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-# texinfo_documents = [
-#   ('index', 'Python-Time', '《Python编程时光》',
-#    '小明同学', 'Python-Time', '《Python编程时光》',
-#    'Miscellaneous'),
-# ]
-
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
@@ -131,14 +109,6 @@ html_js_files = [
     'js/baidutongji.js',
 ]
 
-# General configuration.
-#with open("/home/docs/checkouts/readthedocs.org/user_builds/pythoncodingtime/envs/latest/lib/python3.7/site-packages/sphinxcontrib/disqus.py", "r") as file:
-#    content = file.read()
-#    content=content.replace("sphinx.application", "sphinx.errors")
-#
-#with open("/home/docs/checkouts/readthedocs.org/user_builds/pythoncodingtime/envs/latest/lib/python3.7/site-packages/sphinxcontrib/disqus.py", "w") as file:
-#    file.write(content)
-
 author = '王炳明'
 copyright = '2020, Python编程时光'
 exclude_patterns = ['_build']
@@ -149,7 +119,7 @@ version = '1.0'
 
 # Options for extensions.
 disqus_shortname = 'iswbm'  # Add this line to conf.py.
-html_baseurl = 'http://python.iswbm.com'
+html_baseurl = 'https://python.iswbm.com'
 html_extra_path = ["robots.txt"]
 
 html_sidebars = {
