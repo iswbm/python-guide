@@ -335,7 +335,7 @@ Queue.task_done()，说明队列这个任务已经结束了。
 
 当队列内部的任务计数器归于零时，调用 Queue.join() 就不会再阻塞了。
 
-要理解这个过程，请参考 http://python.iswbm.com/en/latest/c02/c02_06.html
+要理解这个过程，请参考 https://python.iswbm.com/c02/c02_06.html
 里自定义线程池的的例子。
 
 4. 消息队列的先进先出

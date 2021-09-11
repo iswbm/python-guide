@@ -42,7 +42,7 @@
 
 更多关于 yield
 和生成器的内容，请前往前面的文章，里面有非常详细的讲解：\ `3.6
-【基础】生成器 <http://python.iswbm.com/en/latest/c03/c03_06.html>`__
+【基础】生成器 <http://python.iswbm.com/c03/c03_06.html>`__
 
 向生成器中发送消息
 ------------------
