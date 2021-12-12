@@ -112,6 +112,8 @@ StopIteration 提示无元素可取。
 
    >>> alist = [0, 1, 2, 3]
    >>> gen = iter(alist)
+   >>> gen
+   <list_iterator object at 0x100a94b20>
    >>> next(gen)
    0
    >>> next(gen)

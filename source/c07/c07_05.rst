@@ -107,7 +107,7 @@ Python 还支持多继承，可以继承自多个类。
 
 它们的继承关系是
 
-|image0|
+.. image:: http://image.iswbm.com/image-20201213150058921.png
 
 运行后的结果如下
 
@@ -153,7 +153,7 @@ Python 还支持多继承，可以继承自多个类。
 
 由此可见，多继承的顺序使用的是从左向右再深度优先的原则。
 
-|image1|
+.. image:: http://image.iswbm.com/image-20201213151434342.png
 
 4. MRO 算法
 -----------
@@ -184,7 +184,7 @@ Python 还支持多继承，可以继承自多个类。
    class C(A):pass
    class D(B, C):pass
 
-|image2|
+.. image:: http://image.iswbm.com/20201004123106.png
 
 可以使用 ``__mro__``
 
@@ -212,7 +212,7 @@ Python 还支持多继承，可以继承自多个类。
 使用 merge 推导
 ~~~~~~~~~~~~~~~
 
-|image3|
+.. image:: http://image.iswbm.com/20201004123115.png
 
 1. 检查第一个列表的头元素（如 L[B1] 的头），记作 H。
 2. 若 H
@@ -247,9 +247,3 @@ Python 还支持多继承，可以继承自多个类。
 
 -  https://www.python.org/download/releases/2.3/mro/
 -  https://www.cnblogs.com/whatisfantasy/p/6046991.html
-
-.. |image0| image:: http://image.iswbm.com/image-20201213150058921.png
-.. |image1| image:: http://image.iswbm.com/image-20201213151434342.png
-.. |image2| image:: http://image.iswbm.com/20201004123106.png
-.. |image3| image:: http://image.iswbm.com/20201004123115.png
-

@@ -26,7 +26,7 @@
 
 -  ``多进程``\ ，并行执行，真正意义上的并发。
 
-|image0|
+.. image:: http://image.iswbm.com/20201219162110.png
 
 2. 单线程VS多线程VS多进程
 -------------------------
@@ -37,7 +37,7 @@
 
 我的实验环境配置如下
 
-|image1|
+.. image:: http://image.iswbm.com/20190112205155.png
 
 开始对比之前，首先定义四种类型的场景 - CPU计算密集型 - 磁盘IO密集型 -
 网络IO密集型 - 【模拟】IO密集型
@@ -203,7 +203,7 @@
 
 将结果汇总一下，制成表格。
 
-|image2|
+.. image:: http://image.iswbm.com/20190112204930.png
 
 我们来分析下这个表格。
 
@@ -218,8 +218,3 @@
 多进程适合在对CPU计算运算要求较高的场景下使用，譬如大数据分析，机器学习等
 -
 多进程虽然总是最快的，但是不一定是最优的选择，因为它需要CPU资源支持下才能体现优势
-
-.. |image0| image:: http://image.iswbm.com/20201219162110.png
-.. |image1| image:: http://image.iswbm.com/20190112205155.png
-.. |image2| image:: http://image.iswbm.com/20190112204930.png
-

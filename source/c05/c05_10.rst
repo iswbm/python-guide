@@ -340,7 +340,4 @@ Python工匠：使用装饰器的小技巧）
 
 其实例化的过程，你可以参考我这里的调试过程，加以理解。
 
-|image0|
-
-.. |image0| image:: http://image.iswbm.com/20190512113917.png
-
+.. image:: http://image.iswbm.com/20190512113917.png

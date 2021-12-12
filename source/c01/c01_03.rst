@@ -21,7 +21,7 @@ Python 程序的执行分为两种：
 的一个函数，通过它可以把你内容输出到终端屏幕上。这是我们写的第一行
 Python 代码，调用的第一个 Python 函数，也是第一个 Python 程序。
 
-|image0|
+.. image:: http://image.iswbm.com/20201218210312.png
 
 2. 第二种方法
 -------------
@@ -34,12 +34,12 @@ PyCharm 来执行脚本，有什么办法呢？
 首先先进入脚本所在的文件夹，然后按住 ``Shift`` 和
 右键，再点击如图位置打开 ``PowerShell``
 
-|image1|
+.. image:: http://image.iswbm.com/image-20201218210755151.png
 
 然后在 ``PowerShell`` 中输入 ``python dmeo.py``\ ，就可以执行这个 python
 脚本啦。
 
-|image2|
+.. image:: http://image.iswbm.com/image-20201218210911124.png
 
 以上介绍了两种最原始的 Python 程序的执行方式。
 
@@ -51,8 +51,3 @@ PyCharm 来执行脚本，有什么办法呢？
    ``>>>`` 标识），请你注意，后面不再提及。
 2. 实际上不管你使用哪个编辑器和 IDE 执行 Python
    文件，它们的本质都是采用的第二种方法，因此这里很有必要向你介绍。
-
-.. |image0| image:: http://image.iswbm.com/20201218210312.png
-.. |image1| image:: http://image.iswbm.com/image-20201218210755151.png
-.. |image2| image:: http://image.iswbm.com/image-20201218210911124.png
-

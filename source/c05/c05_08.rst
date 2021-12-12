@@ -117,7 +117,7 @@ global好理解，这里只讲下nonlocal。
 
 但是这样就OK
 
-::
+.. code:: python
 
    def deco():
        age = 10
@@ -132,7 +132,7 @@ global好理解，这里只讲下nonlocal。
 其实，你如果不使用
 ``+=``\ 、\ ``-=``\ 等一类的操作，不加nonlocal也没有关系。这就展示了闭包的特性。
 
-::
+.. code:: python
 
    def deco():
        age = 10

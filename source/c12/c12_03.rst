@@ -26,11 +26,11 @@
 
 如果你的电脑是 windows 的。
 
-|image0|
+.. image:: http://image.iswbm.com/Fk6WZ2xbqg2DM3AvnYCpsiKQ4xOn
 
 需要将如标示路径，加入到 环境变量 PATH 中。
 
-|image1|
+.. image:: http://image.iswbm.com/FjuJ8yZsgjkzVuBRZHxK1ZnnzaEX
 
 然后需要重启一下，CMD 终端才能够刷新环境变量。
 
@@ -58,13 +58,13 @@ DjangoWebBlog 是我们的项目目录，进入这个目录下创建虚拟环境
 
 这边以安装 python2 版本的虚拟环境为例说明。
 
-|image2|
+.. image:: http://image.iswbm.com/20190612211330.png
 
 如果你原项目使用的是 requirements.txt 这个管理包的方式，这时候执行
 ``pipenv --tow`` 创建一个虚拟环境后，会找到 requirements.txt
 ，并根据这里面的依赖包生成 Pipfile文件。
 
-|image3|
+.. image:: http://image.iswbm.com/20190612213015.png
 
 3. 查询虚拟环境
 ---------------
@@ -82,7 +82,7 @@ DjangoWebBlog 是我们的项目目录，进入这个目录下创建虚拟环境
 
 演示如下：
 
-|image4|
+.. image:: http://image.iswbm.com/20190612213950.png
 
 4. 操作虚拟环境
 ---------------
@@ -102,7 +102,7 @@ DjangoWebBlog 是我们的项目目录，进入这个目录下创建虚拟环境
 执行 ``pipenv shell``
 就可以进入这个虚拟环境，在头部会有虚拟环境的标识名称。有这个标识，说明已经进入虚拟环境。
 
-|image5|
+.. image:: http://image.iswbm.com/20190612211925.png
 
 .. code:: python
 
@@ -156,19 +156,9 @@ DjangoWebBlog 是我们的项目目录，进入这个目录下创建虚拟环境
 
 打印该虚拟环境下所有包的依赖关系图
 
-|image6|
+.. image:: http://image.iswbm.com/20190614000336.png
 
 有的python第三方包旧版本会有安全漏洞，使用 pipenv check
 可以检查安全漏洞。
 
-|image7|
-
-.. |image0| image:: http://image.iswbm.com/Fk6WZ2xbqg2DM3AvnYCpsiKQ4xOn
-.. |image1| image:: http://image.iswbm.com/FjuJ8yZsgjkzVuBRZHxK1ZnnzaEX
-.. |image2| image:: http://image.iswbm.com/20190612211330.png
-.. |image3| image:: http://image.iswbm.com/20190612213015.png
-.. |image4| image:: http://image.iswbm.com/20190612213950.png
-.. |image5| image:: http://image.iswbm.com/20190612211925.png
-.. |image6| image:: http://image.iswbm.com/20190614000336.png
-.. |image7| image:: http://image.iswbm.com/20190612215924.png
-
+.. image:: http://image.iswbm.com/20190612215924.png

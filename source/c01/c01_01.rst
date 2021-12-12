@@ -21,7 +21,7 @@ Python 3.9 （截止撰稿时最新：2020/12/16）。
 进入 `Python 官网 <https://www.python.org/downloads/windows/>`__\ ，目前
 Python 最新 Python 稳定版为 3.9，点击如下链接
 
-|image0|
+.. image:: http://image.iswbm.com/image-20201129172024424.png
 
 直接跳到最后，根据你电脑系统以及的位数
 
@@ -32,7 +32,7 @@ Python 最新 Python 稳定版为 3.9，点击如下链接
 -  Mac
    ：\ `Python-3.9.1-macosx10.9.pkg <https://www.python.org/ftp/python/3.9.1/python-3.9.1-macosx10.9.pkg>`__
 
-|image1|
+.. image:: http://image.iswbm.com/image-20201129172153677.png
 
 下载下来后，根据你的电脑系统选择后面的内容进行阅读。
 
@@ -41,84 +41,66 @@ Python 最新 Python 稳定版为 3.9，点击如下链接
 
 下载到本地后，双击打开开始安装
 
-|image2|
+.. image:: http://image.iswbm.com/20201207164009.png
 
 记得勾选 ``Add Python 3.9 to PATH``\ ，这是把你的 Python
 路径加入到系统环境变量中。如果不想自定义选择安装路径，可以直接点击
 ``Install Now``\ ，如果要选择安装路径，点击下图位置。
 
-|image3|
+.. image:: http://image.iswbm.com/20201207164148.png
 
 然后全部选上，然后点击 Next
 
-|image4|
+.. image:: http://image.iswbm.com/20201207164207.png
 
 这里根据需要进行打勾，一般默认就行，然后点击 ``Browse`` ，选择你想要把
 Python 安装到的哪那个目录里。
 
 然后再直接点击 Install 开始安装。
 
-|image5|
+.. image:: http://image.iswbm.com/20201207164309.png
 
 安装过程只要几分钟就行
 
-|image6|
+.. image:: http://image.iswbm.com/20201207164451.png
 
 出现如下界面，说明安装过程已经结束。
 
-|image7|
+.. image:: http://image.iswbm.com/20201207164957.png
 
 安装是安装上了，那么如何验证呢？
 
 使用 windows 搜索 cmd，选择 ``命令提示符`` （我们把这个称之为你的终端）
 
-|image8|
+.. image:: http://image.iswbm.com/20201207165111.png
 
 然后敲入 python ，若出现如下界面，则说明 Python
 已经成功安装到你的机器上。
 
-|image9|
+.. image:: http://image.iswbm.com/20201218200632.png
 
 3. Mac 安装
 -----------
 
 下载到本地后，双击打开开始安装
 
-|image10|
+.. image:: http://image.iswbm.com/image-20201215124444268.png
 
 出现如下界面，一直点继续
 
-|image11|
+.. image:: http://image.iswbm.com/image-20201215124456818.png
 
 直到出现如下界面，输入密码开始安装
 
-|image12|
+.. image:: http://image.iswbm.com/image-20201215124710859.png
 
 安装的速度非常地快，大概在一分钟左右
 
-|image13|
+.. image:: http://image.iswbm.com/image-20201215124720398.png
 
-|image14|
+.. image:: http://image.iswbm.com/image-20201215124935041.png
 
 打开Terminal 或者 iTerm（同样我们把这个称之为你的终端），输入 Python 3
 ，如果进入如下界面，说明 Python3 已经安装完成。
 
-|image15|
-
-.. |image0| image:: http://image.iswbm.com/image-20201129172024424.png
-.. |image1| image:: http://image.iswbm.com/image-20201129172153677.png
-.. |image2| image:: http://image.iswbm.com/20201207164009.png
-.. |image3| image:: http://image.iswbm.com/20201207164148.png
-.. |image4| image:: http://image.iswbm.com/20201207164207.png
-.. |image5| image:: http://image.iswbm.com/20201207164309.png
-.. |image6| image:: http://image.iswbm.com/20201207164451.png
-.. |image7| image:: http://image.iswbm.com/20201207164957.png
-.. |image8| image:: http://image.iswbm.com/20201207165111.png
-.. |image9| image:: http://image.iswbm.com/20201218200632.png
-.. |image10| image:: http://image.iswbm.com/image-20201215124444268.png
-.. |image11| image:: http://image.iswbm.com/image-20201215124456818.png
-.. |image12| image:: http://image.iswbm.com/image-20201215124710859.png
-.. |image13| image:: http://image.iswbm.com/image-20201215124720398.png
-.. |image14| image:: http://image.iswbm.com/image-20201215124935041.png
-.. |image15| image:: http://image.iswbm.com/image-20201215125120591.png
-
+.. image:: http://image.iswbm.com/image-20201215125120591.png

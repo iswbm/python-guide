@@ -45,7 +45,7 @@ reduce 函数，也是类似的。它的作用是先对序列中的第 1、2
 个元素进行操作，得到的结果再与第三个数据用 lambda
 函数运算，将其得到的结果再与第四个元素进行运算，以此类推下去直到后面没有元素了。
 
-|image0|
+.. image:: http://image.iswbm.com/20200930175131.png
 
 这边举个例子你也就明白了。
 
@@ -93,6 +93,3 @@ Pythonic ，在某一程度上代码看起来更加的简洁。
 .. code:: python
 
    from functools import reduce
-
-.. |image0| image:: http://image.iswbm.com/20200930175131.png
-

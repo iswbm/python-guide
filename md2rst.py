@@ -11,11 +11,11 @@ if (osName == 'Windows'):
     blog_path = 'E:\\MING-Git\\python-guide\\source'
     index_path = 'E:\\MING-Git\\python-guide\\README.md'
 elif (osName == 'Darwin'):
-    repo_path = '/Users/MING/Github/python-guide/'
-    blog_path = '/Users/MING/Github/python-guide/source'
-    index_path = '/Users/MING/Github/python-guide/README.md'
+    repo_path = '/Users/iswbm/Documents/Github/python-guide/'
+    blog_path = '/Users/iswbm/Documents/Github/python-guide/source'
+    index_path = '/Users/iswbm/Documents/Github/python-guide/README.md'
 
-base_link = "http://python.iswbm.com/en/latest/"
+base_link = "https://python.iswbm.com/en/latest/"
 readme_header = '''
 ![](http://image.iswbm.com/20200607120940.png)
 
@@ -27,9 +27,9 @@ readme_header = '''
     <a href='http://image.iswbm.com/20200607114246.png'><img src='http://img.shields.io/badge/%E5%85%AC%E4%BC%97%E5%8F%B7-30k+-brightgreen'></a>
 </p>
 
-## [项目主页](http://python.iswbm.com/)
+## [项目主页](https://python.iswbm.com/)
 
-在线阅读：[Python 编程时光](http://python.iswbm.com/)
+在线阅读：[Python 编程时光](https://python.iswbm.com/)
 
 ![](http://image.iswbm.com/20200607130051.png)
 

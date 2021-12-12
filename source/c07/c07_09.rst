@@ -131,7 +131,7 @@ Python包含了一系列的魔法方法，用于实现对象之间直接比较�
                print "Value contains spaces. Truncating to first space."
                word = word[:word.index(' ')]
                # Word现在包含第一个空格前的所有字母
-           return str.`__new__`(cls, word)
+           return str.__new__(cls, word)
 
        def __gt__(self, other):
            return len(self) > len(other)
@@ -196,7 +196,7 @@ functools 模块中提供了一个类装饰器，只要我们定义 ``__eq__``
 
 -  ``__trunc__(self)``
 
-   实现 math.trunc() 函数，即距离零最近的整数。
+   实现 math.trunc() 函数，即截断整数。
 
 常见算数操作符
 ^^^^^^^^^^^^^^
@@ -636,8 +636,8 @@ super 是因为不是所有的类都有 ``__dict__`` 属性）:
 
    ``__missing__``
    在字典的子类中使用，它定义了当试图访问一个字典中不存在的键时的行为（目前为止是指字典的实例，例如我有一个字典
-   d ， “george” 不是字典中的一个键，当试图访问 d["george’] 时就会调用
-   d.\ ``__missing__``\ (“george”) ）。
+   d ， “george” 不是字典中的一个键，当试图访问 d[“george’] 时就会调用
+   d.\ ``__missing__``\ (”george”) ）。
 
 5.2 一个例子
 ~~~~~~~~~~~~
@@ -856,7 +856,7 @@ contextlib 模块，里面有一个上下文管理器 contextlib.closing()
    定义当描述符的值改变时的行为。instance 是拥有者类的实例， value
    是要赋给描述符的值。
 
--  ``__delete__(self, instance, owner)``
+-  ``__delete__(self, instance, value)``
 
    定义当描述符的值被删除时的行为。instance 是拥有者类的实例
 
@@ -871,7 +871,7 @@ contextlib 模块，里面有一个上下文管理器 contextlib.closing()
            self.value = float(value)
        def __get__(self, instance, owner):
            return self.value
-       def __set__(self, instance, owner):
+       def __set__(self, instance, value):
                self.value = float(value)
 
    class Foot(object):

@@ -245,4 +245,3 @@
 .. |普通函数中 不能使用 await| image:: https://i.loli.net/2018/05/26/5b09794f45340.png
 .. |async 中 不能使用yield| image:: https://i.loli.net/2018/05/26/5b0978b646230.png
 .. |验证通过| image:: https://i.loli.net/2018/05/26/5b09814dc4714.png
-

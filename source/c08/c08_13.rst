@@ -9,7 +9,7 @@ Python 包的分发可以分为两种：
 
 源码包的本质是一个压缩包，其常见的格式有：
 
-|image0|
+.. image:: http://image.iswbm.com/20191218202833.png
 
 2. 以二进制包形式发布
 
@@ -19,8 +19,4 @@ Python 包的分发可以分为两种：
 
 二进制包的常见格式有：
 
-|image1|
-
-.. |image0| image:: http://image.iswbm.com/20191218202833.png
-.. |image1| image:: http://image.iswbm.com/20191218203005.png
-
+.. image:: http://image.iswbm.com/20191218203005.png

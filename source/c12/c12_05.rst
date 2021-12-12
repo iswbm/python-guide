@@ -26,6 +26,26 @@ pipx 或 pipsi
    $ poetry --version
    Poetry version 1.1.4
 
+如果不可用，可能是环境变量没有设置
+
+.. code:: shell
+
+   ➜ echo $PATH
+   /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin
+
+我使用第一种方法，安装后，会自动把设置环境变量的命令写入
+``.zshrc``\ ，要使之立即生效，需要手动 source 下
+
+.. code:: bash
+
+   ➜ tail -n 1 ~/.zshrc
+   export PATH="$HOME/.poetry/bin:$PATH"
+
+   ➜ source ~/.zshrc
+
+   ➜ echo $PATH
+   /Users/iswbm/.poetry/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin
+
 2. 创建项目
 -----------
 
@@ -76,7 +96,7 @@ pipx 或 pipsi
 文件，会安装这个文件中列出的锁定版本的依赖。如果执行 add/remove
 命令的时候没有检测到虚拟环境，也会为当前目录自动创建虚拟环境。
 
-|image0|
+.. image:: http://image.iswbm.com/image-20201220164337699.png
 
 4. 使用虚拟环境
 ---------------
@@ -183,20 +203,13 @@ Poetry 的配置存储在单独的文件中，比 Pipenv
 ::
 
    [[tool.poetry.source]]
-   name = "douban"
-   url = "https://pypi.doubanio.com/simple/"
-
-不过经过测试 Poetry 会使用 pip.ini 设置的 PyPI
-镜像，而且豆瓣的源好像很久没更新了（创建虚拟环境安装的默认依赖里
-importlib-metadata==0.20
-找不到），\ `这篇文章 <https://link.zhihu.com/?target=http%3A//greyli.com/set-custom-pypi-mirror-url-for-pip-pipenv-poetry-and-flit/>`__\ 列出了一些其他国内的
-PyPI 源。
+   name = "aliyun"
+   url = "https://mirrors.aliyun.com/pypi/simple/"
 
 7. 参考文章
 -----------
 
 -  `相比 Pipenv，Poetry
    是一个更好的选择 <https://zhuanlan.zhihu.com/p/81025311>`__
-
-.. |image0| image:: http://image.iswbm.com/image-20201220164337699.png
-
+-  `从国内的 PyPI 镜像（源）安装 Python
+   包 <https://greyli.com/set-pypi-mirror/>`__

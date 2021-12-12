@@ -111,7 +111,7 @@ virtualenv 虽然已经相当好用了，可是功能还是不够完善。
 
 若是 windows 则新增环境变量：\ ``WORKON_HOME``
 
-|image0|
+.. image:: http://image.iswbm.com/20200209161935.png
 
 **基本语法**\ ：
 
@@ -232,9 +232,7 @@ https://virtualenvwrapper.readthedocs.io/en/latest/command_ref.html
 点击小齿轮。如图点击添加，按提示添加一个虚拟环境。然后点 OK
 就可以使用这个虚拟环境，之后的项目都会在这个虚拟环境下运行。 |image4|
 
-.. |image0| image:: http://image.iswbm.com/20200209161935.png
 .. |image1| image:: https://i.loli.net/2018/06/11/5b1e7d36ce8ad.png
 .. |image2| image:: https://i.loli.net/2018/06/11/5b1e7f140be6a.png
 .. |image3| image:: https://i.loli.net/2018/06/11/5b1e805c996c8.png
 .. |image4| image:: https://i.loli.net/2018/06/11/5b1e812db603f.png
-

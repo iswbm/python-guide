@@ -385,7 +385,4 @@ pip 的文件夹，若没有则创建之。
 
 以上几乎包含了 pip 的所有常用使用场景，为了方便，我将其整理成一张表格。
 
-|image0|
-
-.. |image0| image:: http://image.iswbm.com/20191105200041.png
-
+.. image:: http://image.iswbm.com/20191105200041.png

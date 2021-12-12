@@ -39,7 +39,7 @@ function）是指一类无需定义标识符（函数名）的函数。通俗来
 
 递归函数
 
-.. code:: pyhton
+.. code:: python 
 
    >>> func = lambda n:1 if n == 0 else n * func(n-1)
    >>> func(5)
