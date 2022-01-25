@@ -102,7 +102,7 @@ AttributeError，属性不存在。
 .. code:: python
 
    >>> demo._Demo__baz
-   23
+   33
 
 总结可得，使用双下划线开头的属性变量，就是一个私有变量。
 
