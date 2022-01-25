@@ -8,7 +8,7 @@
    >>> file=open('test.txt')
    >>> 
    >>> print(file.readlines())  # 读取并打印
-   Hello, Python
+   ['hello,python\n']
    >>> 
    >>> file.close()  # 关闭文件句柄
 
