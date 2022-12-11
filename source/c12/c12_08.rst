@@ -1,0 +1,169 @@
+前面介绍过非常地 Python 包管理工具，有 pip、 venv、pipenv、poetry、pdm
+等
+
+今天来介绍一个更高层次的管理工具，可以直接管理 Python
+解释器的版本，同时也可以管理虚拟环境，它就是 pyenv。
+
+pyenv 的一个典型使用场景就是，比如一个老项目需要使用 Python 2.x
+，而另一个新项目需要 Python 3.x 。而 virtualenv 主要是用来管理相同版本
+Python 不同项目的包的依赖不同的问题，就无法解决这个问题，这个时候就需要
+pyenv。
+
+有了 pyenv，你可以一键安装、切换到任意你需要的 python 版本，从 2.1.3 ->
+3.12-dev（稿前为止最新版本）。
+
+除了常规的 CPython 之外，它还可以管理其他的 python 和 工具，包括：
+
+-  graalpython
+-  ironpython
+-  jython
+-  micropython
+-  pypy
+-  miniconda
+-  anaconda
+-  pyston
+-  stackless
+-  等等
+
+好家伙，我愿称之为 Python Env
+Master，而上面每个工具，还有细分的版本，不用担心，pyenv
+全部都有收录，可以满足你几乎所有需求了。
+
+1. 安装与配置
+-------------
+
+先安装 pyenv，由于我使用 macOS，使用 brew 可以很方便的安装它
+
+.. code:: bash
+
+   brew update
+   brew install pyenv
+
+安装 pyenv 会安装相当多的依赖包，包括：
+
+-  ``pyenv``: pyenv 工具自身
+-  ``pyenv-update``: 用来更新 pyenv 的插件
+-  ``pyenv-doctor``: 验证 pyenv 和依赖是否安装的插件
+-  ``pyenv-which-ext``: 用来寻找相同命令的插件
+
+使用 pyenv help 查看一下帮助命令，如果没有报错，说明安装成功
+
+.. image:: https://image.iswbm.com/20221211183415.png
+
+另外，除了 pyenv，还要安装一个插件 pyenv-virtualenv，它是专门用来管理
+vitual environments 的
+
+.. code:: bash
+
+   brew install pyenv-virtualenv
+
+安装好后，还要进行一下初始化。
+
+为了下次新开终端也可以立马使用 pyenv，可以将下面两条初始化命令写入
+``.bash_profile``\ 或 ``.zshrc``\ （根据自己实际情况而定）
+
+.. code:: bash
+
+   eval "$(pyenv init -)"
+   eval "$(pyenv virtualenv-init -)"
+
+然后再次执行 source 使之立即执行
+
+.. code:: bash
+
+   source ~/.bash_profile
+   # 或
+   source ~/.zshrc
+
+2. 基本使用
+-----------
+
+环境配置好后，那如何知道有哪些版本可以安装呢？
+
+可以使用如下命令查询所有可安装的项
+
+.. code:: bash
+
+   pyenv install --list
+
+比如我现在需要安装的是
+python3.8，但我不知道最新的小版本是多少，就可以使用上面命令查询一下
+
+.. image:: https://image.iswbm.com/20221211205459.png
+
+发现最新的版本是 3.8.16，于是直接使用 install 来安装它，再使用 pyenv
+versions 就可以看到我们安装的版本了。
+
+.. image:: https://image.iswbm.com/20221211183934.png
+
+从上面截图可以看到，安装完后并不会自动切换过去，目前还是指向系统自带的
+Python，需要手动进行版本的切换，切换方法有如下两种：
+
+.. code:: bash
+
+   pyenv global 3.8.16
+   # 或 
+   pyenv local 3.8.16
+
+那这种有什么区别呢？简单来说：
+
+-  global：设置全局的 Python 解释器，不管你在任何路径下都是使用该版本的
+   Python
+-  local： 设置的是某特定目录（或项目）的 Python
+   解释器，只有在该目录下才能用该版本的 Python
+
+我们使用 pyenv versions 可以观察下指向的 Python 版本，可以发现
+
+-  只要进入 wechat-chatgpt 目录，就会使用
+   ``.python-version``\ 里的解释器
+-  一旦离开 wechat-chatgpt 目录，就又会使用全局的 Python 解释器
+
+.. image:: https://image.iswbm.com/20221211211322.png
+
+想要切换回系统自带的 Python ，也是同样道理，将版本换成 system 即可
+
+.. code:: bash
+
+   pyenv global system
+
+3. 虚拟环境
+-----------
+
+pyenv 管理的每一个版本在 ``~/.pyenv/versions`` 下都有对应的目录
+
+.. image:: https://image.iswbm.com/20221211212217.png
+
+当然 pyenv 创建的虚拟环境也是在这下面，只不过我还没有创建过虚拟环境。
+
+现在使用使用如下命令创建一个
+
+.. code:: bash
+
+   pyenv virtualenv 3.8.16 wechat-chatgpt
+
+可以发现不管在 ``~/.pyenv/versions``\ 目录下还是
+``pyenv versions``\ 都会新增一个环境
+
+.. image:: https://image.iswbm.com/20221211212513.png
+
+只要在对应的目录下使用 local 指定 Python 版本，就实现了项目与 Python
+版本的绑定。实在是太友好啦～
+
+.. image:: https://image.iswbm.com/20221211212735.png
+
+另外列几个虚拟环境管理的命令
+
+-  查看所有虚拟环境：pyenv virtualenvs
+-  删除指定虚拟环境：pyenv virtualenv-delete
+-  查看虚拟环境的真实的 Python 环境：pyenv virtualenv-prefix
+
+4. 总结一下
+-----------
+
+pyenv 从解释器管理到虚拟环境管理，给了 Python
+工程师一站式的体验，对于那些需要维护很多项目并且有些项目依赖了不同的
+Python 版本的人来说，请一定在你的电脑上安装 pyenv，因为它实在太方便了。
+
+目前我发现的唯一的不足，可能就是它只能管理通过 pyenv
+安装的解释器，而对于系统上早已存在的 Python
+解释器，并不会去扫描纳管，但这问题实在太小，小到可以忽略不计。
